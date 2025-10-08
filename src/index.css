@@ -1,0 +1,395 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Geologica', sans-serif;
+  background-color: #F2ECE3;
+  color: #1f2937;
+  line-height: 1.6;
+}
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* Nav button text hover animation */
+.nav_link {
+  position: relative;
+}
+
+.nav_link .nav-button_text:first-child {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.nav_link .nav-button_text:last-child {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.nav_link:hover .nav-button_text:first-child {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.nav_link:hover .nav-button_text:last-child {
+  opacity: 1;
+  transform: translate(-50%, -0.6rem);
+}
+
+/* Nav button text additional styles */
+.nav-button_text {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+  line-height: 1.3 !important;
+  position: relative !important;
+}
+
+/* Nav button text absolute positioning */
+.nav-button_text.is-absolute {
+  position: absolute !important;
+  bottom: -1.2rem !important;
+  white-space: nowrap !important;
+}
+
+/* Ensure GSAP animations work properly */
+.section.hero {
+  will-change: transform;
+}
+
+/* Mobile menu styles */
+.mobile-menu {
+  backdrop-filter: blur(10px);
+}
+
+.mobile-nav-link:hover {
+  transform: scale(1.1);
+  color: #ffffff !important;
+}
+
+/* Burger icon animation */
+.burger-icon span {
+  transform-origin: center;
+}
+
+/* Hide desktop menu on mobile */
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none !important;
+  }
+  
+  .nav_button {
+    display: block !important;
+  }
+  
+  /* Increase hero title size on mobile */
+  .heading-style-h1 {
+    font-size: 12vw !important;
+  }
+}
+
+/* Show desktop menu on desktop */
+@media (min-width: 769px) {
+  .nav-menu {
+    display: flex !important;
+  }
+  
+  .nav_button {
+    display: none !important;
+  }
+}
+
+/* Logo hover effect */
+.nav_brand:hover {
+  opacity: 0.4 !important;
+}
+
+/* Button nav hover effect */
+.button-nav {
+  position: relative !important;
+}
+
+.button-nav .button-text:first-child {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1) !important;
+}
+
+.button-nav .button-text:last-child {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, 100%) !important;
+  opacity: 0 !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1) !important;
+}
+
+.button-nav:hover .button-text:first-child {
+  opacity: 0 !important;
+  transform: translateY(-100%) !important;
+}
+
+.button-nav:hover .button-text:last-child {
+  opacity: 1 !important;
+  transform: translate(-50%, -0.6rem) !important;
+}
+
+/* Hero subtitle text animation styles */
+.subtitle-text-wrapper {
+  display: block !important;
+  max-width: 64ch !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+}
+
+.hero-subtitle-text .word {
+  display: inline !important;
+}
+
+.subtitle-line {
+  display: block !important;
+  margin-bottom: 0.25rem !important;
+}
+
+/* CTA content styles */
+.cta-content {
+  z-index: 4;
+  position: relative;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Text section overlay styles */
+.text-section-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 30% !important;
+  min-height: 100vh !important;
+  height: 100vh !important;
+  background-color: rgba(38, 45, 38, 0.9) !important;
+  z-index: 3 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 2rem !important;
+  color: #F2ECE3 !important;
+  border-radius: 0 3rem 3rem 0 !important;
+}
+
+/* Ensure parent containers have proper height */
+.section_cta {
+  height: auto !important;
+}
+
+.track-cta {
+  height: 300vh !important;
+}
+
+.sticky-cta {
+  height: 100vh !important;
+}
+
+.cta-video_background {
+  height: 100% !important;
+}
+
+/* CTA Logo wrap styles */
+.cta-logo-wrap {
+  width: 400px;
+  height: auto;
+}
+
+.cta-logo-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cta-content > div:first-child {
+  width: 40vw !important;
+  height: auto !important;
+  margin-bottom: 1rem !important;
+}
+
+.cta-content > div:first-child img {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  filter: brightness(0) saturate(100%) invert(95%) sepia(8%) saturate(180%) hue-rotate(315deg) brightness(98%) contrast(94%) !important;
+}
+
+/* Desktop styles for page-headings */
+.page-headings.text-align-center {
+  gap: 1rem;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 100ch;
+  display: flex;
+}
+
+/* Mobile styles for About section */
+@media (max-width: 768px) {
+  .text-style-allcaps {
+    font-size: 0.75rem !important;
+  }
+  
+  .heading-style-h2 {
+    font-size: 1.125rem !important;
+    word-spacing: normal !important;
+    white-space: normal !important;
+  }
+  
+/* Desktop styles for Features section */
+.features_content {
+  gap: 1.3rem;
+}
+
+.heading-style-h2 {
+  font-family: 'Geologica, sans-serif' !important;
+  font-size: 1.5rem !important;
+  font-weight: 300 !important;
+  line-height: 1.4 !important;
+  color: rgb(31, 41, 55) !important;
+}
+
+/* Section-specific overrides */
+.location_card h2.heading-style-h2.text-style-allcaps.font-lora {
+  color: #F2ECE3 !important;
+}
+
+p.text-size-medium {
+  font-weight: 200 !important;
+}
+
+  /* Mobile styles for Features section */
+  .page-headings.text-align-center {
+    gap: 1rem !important;
+    flex-flow: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    max-width: 100ch !important;
+    display: flex !important;
+  }
+  
+  .features-wrap {
+    grid-template-rows: auto !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-auto-columns: 1fr !important;
+    flex-flow: column !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    display: flex !important;
+    grid-column-gap: 1.5rem !important;
+    grid-row-gap: 1.5rem !important;
+  }
+  
+  .features_image {
+    height: 30vh !important;
+    width: 100% !important;
+  }
+  
+  .features-wrap.is-middle {
+    flex-direction: column !important;
+    display: flex !important;
+  }
+  
+  .features-wrap.is-middle .features_content {
+    order: 2 !important;
+  }
+  
+  .features-wrap.is-middle .features_image {
+    order: 1 !important;
+  }
+  
+  .features_content {
+    gap: 1rem !important;
+  }
+  
+  .text-weight-normal.text-style-allcaps.heading-style-h4 {
+    font-size: 1.3rem !important;
+  }
+  
+  .features-component {
+    grid-column-gap: 4rem !important;
+    grid-row-gap: 4rem !important;
+  }
+  
+  
+  .location-wrap {
+    margin-bottom: 0rem !important;
+  }
+  
+  .location_grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .location_card {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+  
+  .location_card h2.heading-style-h2.text-style-allcaps.font-lora {
+    color: #F2ECE3 !important;
+  }
+  
+  /* Уменьшаем размер фотографий на мобильных */
+  .photos-wrap {
+    width: 80vw !important;
+    height: 45vw !important;
+    max-width: 400px !important;
+    max-height: 225px !important;
+    margin: 0 auto !important;
+    padding: 1rem !important;
+  }
+  
+  /* CTA логотип на мобильных */
+  .cta-logo {
+    width: 15vw !important;
+    min-width: 120px !important;
+    max-width: 200px !important;
+  }
+  
+  /* CTA видео фон на мобильных */
+  .cta-video_background {
+    border-radius: 1rem !important;
+  }
+  
+  /* CTA логотип на мобильных */
+  .cta-content > div:first-child {
+    width: 70vw !important;
+  }
+}
+
+/* Force override for location card headings - highest specificity */
+.location_card h2.heading-style-h2.text-style-allcaps.font-lora {
+  color: #F2ECE3 !important;
+}
