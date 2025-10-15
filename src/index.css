@@ -387,6 +387,16 @@ p.text-size-medium {
   .cta-content > div:first-child {
     width: 70vw !important;
   }
+  
+  /* Last CTA на мобильных */
+  .section_last-cta .cta_content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .section_last-cta .heading-style-h2.text-style-allcaps.font-lora {
+    color: rgb(242, 236, 227) !important;
+  }
 }
 
 /* Force override for location card headings - highest specificity */

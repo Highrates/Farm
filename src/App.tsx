@@ -73,8 +73,8 @@ function App() {
     if (subtitleRef.current) {
       // Разбиваем на строки
       const lines = [
-        'Чистая вода, натуральные корма и бережный уход',
-        '— простые правила, из которых рождается вкус'
+        'Семейная ферма, где уважают землю и заботятся о животных',
+        'Чистая вода, натуральные корма и бережный уход, простые правила, из которых рождается вкус'
       ];
       
       // Создаем обертку для текста с анимацией
@@ -476,8 +476,8 @@ function App() {
                   src="/logo-R.svg" 
                   alt="Logo" 
                   style={{
-                    width: '32px',
-                    height: '32px'
+                    width: '46px',
+                    height: '46px'
                   }}
                 />
       </div>
@@ -610,7 +610,8 @@ function App() {
                       }}
                     ></div>
 
-                    <div 
+                    <a 
+                      href="#section_about"
                       className="nav_link"
                       style={{
                         flexFlow: 'column',
@@ -619,7 +620,8 @@ function App() {
                         padding: '0.5rem 0',
                         display: 'flex',
                         position: 'relative',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        textDecoration: 'none'
                       }}
                     >
                       <div 
@@ -652,9 +654,10 @@ function App() {
                       >
                         О нас
                       </div>
-                    </div>
+                    </a>
 
-                    <div 
+                    <a 
+                      href="#section_features"
                       className="nav_link"
                       style={{
                         flexFlow: 'column',
@@ -663,7 +666,8 @@ function App() {
                         padding: '0.5rem 0',
                         display: 'flex',
                         position: 'relative',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        textDecoration: 'none'
                       }}
                     >
                       <div 
@@ -688,9 +692,10 @@ function App() {
                       >
                         Наш продукт
                       </div>
-                    </div>
+                    </a>
 
-                    <div 
+                    <a 
+                      href="#section_location"
                       className="nav_link"
                       style={{
                         flexFlow: 'column',
@@ -699,7 +704,8 @@ function App() {
                         padding: '0.5rem 0',
                         display: 'flex',
                         position: 'relative',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        textDecoration: 'none'
                       }}
                     >
                       <div 
@@ -711,7 +717,7 @@ function App() {
                           color: '#F2ECE3'
                         }}
                       >
-                        Наши ценности
+                        Наше место
                       </div>
                       <div 
                         className="nav-button_text is-absolute"
@@ -722,11 +728,12 @@ function App() {
                           color: '#F2ECE3'
                         }}
                       >
-                        Наши ценности
+                        Наше место
                       </div>
-                    </div>
+                    </a>
 
-                    <div 
+                    <a 
+                      href="#section_partners"
                       className="nav_link"
                       style={{
                         flexFlow: 'column',
@@ -735,43 +742,8 @@ function App() {
                         padding: '0.5rem 0',
                         display: 'flex',
                         position: 'relative',
-                        overflow: 'hidden'
-                      }}
-                    >
-                      <div 
-                        className="nav-button_text"
-                        style={{
-                          fontFamily: 'Geologica, sans-serif',
-                          fontSize: '1rem',
-                          fontWeight: '400',
-                          color: '#F2ECE3'
-                        }}
-                      >
-                        Место
-                      </div>
-                      <div 
-                        className="nav-button_text is-absolute"
-                        style={{
-                          fontFamily: 'Geologica, sans-serif',
-                          fontSize: '1rem',
-                          fontWeight: '400',
-                          color: '#F2ECE3'
-                        }}
-                      >
-                        Место
-                      </div>
-                    </div>
-
-                    <div 
-                      className="nav_link"
-                      style={{
-                        flexFlow: 'column',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        padding: '0.5rem 0',
-                        display: 'flex',
-                        position: 'relative',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        textDecoration: 'none'
                       }}
                     >
                       <div 
@@ -796,7 +768,8 @@ function App() {
                       >
                         Партнерам
                       </div>
-                    </div>
+                    </a>
+
                   </div>
 
                   <div 
@@ -931,7 +904,8 @@ function App() {
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div 
+          <a 
+            href="#section_about"
             className="mobile-nav-link"
             style={{
               color: '#F2ECE3',
@@ -939,13 +913,15 @@ function App() {
               fontFamily: 'Lora, serif',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              textDecoration: 'none'
             }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
             О нас
-          </div>
-          <div 
+          </a>
+          <a 
+            href="#section_features"
             className="mobile-nav-link"
             style={{
               color: '#F2ECE3',
@@ -953,13 +929,15 @@ function App() {
               fontFamily: 'Lora, serif',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              textDecoration: 'none'
             }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Наш продукт
-          </div>
-          <div 
+          </a>
+          <a 
+            href="#section_location"
             className="mobile-nav-link"
             style={{
               color: '#F2ECE3',
@@ -967,13 +945,15 @@ function App() {
               fontFamily: 'Lora, serif',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              textDecoration: 'none'
             }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Наши ценности
-          </div>
-          <div 
+            Наше место
+          </a>
+          <a 
+            href="#section_partners"
             className="mobile-nav-link"
             style={{
               color: '#F2ECE3',
@@ -981,26 +961,13 @@ function App() {
               fontFamily: 'Lora, serif',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Место
-          </div>
-          <div 
-            className="mobile-nav-link"
-            style={{
-              color: '#F2ECE3',
-              fontSize: '1.5rem',
-              fontFamily: 'Lora, serif',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              textDecoration: 'none'
             }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Партнерам
-          </div>
+          </a>
           <div 
             className="mobile-nav-link"
             style={{
@@ -1747,7 +1714,7 @@ function App() {
                     borderRadius: '0.5rem'
                   }}
                 >
-                  <source src="/Hero-video.mp4" type="video/mp4" />
+                  <source src="/CTA-video.mp4" type="video/mp4" />
                 </video>
                 
                 <div className="video-overlay" style={{
@@ -1826,7 +1793,8 @@ function App() {
                     margin: 0,
                     textAlign: 'center'
                   }}>
-                    Родная земля — источник силы и вдохновения
+                    Родная земля — источник силы и вдохновения<br />
+                    Наша ферма находится в Воронежской области, в Лискинском районе, селе Аношкино. Это земля наших предков, которая хранит память поколений.
                   </h2>
                 </div>
               </div>
@@ -1840,23 +1808,31 @@ function App() {
                 display: 'grid'
               }}>
                 {/* 1) Location card left */}
-                <div className="location_card is-left" style={{
-                  gap: '0.5rem',
-                  color: 'var(--text-color--text-secondary)',
-                  borderRadius: '0.5rem',
-                  flexFlow: 'column',
-                  justifyContent: 'flex-end',
-                  alignItems: 'flex-start',
-                  minHeight: '70vh',
-                  padding: '2rem 8rem 2rem 2rem',
-                  display: 'flex',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  backgroundImage: 'url(/location-card-left.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
-                }}>
+                <a 
+                  href="https://incrussia.ru/share/uvelichit-vyruchku-agrokompanii/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="location_card is-left" 
+                  style={{
+                    gap: '0.5rem',
+                    color: 'var(--text-color--text-secondary)',
+                    borderRadius: '0.5rem',
+                    flexFlow: 'column',
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-start',
+                    minHeight: '70vh',
+                    padding: '2rem 8rem 2rem 2rem',
+                    display: 'flex',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    backgroundImage: 'url(/location-card-left.jpg)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    textDecoration: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
                   {/* Background overlay for better text readability */}
                   <div style={{
                     position: 'absolute',
@@ -1898,7 +1874,7 @@ function App() {
                       margin: 0,
                       marginBottom: '1rem'
                     }}>
-                      A return to rhythm, movement, and earth
+                      Как увеличить выручку агрокомпании в 4 раза: советы от владелицы эко-фермы
                     </h2>
                     
                     {/* 3) Small text */}
@@ -1910,29 +1886,37 @@ function App() {
                       color: '#F2ECE3',
                       margin: 0
                     }}>
-                      At Kaleo, life follows the land. Horses run free, silence speaks, and the wild reminds us who we are. This is where motion meets meaning, and presence becomes a way of life.
+                      Сократить расходы, удвоить выручку и выйти из зависимости от посредников — не теория, а реальные цели, которых можно достичь, если действовать правильно. Разбираю пять рабочих стратегий, которые помогали мне и моим клиентам из агросектора даже в кризис. Бонус: их можно адаптировать под любой бизнес.
                     </p>
                   </div>
-                </div>
+                </a>
                 
                 {/* 2) Location card right */}
-                <div className="location_card is-right" style={{
-                  gap: '0.5rem',
-                  color: 'var(--text-color--text-secondary)',
-                  borderRadius: '0.5rem',
-                  flexFlow: 'column',
-                  justifyContent: 'flex-end',
-                  alignItems: 'flex-start',
-                  minHeight: '70vh',
-                  padding: '2rem 8rem 2rem 2rem',
-                  display: 'flex',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  backgroundImage: 'url(/location-card-right.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
-                }}>
+                <a 
+                  href="https://станьбрендом.рф/pr-instrumenty-dlya-ekologichnoj-fermy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="location_card is-right" 
+                  style={{
+                    gap: '0.5rem',
+                    color: 'var(--text-color--text-secondary)',
+                    borderRadius: '0.5rem',
+                    flexFlow: 'column',
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-start',
+                    minHeight: '70vh',
+                    padding: '2rem 8rem 2rem 2rem',
+                    display: 'flex',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    backgroundImage: 'url(/location-card-right.jpg)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    textDecoration: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
                   {/* Background overlay for better text readability */}
                   <div style={{
                     position: 'absolute',
@@ -1962,7 +1946,7 @@ function App() {
                           filter: 'brightness(0) invert(1)'
                         }}
                       />
-                    </div>
+      </div>
                     
                     {/* 2) Heading style h2 */}
                     <h2 className="heading-style-h2 text-style-allcaps font-lora" style={{
@@ -1974,7 +1958,7 @@ function App() {
                       margin: 0,
                       marginBottom: '1rem'
                     }}>
-                      A return to rhythm, movement, and earth
+                      PR-инструменты для экологичной фермы: как привлечь внимание без агрессивной рекламы
                     </h2>
                     
                     {/* 3) Small text */}
@@ -1986,12 +1970,321 @@ function App() {
                       color: '#F2ECE3',
                       margin: 0
                     }}>
-                      At Kaleo, life follows the land. Horses run free, silence speaks, and the wild reminds us who we are. This is where motion meets meaning, and presence becomes a way of life.
-                    </p>
+                      Как рассказать о ферме, если не хочется кричать «Купи!» и тратить сотни тысяч на рекламу? Этот вопрос встает перед каждым, кто делает ставку на экологичный продукт.
+        </p>
+      </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section_partners">
+        <div className="padding-global" style={{
+          paddingLeft: '1.5rem',
+          paddingRight: '1.5rem'
+        }}>
+          <div className="container-medium" style={{
+            width: '100%',
+            maxWidth: '90rem',
+            marginLeft: 'auto',
+            marginRight: 'auto'
+          }}>
+            <div className="partner-wrap" style={{
+              gap: '4rem',
+              flexFlow: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              marginBottom: '5rem',
+              paddingTop: '12rem',
+              paddingBottom: '6rem',
+              display: 'flex'
+            }}>
+              <div className="page-headings text-align-center is-location" style={{
+                gap: '1rem',
+                flexFlow: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                maxWidth: '100ch',
+                display: 'flex'
+              }}>
+                <h3 className="text-style-allcaps" style={{
+                  fontFamily: 'Geologica, sans-serif',
+                  fontSize: '1rem',
+                  fontWeight: 300,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  color: '#1f2937',
+                  margin: 0
+                }}>
+                  ПАРТНЕРАМ
+                </h3>
+
+                <div className="max-width-medium" style={{
+                  width: '100%',
+                  maxWidth: '72ch'
+                }}>
+                  <h2 className="heading-style-h2" style={{
+                    fontFamily: 'Geologica, sans-serif',
+                    fontSize: '1.5rem',
+                    fontWeight: 200,
+                    lineHeight: 1.4,
+                    color: '#1f2937',
+                    margin: 0,
+                    textAlign: 'center'
+                  }}>
+                    Мы открыты к партнёрству с теми, кто разделяет наш подход,<br />
+                    ценит прозрачность происхождения продукта и его качество,<br />
+                    поддерживает локальных производителей и семейные фермы.<br />
+                    С нами ваши гости и покупатели будут точно знать, откуда пришёл продукт, и в каких условиях он создан.<br />
+                    
+                  </h2>
+                </div>
+              </div>
+
+              {/* Partners features wrap */}
+              <div className="features-wrap" style={{
+                gridColumnGap: '5rem',
+                gridRowGap: '5rem',
+                gridTemplateRows: 'auto',
+                gridTemplateColumns: '1fr 1fr',
+                gridAutoColumns: '1fr',
+                alignItems: 'center',
+                display: 'grid'
+              }}>
+                {/* Features image */}
+                <div className="features_image" style={{
+                  borderRadius: '1rem',
+                  width: '40vw',
+                  maxWidth: '41rem',
+                  height: '37rem',
+                  marginLeft: 'auto',
+                  overflow: 'hidden'
+                }}>
+                  <img 
+                    src="/partner-img.jpg" 
+                    alt="Partner image" 
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </div>
+
+                {/* Features content */}
+                <div className="features_content" style={{
+                  gap: '1.3rem',
+                  flexFlow: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                  display: 'flex'
+                }}>
+                  {/* Heading */}
+                  <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
+                    fontFamily: 'Lora, serif',
+                    fontSize: '3rem',
+                    fontWeight: '400',
+                    textTransform: 'uppercase',
+                    color: '#1f2937',
+                    margin: 0
+                  }}>
+                    Мы предлагаем
+                  </h4>
+                  
+                  {/* Divider image */}
+                  <img 
+                    src="/divider-img.svg" 
+                    alt="Divider" 
+                    style={{
+                      width: 'auto',
+                      height: 'auto',
+                      margin: '1rem 0'
+                    }}
+                  />
+                  
+                  {/* Text */}
+                  <p className="text-size-medium" style={{
+                    fontFamily: 'Geologica, sans-serif',
+                    fontSize: '1.125rem',
+                    fontWeight: '200',
+                    lineHeight: 1.6,
+                    color: '#1f2937',
+                    margin: 0
+                  }}>
+                    Мы предлагаем:<br />
+                    гибкие условия поставки (цены, объёмы, тестовые партии);<br />
+                    индивидуальные решения для ресторанов и магазинов;<br />
+                    гарантию: за каждое поставленное мясо мы отвечаем лично.<br />
+                    Сотрудничая с нами, вы получаете не просто продукт, а надёжного партнёра, который дорожит вашим доверием.
+                  </p>
+
+                  {/* Button */}
+                  <div 
+                    className="button-nav"
+                    style={{
+                      gridColumnGap: '0.7rem',
+                      gridRowGap: '0.7rem',
+                      backgroundColor: '#000000',
+                      color: '#F2ECE3',
+                      borderRadius: '0.4rem',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                      padding: '0.75rem 1.5rem',
+                      display: 'flex',
+                      maxWidth: '100%',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      marginTop: '1rem'
+                    }}
+                  >
+                    <div 
+                      className="button-text"
+                      style={{
+                        fontFamily: 'Geologica, sans-serif',
+                        fontSize: '1rem',
+                        fontWeight: '400',
+                        color: '#F2ECE3',
+                        paddingLeft: '0.5rem',
+                        paddingRight: '0.5rem',
+                        lineHeight: '1.3',
+                        position: 'relative',
+                        opacity: 1,
+                        transform: 'translateY(0)',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 1, 1)'
+                      }}
+                    >
+                      Связаться
+                    </div>
+                    <div 
+                      className="button-text is-absolute"
+                      style={{
+                        fontFamily: 'Geologica, sans-serif',
+                        fontSize: '1rem',
+                        fontWeight: '400',
+                        color: '#F2ECE3',
+                        paddingLeft: '0.5rem',
+                        paddingRight: '0.5rem',
+                        lineHeight: '1.3',
+                        position: 'absolute',
+                        bottom: '-1.2rem',
+                        whiteSpace: 'nowrap',
+                        opacity: 0,
+                        transform: 'translate(-50%, 100%)',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 1, 1)'
+                      }}
+                    >
+                      Связаться
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Last CTA Section */}
+      <section className="section_last-cta">
+        <div className="cta_background" style={{
+          backgroundColor: 'var(--background-color--background-secondary)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          display: 'flex',
+          position: 'relative'
+        }}>
+          {/* CTA Content */}
+          <div className="cta_content" style={{
+            zIndex: 4,
+            gridColumnGap: '1rem',
+            gridRowGap: '1rem',
+            textAlign: 'center',
+            flexFlow: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            position: 'relative'
+          }}>
+            {/* 1) Logo */}
+            <div style={{
+              width: '4rem',
+              height: '4rem',
+              marginBottom: '2rem'
+            }}>
+              <img 
+                src="/logo-R.svg" 
+                alt="Logo" 
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  filter: 'brightness(0) invert(1)'
+                }}
+              />
+            </div>
+
+            {/* 2) Heading */}
+            <h2 className="heading-style-h2 text-style-allcaps font-lora" style={{
+              fontFamily: 'Lora, serif',
+              fontSize: '2.5rem',
+              fontWeight: '300',
+              lineHeight: 1.3,
+              textTransform: 'uppercase',
+              color: '#F2ECE3',
+              margin: 0,
+              marginBottom: '2rem'
+            }}>
+              Наши ценности
+            </h2>
+
+            {/* 3) Small text */}
+            <p className="small-text" style={{
+              fontFamily: 'Geologica, sans-serif',
+              fontSize: '1rem',
+              fontWeight: '200',
+              lineHeight: 1.5,
+              color: 'rgb(242, 236, 227)',
+              margin: 0,
+              maxWidth: '60ch'
+            }}>
+              Мы хотим, чтобы наши дети жили в мире, где еда означает здоровье, честность и уважение к природе и людям. И чтобы вы знали: на вашем столе — мясо, выращенное в согласии с землёй и традициями.
+            </p>
+          </div>
+
+          {/* Video Overlay */}
+          <div className="video-overlay" style={{
+            zIndex: 2,
+            backgroundImage: 'radial-gradient(circle, #17141100 20%, #000000ba)',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            inset: '0%'
+          }}></div>
+
+          {/* Background Video */}
+          <div className="background-video-last" style={{
+            zIndex: 1,
+            position: 'absolute',
+            inset: '0%'
+          }}>
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: '0.5rem'
+              }}
+            >
+              <source src="/CTA-video.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
       </section>
