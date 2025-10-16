@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
+// Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 function App() {
@@ -436,12 +437,19 @@ function App() {
   }, [isMobileMenuOpen]);
 
   return (
-    <div className="min-h-screen bg-main-bg">
+    <div style={{ minHeight: '100vh', backgroundColor: '#F2ECE3' }}>
+      {/* Skip to main content link for accessibility */}
+      <a href="#main-content" className="skip-to-content">
+        Перейти к основному содержанию
+      </a>
+      
       <div className="main-wrapper">
         {/* Navbar */}
         <nav 
           ref={navbarRef}
           className="navbar"
+          role="navigation"
+          aria-label="Главная навигация"
           style={{
             zIndex: 9999,
             backgroundColor: '#ddd0',
@@ -500,6 +508,16 @@ function App() {
               <div 
                 className="nav_button"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                role="button"
+                aria-label={isMobileMenuOpen ? "Закрыть меню" : "Открыть меню"}
+                aria-expanded={isMobileMenuOpen}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsMobileMenuOpen(!isMobileMenuOpen);
+                  }
+                }}
                 style={{
                   cursor: 'pointer',
                   WebkitTapHighlightColor: 'transparent',
@@ -1011,6 +1029,7 @@ function App() {
 
       {/* Hero Section */}
       <section 
+        id="main-content"
         ref={heroSectionRef}
         className="section hero" 
         style={{ 
@@ -1058,6 +1077,7 @@ function App() {
                     fontSize: '8vw',
                     lineHeight: 1,
                     fontFamily: 'Lora, serif',
+                    fontWeight: 400,
                     color: '#F2ECE3',
                     margin: 0
                   }}
@@ -1259,6 +1279,7 @@ function App() {
                         <img
                           src="/pic1.jpg"
                           alt="Ферма фото 1"
+                          loading="lazy"
                           style={{
                             width: '100%',
                             height: '100%',
@@ -1283,6 +1304,7 @@ function App() {
                         <img
                           src="/pic2.jpg"
                           alt="Ферма фото 2"
+                          loading="lazy"
                           style={{
                             width: '100%',
                             height: '100%',
@@ -1307,6 +1329,7 @@ function App() {
                         <img
                           src="/pic3.jpg"
                           alt="Ферма фото 3"
+                          loading="lazy"
                           style={{
                             width: '100%',
                             height: '100%',
@@ -1413,6 +1436,7 @@ function App() {
                   <img 
                     src="/features_image1.jpg" 
                     alt="Features image 1" 
+                    loading="lazy"
                     style={{
                       width: '100%',
                       height: '100%',
@@ -1443,7 +1467,8 @@ function App() {
                   {/* Divider image */}
                   <img 
                     src="/divider-img.svg" 
-                    alt="Divider" 
+                    alt="Divider"
+                    loading="lazy"
                     style={{
                       width: 'auto',
                       height: 'auto',
@@ -1497,7 +1522,8 @@ function App() {
                   {/* Divider image */}
                   <img 
                     src="/divider-img.svg" 
-                    alt="Divider" 
+                    alt="Divider"
+                    loading="lazy"
                     style={{
                       width: 'auto',
                       height: 'auto',
@@ -1529,7 +1555,8 @@ function App() {
                 }}>
                   <img 
                     src="/features_image2.jpg" 
-                    alt="Features image 2" 
+                    alt="Features image 2"
+                    loading="lazy"
                     style={{
                       width: '100%',
                       height: '100%',
@@ -1560,7 +1587,8 @@ function App() {
                 }}>
                   <img 
                     src="/features_image3.jpg" 
-                    alt="Features image 3" 
+                    alt="Features image 3"
+                    loading="lazy"
                     style={{
                       width: '100%',
                       height: '100%',
@@ -1591,7 +1619,8 @@ function App() {
                   {/* Divider image */}
                   <img 
                     src="/divider-img.svg" 
-                    alt="Divider" 
+                    alt="Divider"
+                    loading="lazy"
                     style={{
                       width: 'auto',
                       height: 'auto',
@@ -1654,7 +1683,8 @@ function App() {
                 <div className="cta-logo-wrap" style={{ width: '50vw', marginBottom: '2rem' }}>
                   <img 
                     src="/Horizontal logo__beige.svg" 
-                    alt="Romanovy Prostory Logo" 
+                    alt="Romanovy Prostory Logo"
+                    loading="lazy"
                     style={{
                       width: '100%',
                       height: 'auto',
@@ -2094,7 +2124,8 @@ function App() {
                 }}>
                   <img 
                     src="/partner-img.jpg" 
-                    alt="Partner image" 
+                    alt="Partner image"
+                    loading="lazy"
                     style={{
                       width: '100%',
                       height: '100%',
@@ -2126,7 +2157,8 @@ function App() {
                   {/* Divider image */}
                   <img 
                     src="/divider-img.svg" 
-                    alt="Divider" 
+                    alt="Divider"
+                    loading="lazy"
                     style={{
                       width: 'auto',
                       height: 'auto',

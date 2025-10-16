@@ -1,0 +1,11 @@
+# robots.txt for Romanovy Prostory
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://romanovyprostory.ru/sitemap.xml
+
+# Crawl-delay (optional, helps with server load)
+Crawl-delay: 1
+
