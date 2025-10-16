@@ -991,6 +991,10 @@ function App() {
           </div>
           <div 
             className="mobile-nav-link"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              smoothScrollTo('footer');
+            }}
             style={{
               color: '#F2ECE3',
               fontSize: '1.5rem',
@@ -999,7 +1003,6 @@ function App() {
               cursor: 'pointer',
               transition: 'all 0.3s ease'
             }}
-            onClick={() => setIsMobileMenuOpen(false)}
           >
             Связаться
           </div>
@@ -1111,9 +1114,7 @@ function App() {
               muted
               loop
               playsInline
-              webkit-playsinline="true"
-              x5-playsinline="true"
-              preload="auto"
+              preload="metadata"
               style={{
                 width: '100%',
                 height: '100%',
@@ -1734,9 +1735,7 @@ function App() {
                   muted
                   loop
                   playsInline
-                  webkit-playsinline="true"
-                  x5-playsinline="true"
-                  preload="auto"
+                  preload="metadata"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -2307,9 +2306,7 @@ function App() {
               muted
               loop
               playsInline
-              webkit-playsinline="true"
-              x5-playsinline="true"
-              preload="auto"
+              preload="metadata"
               style={{
                 width: '100%',
                 height: '100%',

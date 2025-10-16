@@ -420,6 +420,44 @@ p.text-size-medium {
   color: #F2ECE3 !important;
 }
 
+/* Typography - Prevent orphaned prepositions */
+.heading-style-h1,
+.heading-style-h2,
+.heading-style-h3,
+.heading-style-h4,
+.text-size-medium,
+.text-size-large,
+.text-size-regular,
+.small-text,
+p {
+  text-wrap: pretty;
+}
+
+/* Video Styles */
+video {
+  object-fit: cover;
+}
+
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
+video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
+video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+
 /* Footer Styles */
 .footer {
   overflow: hidden;
