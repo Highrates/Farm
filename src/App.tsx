@@ -184,12 +184,14 @@ function App() {
           trigger: ctaRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.2,
+          scrub: 0.8,
           onUpdate: (self) => {
             // Используем easing для более плавной анимации
             const easedProgress = gsap.parseEase("power2.inOut")(self.progress);
             gsap.set(ctaVideoBackground, {
-              scale: 0.5 + (0.5 * easedProgress)
+              scale: 0.5 + (0.5 * easedProgress),
+              force3D: true,
+              transformOrigin: "center center"
             });
           }
         });
@@ -238,82 +240,6 @@ function App() {
       }
     }
 
-    // Анимация фотографий в track
-    if (trackRef.current) {
-      const photoFirst = trackRef.current.querySelector('.photo-wrap_first');
-      const photoSecond = trackRef.current.querySelector('.photo-wrap_second');
-      const photoThird = trackRef.current.querySelector('.photo-wrap_third');
-
-      // Начальные позиции для всех фотографий - возвращаем в sticky_element
-      if (photoFirst) {
-        gsap.set(photoFirst, {
-          y: '100vh',
-          rotate: '40deg',
-          opacity: 0
-        });
-
-        // Анимация первой фотографии
-        ScrollTrigger.create({
-          trigger: trackRef.current,
-          start: "top bottom",
-          end: "25% bottom",
-          scrub: 0.8,
-          onUpdate: (self) => {
-            gsap.set(photoFirst, {
-              y: (100 * (1 - self.progress)) + 'vh',
-              rotate: (40 - 39 * self.progress) + 'deg',
-              opacity: self.progress
-            });
-          }
-        });
-      }
-
-      if (photoSecond) {
-        gsap.set(photoSecond, {
-          y: '120vh',
-          rotate: '-40deg',
-          opacity: 0
-        });
-
-        // Анимация второй фотографии - начинается после первой
-        ScrollTrigger.create({
-          trigger: trackRef.current,
-          start: "25% bottom",
-          end: "50% bottom",
-          scrub: 0.8,
-          onUpdate: (self) => {
-            gsap.set(photoSecond, {
-              y: (120 * (1 - self.progress)) + 'vh',
-              rotate: (-40 + 46 * self.progress) + 'deg',
-              opacity: self.progress
-            });
-          }
-        });
-      }
-
-      if (photoThird) {
-        gsap.set(photoThird, {
-          y: '140vh',
-          rotate: '40deg',
-          opacity: 0
-        });
-
-        // Анимация третьей фотографии - начинается после второй
-        ScrollTrigger.create({
-          trigger: trackRef.current,
-          start: "50% bottom",
-          end: "75% bottom",
-          scrub: 0.8,
-          onUpdate: (self) => {
-            gsap.set(photoThird, {
-              y: (140 * (1 - self.progress)) + 'vh',
-              rotate: (40 - 43 * self.progress) + 'deg',
-              opacity: self.progress
-            });
-          }
-        });
-      }
-    }
 
     // Анимация заголовков в Features секции
     if (featuresRef.current) {
@@ -662,7 +588,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '400',
+                          fontWeight: '300',
                           color: '#F2ECE3',
                           paddingLeft: '0.5rem',
                           paddingRight: '0.5rem',
@@ -677,7 +603,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '400',
+                          fontWeight: '300',
                           color: '#F2ECE3',
                           paddingLeft: '0.5rem',
                           paddingRight: '0.5rem',
@@ -708,7 +634,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '400',
+                          fontWeight: '300',
                           color: '#F2ECE3'
                         }}
                       >
@@ -719,7 +645,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '400',
+                          fontWeight: '300',
                           color: '#F2ECE3'
                         }}
                       >
@@ -746,7 +672,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '400',
+                          fontWeight: '300',
                           color: '#F2ECE3'
                         }}
                       >
@@ -757,7 +683,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '400',
+                          fontWeight: '300',
                           color: '#F2ECE3'
                         }}
                       >
@@ -784,7 +710,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '400',
+                          fontWeight: '300',
                           color: '#F2ECE3'
                         }}
                       >
@@ -795,7 +721,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '400',
+                          fontWeight: '300',
                           color: '#F2ECE3'
                         }}
                       >
@@ -811,7 +737,7 @@ function App() {
                     style={{
                       gridColumnGap: '0.7rem',
                       gridRowGap: '0.7rem',
-                      backgroundColor: '#000000',
+                      backgroundColor: '#2D2D2D',
                       color: '#F2ECE3',
                       borderRadius: '0.4rem',
                       justifyContent: 'flex-start',
@@ -1180,7 +1106,7 @@ function App() {
               ref={trackRef}
               className="track"
               style={{
-                height: '300vh',
+                height: '100vh',
                 position: 'relative'
               }}
             >
@@ -1273,8 +1199,7 @@ function App() {
                           height: '100%',
                           position: 'absolute',
                           inset: '0%',
-                          overflow: 'hidden',
-                          transform: 'rotate(1deg)'
+                          overflow: 'hidden'
                         }}
                       >
                         <img
@@ -1290,55 +1215,6 @@ function App() {
                         />
                       </div>
                       
-                      <div 
-                        className="photo-wrap_second"
-                        style={{
-                          borderRadius: '1rem',
-                          width: '100%',
-                          height: '100%',
-                          position: 'absolute',
-                          inset: '0%',
-                          overflow: 'hidden',
-                          transform: 'rotate(6deg)'
-                        }}
-                      >
-                        <img
-                          src="/pic2.jpg"
-                          alt="Ферма фото 2"
-                          loading="lazy"
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            borderRadius: '1rem'
-                          }}
-                        />
-                      </div>
-                      
-                      <div 
-                        className="photo-wrap_third"
-                        style={{
-                          borderRadius: '1rem',
-                          width: '100%',
-                          height: '100%',
-                          position: 'absolute',
-                          inset: '0%',
-                          overflow: 'hidden',
-                          transform: 'rotate(-3deg)'
-                        }}
-                      >
-                        <img
-                          src="/pic3.jpg"
-                          alt="Ферма фото 3"
-                          loading="lazy"
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            borderRadius: '1rem'
-                          }}
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1699,7 +1575,7 @@ function App() {
                   style={{
                     gridColumnGap: '0.7rem',
                     gridRowGap: '0.7rem',
-                    backgroundColor: '#000000',
+                    backgroundColor: '#2D2D2D',
                     color: '#F2ECE3',
                     borderRadius: '0.4rem',
                     justifyContent: 'flex-start',
@@ -2191,7 +2067,7 @@ function App() {
                     style={{
                       gridColumnGap: '0.7rem',
                       gridRowGap: '0.7rem',
-                      backgroundColor: '#000000',
+                      backgroundColor: '#2D2D2D',
                       color: '#F2ECE3',
                       borderRadius: '0.4rem',
                       justifyContent: 'flex-start',

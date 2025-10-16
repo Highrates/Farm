@@ -182,11 +182,21 @@ html {
 
 .hero-subtitle-text .word {
   display: inline !important;
+  font-weight: 300 !important;
 }
 
 .subtitle-line {
   display: block !important;
   margin-bottom: 0.25rem !important;
+  font-weight: 300 !important;
+  line-height: 1.2 !important;
+}
+
+/* Mobile subtitle styles */
+@media (max-width: 768px) {
+  .subtitle-line {
+    line-height: 1.4 !important;
+  }
 }
 
 /* CTA content styles */
@@ -274,8 +284,8 @@ html {
     font-size: 0.75rem !important;
   }
   
-  .heading-style-h2 {
-    font-size: 1.125rem !important;
+  h2.heading-style-h2 {
+    font-size: 1.25rem !important;
     word-spacing: normal !important;
     white-space: normal !important;
   }
@@ -490,6 +500,14 @@ video {
   appearance: none;
 }
 
+/* CTA Video Performance Optimization */
+.cta-video_background video {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
 /* Hide all video controls */
 video::-webkit-media-controls {
   display: none !important;
@@ -602,7 +620,7 @@ video::-webkit-media-controls-return-to-realtime-button {
   font-size: 2rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #000000;
+  color: #2D2D2D;
 }
 
 .credits {
@@ -616,7 +634,7 @@ video::-webkit-media-controls-return-to-realtime-button {
   font-size: 1rem;
   font-family: Geologica, sans-serif;
   font-weight: 200;
-  color: #000000;
+  color: #2D2D2D;
 }
 
 .footer_right-wrap {
@@ -631,12 +649,12 @@ video::-webkit-media-controls-return-to-realtime-button {
   font-size: 1.5rem;
   font-family: Geologica, sans-serif;
   font-weight: 100;
-  color: #000000;
+  color: #2D2D2D;
 }
 
 .text-size-small {
   font-weight: 200;
-  color: #000000;
+  color: #2D2D2D;
 }
 
 /* Mobile Footer Styles */
