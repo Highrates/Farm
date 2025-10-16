@@ -1134,6 +1134,7 @@ function App() {
               muted
               loop
               playsInline
+              controls={false}
               preload="metadata"
               style={{
                 width: '100%',
@@ -1765,6 +1766,7 @@ function App() {
                   muted
                   loop
                   playsInline
+                  controls={false}
                   preload="metadata"
                   style={{
                     width: '100%',
@@ -2338,6 +2340,7 @@ function App() {
               muted
               loop
               playsInline
+              controls={false}
               preload="metadata"
               style={{
                 width: '100%',
