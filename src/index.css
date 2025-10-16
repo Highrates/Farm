@@ -605,6 +605,25 @@ video {
   -webkit-backface-visibility: hidden;
 }
 
+/* Additional mobile optimizations for CTA video */
+@media (max-width: 768px) {
+  .cta-video_background,
+  .cta-video_background video {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Reduce animation complexity on mobile */
+  .sticky-cta {
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+}
+
 /* Hide all video controls */
 video::-webkit-media-controls {
   display: none !important;

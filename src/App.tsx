@@ -184,14 +184,15 @@ function App() {
           trigger: ctaRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 0.8,
+          scrub: window.innerWidth <= 768 ? 1.5 : 0.8, // Более плавная анимация на мобильных
           onUpdate: (self) => {
             // Используем easing для более плавной анимации
             const easedProgress = gsap.parseEase("power2.inOut")(self.progress);
             gsap.set(ctaVideoBackground, {
               scale: 0.5 + (0.5 * easedProgress),
               force3D: true,
-              transformOrigin: "center center"
+              transformOrigin: "center center",
+              willChange: "transform" // Оптимизация для мобильных
             });
           }
         });
