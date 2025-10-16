@@ -855,6 +855,16 @@ video::-webkit-media-controls-return-to-realtime-button {
   .hero-background {
     padding: 0.875rem !important;
   }
+  
+  /* CTA logo wrap width on mobile */
+  .cta-logo-wrap {
+    width: 80vw !important;
+  }
+  
+  /* Increase CTA logo size by 25% on mobile */
+  .cta-logo-wrap img {
+    transform: scale(1.25) !important;
+  }
 }
 
 /* Force font-weight for nav button text */
