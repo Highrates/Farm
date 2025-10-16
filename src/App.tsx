@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 function App() {
   const heroSectionRef = useRef<HTMLElement>(null);
@@ -15,6 +16,20 @@ function App() {
   const locationRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
+  // Smooth scroll function
+  const smoothScrollTo = (targetId: string) => {
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      const offsetTop = targetElement.offsetTop - 80; // Account for navbar height
+      
+      gsap.to(window, {
+        duration: 1.5,
+        scrollTo: { y: offsetTop, autoKill: false },
+        ease: "power2.inOut"
+      });
+    }
+  };
 
   useEffect(() => {
     if (heroSectionRef.current) {
@@ -610,9 +625,9 @@ function App() {
                       }}
                     ></div>
 
-                    <a 
-                      href="#section_about"
+                    <div 
                       className="nav_link"
+                      onClick={() => smoothScrollTo('section_about')}
                       style={{
                         flexFlow: 'column',
                         justifyContent: 'flex-start',
@@ -621,7 +636,7 @@ function App() {
                         display: 'flex',
                         position: 'relative',
                         overflow: 'hidden',
-                        textDecoration: 'none'
+                        cursor: 'pointer'
                       }}
                     >
                       <div 
@@ -654,11 +669,11 @@ function App() {
                       >
                         О нас
                       </div>
-                    </a>
+                    </div>
 
-                    <a 
-                      href="#section_features"
+                    <div 
                       className="nav_link"
+                      onClick={() => smoothScrollTo('section_features')}
                       style={{
                         flexFlow: 'column',
                         justifyContent: 'flex-start',
@@ -667,7 +682,7 @@ function App() {
                         display: 'flex',
                         position: 'relative',
                         overflow: 'hidden',
-                        textDecoration: 'none'
+                        cursor: 'pointer'
                       }}
                     >
                       <div 
@@ -692,11 +707,11 @@ function App() {
                       >
                         Наш продукт
                       </div>
-                    </a>
+                    </div>
 
-                    <a 
-                      href="#section_location"
+                    <div 
                       className="nav_link"
+                      onClick={() => smoothScrollTo('section_location')}
                       style={{
                         flexFlow: 'column',
                         justifyContent: 'flex-start',
@@ -705,7 +720,7 @@ function App() {
                         display: 'flex',
                         position: 'relative',
                         overflow: 'hidden',
-                        textDecoration: 'none'
+                        cursor: 'pointer'
                       }}
                     >
                       <div 
@@ -730,11 +745,11 @@ function App() {
                       >
                         Наше место
                       </div>
-                    </a>
+                    </div>
 
-                    <a 
-                      href="#section_partners"
+                    <div 
                       className="nav_link"
+                      onClick={() => smoothScrollTo('section_partners')}
                       style={{
                         flexFlow: 'column',
                         justifyContent: 'flex-start',
@@ -743,7 +758,7 @@ function App() {
                         display: 'flex',
                         position: 'relative',
                         overflow: 'hidden',
-                        textDecoration: 'none'
+                        cursor: 'pointer'
                       }}
                     >
                       <div 
@@ -768,12 +783,13 @@ function App() {
                       >
                         Партнерам
                       </div>
-                    </a>
+                    </div>
 
-                  </div>
+      </div>
 
                   <div 
                     className="button-nav"
+                    onClick={() => smoothScrollTo('footer')}
                     style={{
                       gridColumnGap: '0.7rem',
                       gridRowGap: '0.7rem',
@@ -786,7 +802,8 @@ function App() {
                       display: 'flex',
                       maxWidth: '100%',
                       position: 'relative',
-                      overflow: 'hidden'
+                      overflow: 'hidden',
+                      cursor: 'pointer'
                     }}
                   >
                     <div 
@@ -904,70 +921,74 @@ function App() {
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          <a 
-            href="#section_about"
+          <div 
             className="mobile-nav-link"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              smoothScrollTo('section_about');
+            }}
             style={{
               color: '#F2ECE3',
               fontSize: '1.5rem',
               fontFamily: 'Lora, serif',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              textDecoration: 'none'
+              transition: 'all 0.3s ease'
             }}
-            onClick={() => setIsMobileMenuOpen(false)}
           >
             О нас
-          </a>
-          <a 
-            href="#section_features"
+          </div>
+          <div 
             className="mobile-nav-link"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              smoothScrollTo('section_features');
+            }}
             style={{
               color: '#F2ECE3',
               fontSize: '1.5rem',
               fontFamily: 'Lora, serif',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              textDecoration: 'none'
+              transition: 'all 0.3s ease'
             }}
-            onClick={() => setIsMobileMenuOpen(false)}
           >
             Наш продукт
-          </a>
-          <a 
-            href="#section_location"
+          </div>
+          <div 
             className="mobile-nav-link"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              smoothScrollTo('section_location');
+            }}
             style={{
               color: '#F2ECE3',
               fontSize: '1.5rem',
               fontFamily: 'Lora, serif',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              textDecoration: 'none'
+              transition: 'all 0.3s ease'
             }}
-            onClick={() => setIsMobileMenuOpen(false)}
           >
             Наше место
-          </a>
-          <a 
-            href="#section_partners"
+          </div>
+          <div 
             className="mobile-nav-link"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              smoothScrollTo('section_partners');
+            }}
             style={{
               color: '#F2ECE3',
               fontSize: '1.5rem',
               fontFamily: 'Lora, serif',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              textDecoration: 'none'
+              transition: 'all 0.3s ease'
             }}
-            onClick={() => setIsMobileMenuOpen(false)}
           >
             Партнерам
-          </a>
+          </div>
           <div 
             className="mobile-nav-link"
             style={{
@@ -1119,7 +1140,7 @@ function App() {
       </section>
 
       {/* About Section */}
-      <section className="section_about">
+      <section id="section_about" className="section_about">
         <div className="padding-global" style={{ paddingLeft: '2.5rem', paddingRight: '2.5rem' }}>
           <div 
             className="container-large"
@@ -1207,7 +1228,7 @@ function App() {
                       >
                         Мы — семья, которая решила сохранить родовую землю и вдохнуть жизнь в традиции предков. В самом сердце Воронежской области, там, где жили наши бабушки и дедушки, мы создали ферму — и вместе с ней будущее для наших детей.&nbsp;
                         <br /><br />
-                        Мы&nbsp;верим: ферма — это не просто хозяйство, а особый образ жизни и ответственность.
+                        Мы&nbsp;верим: ферма — это не просто хозяйство, а особый образ жизни и ответственность. Это место, где традиции встречаются с современными технологиями, а качество становится главным смыслом.
                       </h2>
                     </div>
                     
@@ -1301,6 +1322,7 @@ function App() {
 
       {/* Features Section */}
       <section 
+        id="section_features"
         ref={featuresRef}
         className="section_features" 
         style={{
@@ -1638,6 +1660,7 @@ function App() {
                 </div>
                 <div 
                   className="button-nav"
+                  onClick={() => smoothScrollTo('footer')}
                   style={{
                     gridColumnGap: '0.7rem',
                     gridRowGap: '0.7rem',
@@ -1650,7 +1673,8 @@ function App() {
                     display: 'flex',
                     maxWidth: '100%',
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    cursor: 'pointer'
                   }}
                 >
                   <div 
@@ -1735,7 +1759,7 @@ function App() {
       </section>
 
       {/* Location Section */}
-      <section ref={locationRef} className="section_location">
+      <section id="section_location" ref={locationRef} className="section_location">
         <div className="padding-global" style={{
           paddingLeft: '1.5rem',
           paddingRight: '1.5rem'
@@ -1973,14 +1997,14 @@ function App() {
                       Как рассказать о ферме, если не хочется кричать «Купи!» и тратить сотни тысяч на рекламу? Этот вопрос встает перед каждым, кто делает ставку на экологичный продукт.
         </p>
       </div>
-                </a>
-              </div>
+        </a>
+      </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section_partners">
+      <section id="section_partners" className="section_partners">
         <div className="padding-global" style={{
           paddingLeft: '1.5rem',
           paddingRight: '1.5rem'
@@ -2124,6 +2148,7 @@ function App() {
                   {/* Button */}
                   <div 
                     className="button-nav"
+                    onClick={() => smoothScrollTo('footer')}
                     style={{
                       gridColumnGap: '0.7rem',
                       gridRowGap: '0.7rem',
@@ -2158,7 +2183,7 @@ function App() {
                       }}
                     >
                       Связаться
-                    </div>
+      </div>
                     <div 
                       className="button-text is-absolute"
                       style={{
@@ -2288,6 +2313,58 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer id="footer" className="footer">
+        <div 
+          className="padding-global" 
+          style={{
+            paddingLeft: '2.5rem',
+            paddingRight: '2.5rem'
+          }}
+        >
+          <div className="footer-wrap">
+            <div className="container-large">
+              <div className="footer_component">
+                <div className="footer_left">
+                  <h3 className="heading-style-h3 is-small">
+                    Мы хотим сохранять и развивать деревню, уважать землю, передавать опыт предков и кормить людей продуктом, которому можно доверять.
+                  </h3>
+                  <div className="credits">
+                    <div className="text-size-regular">
+                      Romanovy Prostory ©
+                    </div>
+                    <div className="text-size-regular">
+                      2025
+                    </div>
+                  </div>
+                </div>
+                <div className="footer_right">
+                  <div className="footer_right-wrap">
+                    <div className="text-style-allcaps text-size-small">
+                      АДРЕС
+                    </div>
+                    <div className="text-size-large">
+                      Воронежская область,<br />
+                      Лискинский район,<br />
+                      село Аношкино, Россия
+                    </div>
+                  </div>
+                  <div className="footer_right-wrap">
+                    <div className="text-style-allcaps text-size-small">
+                      КОНТАКТЫ
+                    </div>
+                    <div className="text-size-large">
+                      +79611877007<br />
+                      +79011939905
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
       </div>
     </div>
   );

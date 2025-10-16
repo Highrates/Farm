@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geologica:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset for fixed navbar when scrolling to sections */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -85,6 +95,12 @@ html {
 /* Mobile menu styles */
 .mobile-menu {
   backdrop-filter: blur(10px);
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100vh !important;
+  z-index: 10000 !important;
 }
 
 .mobile-nav-link:hover {
@@ -402,4 +418,130 @@ p.text-size-medium {
 /* Force override for location card headings - highest specificity */
 .location_card h2.heading-style-h2.text-style-allcaps.font-lora {
   color: #F2ECE3 !important;
+}
+
+/* Footer Styles */
+.footer {
+  overflow: hidden;
+}
+
+.footer-wrap {
+  gap: 27vh;
+  flex-flow: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-top: 4rem;
+  padding-bottom: 2rem;
+  display: flex;
+}
+
+.container-large {
+  width: 100%;
+  max-width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer_component {
+  gap: 4rem;
+  justify-content: space-between;
+  display: flex;
+}
+
+.footer_left {
+  gap: 2rem;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 74ch;
+  display: flex;
+}
+
+.footer_right {
+  gap: 2.5rem;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  display: flex;
+}
+
+.heading-style-h3.is-small {
+  font-family: Lora, serif;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #000000;
+}
+
+.credits {
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+}
+
+.text-size-regular {
+  font-size: 1rem;
+  font-family: Geologica, sans-serif;
+  font-weight: 200;
+  color: #000000;
+}
+
+.footer_right-wrap {
+  gap: 1rem;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  display: flex;
+}
+
+.text-size-large {
+  font-size: 1.5rem;
+  font-family: Geologica, sans-serif;
+  font-weight: 100;
+  color: #000000;
+}
+
+.text-size-small {
+  font-weight: 200;
+  color: #000000;
+}
+
+/* Mobile Footer Styles */
+@media screen and (max-width: 767px) {
+  .footer .padding-global {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .footer-wrap {
+    gap: 2rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  .footer_component {
+    flex-direction: column !important;
+    gap: 2rem !important;
+  }
+  
+  .footer_left {
+    order: 2;
+  }
+  
+  .footer_right {
+    order: 1;
+  }
+  
+  .heading-style-h3.is-small {
+    font-size: 1.6rem !important;
+  }
+  
+  .text-size-large {
+    font-size: 1.25rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  .text-size-small {
+    font-size: 0.875rem !important;
+  }
 }
