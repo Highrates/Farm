@@ -180,22 +180,43 @@ function App() {
           scale: 0.5
         });
 
+        // Переменная для плавной интерполяции
+        let targetScale = 0.5;
+        let currentScale = 0.5;
+        
         ScrollTrigger.create({
           trigger: ctaRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: window.innerWidth <= 768 ? 1.5 : 0.8, // Более плавная анимация на мобильных
+          scrub: window.innerWidth <= 768 ? 3.0 : 1.5, // Максимально плавная анимация
           onUpdate: (self) => {
-            // Используем easing для более плавной анимации
-            const easedProgress = gsap.parseEase("power2.inOut")(self.progress);
-            gsap.set(ctaVideoBackground, {
-              scale: 0.5 + (0.5 * easedProgress),
-              force3D: true,
-              transformOrigin: "center center",
-              willChange: "transform" // Оптимизация для мобильных
-            });
+            // Используем самый мягкий easing
+            const easedProgress = gsap.parseEase("power1.inOut")(self.progress);
+            targetScale = 0.5 + (0.5 * easedProgress);
           }
         });
+        
+        // Плавная интерполяция через requestAnimationFrame
+        const animateScale = () => {
+          const lerpFactor = window.innerWidth <= 768 ? 0.05 : 0.08; // Медленнее на мобильных
+          currentScale += (targetScale - currentScale) * lerpFactor;
+          
+          gsap.set(ctaVideoBackground, {
+            scale: currentScale,
+            force3D: true,
+            transformOrigin: "center center",
+            willChange: "transform",
+            // Дополнительные оптимизации для мобильных
+            ...(window.innerWidth <= 768 && {
+              transformPerspective: 1000,
+              transformStyle: "preserve-3d"
+            })
+          });
+          
+          requestAnimationFrame(animateScale);
+        };
+        
+        animateScale();
       }
 
       // SVG анимация
@@ -608,7 +629,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           color: '#F2ECE3',
                           paddingLeft: '0.5rem',
                           paddingRight: '0.5rem',
@@ -623,7 +644,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           color: '#F2ECE3',
                           paddingLeft: '0.5rem',
                           paddingRight: '0.5rem',
@@ -654,7 +675,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           color: '#F2ECE3'
                         }}
                       >
@@ -665,7 +686,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           color: '#F2ECE3'
                         }}
                       >
@@ -692,7 +713,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           color: '#F2ECE3'
                         }}
                       >
@@ -703,7 +724,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           color: '#F2ECE3'
                         }}
                       >
@@ -730,7 +751,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           color: '#F2ECE3'
                         }}
                       >
@@ -741,7 +762,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           color: '#F2ECE3'
                         }}
                       >
@@ -775,7 +796,7 @@ function App() {
                       style={{
                         fontFamily: 'Geologica, sans-serif',
                         fontSize: '1rem',
-                        fontWeight: '300',
+                        fontWeight: '200',
                         color: '#F2ECE3',
                         paddingLeft: '0.5rem',
                         paddingRight: '0.5rem',
@@ -793,7 +814,7 @@ function App() {
                       style={{
                         fontFamily: 'Geologica, sans-serif',
                         fontSize: '1rem',
-                        fontWeight: '300',
+                        fontWeight: '200',
                         color: '#F2ECE3',
                         paddingLeft: '0.5rem',
                         paddingRight: '0.5rem',
@@ -1172,7 +1193,7 @@ function App() {
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '300',
+                          fontWeight: '200',
                           textTransform: 'uppercase',
                           letterSpacing: '0.05em',
                           color: '#1f2937',
@@ -1282,7 +1303,7 @@ function App() {
                   style={{
                     fontFamily: 'Geologica, sans-serif',
                     fontSize: '1rem',
-                    fontWeight: '300',
+                    fontWeight: '200',
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',
                     color: '#1f2937',
@@ -1351,7 +1372,7 @@ function App() {
                   <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
                     fontFamily: 'Lora, serif',
                     fontSize: '3rem',
-                    fontWeight: '300',
+                    fontWeight: '200',
                     textTransform: 'uppercase',
                     color: '#1f2937',
                     margin: 0
@@ -1406,7 +1427,7 @@ function App() {
                   <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
                     fontFamily: 'Lora, serif',
                     fontSize: '3rem',
-                    fontWeight: '300',
+                    fontWeight: '200',
                     textTransform: 'uppercase',
                     color: '#1f2937',
                     margin: 0
@@ -1503,7 +1524,7 @@ function App() {
                   <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
                     fontFamily: 'Lora, serif',
                     fontSize: '3rem',
-                    fontWeight: '300',
+                    fontWeight: '200',
                     textTransform: 'uppercase',
                     color: '#1f2937',
                     margin: 0
@@ -1611,7 +1632,7 @@ function App() {
                     style={{
                       fontFamily: 'Geologica, sans-serif',
                       fontSize: '1rem',
-                      fontWeight: '300',
+                      fontWeight: '200',
                       color: '#F2ECE3',
                       paddingLeft: '0.5rem',
                       paddingRight: '0.5rem',
@@ -1629,7 +1650,7 @@ function App() {
                     style={{
                       fontFamily: 'Geologica, sans-serif',
                       fontSize: '1rem',
-                      fontWeight: '300',
+                      fontWeight: '200',
                       color: '#F2ECE3',
                       paddingLeft: '0.5rem',
                       paddingRight: '0.5rem',
@@ -1725,7 +1746,7 @@ function App() {
                 <h3 className="text-style-allcaps" style={{
                   fontFamily: 'Geologica, sans-serif',
                   fontSize: '1rem',
-                  fontWeight: '300',
+                  fontWeight: '200',
                   textTransform: 'uppercase',
                   letterSpacing: '0.05em',
                   color: '#1f2937',
@@ -1822,7 +1843,7 @@ function App() {
                     {/* 2) Heading style h2 */}
                     <h2 className="heading-style-h2 text-style-allcaps font-lora" style={{
                       fontSize: '2.5rem',
-                      fontWeight: '300',
+                      fontWeight: '200',
                       lineHeight: 1.3,
                       textTransform: 'uppercase',
                       margin: 0,
@@ -1905,7 +1926,7 @@ function App() {
                     {/* 2) Heading style h2 */}
                     <h2 className="heading-style-h2 text-style-allcaps font-lora" style={{
                       fontSize: '2.5rem',
-                      fontWeight: '300',
+                      fontWeight: '200',
                       lineHeight: 1.3,
                       textTransform: 'uppercase',
                       margin: 0,
@@ -2040,7 +2061,7 @@ function App() {
                   <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
                     fontFamily: 'Lora, serif',
                     fontSize: '3rem',
-                    fontWeight: '300',
+                    fontWeight: '200',
                     textTransform: 'uppercase',
                     color: '#1f2937',
                     margin: 0
@@ -2102,7 +2123,7 @@ function App() {
                       style={{
                         fontFamily: 'Geologica, sans-serif',
                         fontSize: '1rem',
-                        fontWeight: '300',
+                        fontWeight: '200',
                         color: '#F2ECE3',
                         paddingLeft: '0.5rem',
                         paddingRight: '0.5rem',
@@ -2120,7 +2141,7 @@ function App() {
                       style={{
                         fontFamily: 'Geologica, sans-serif',
                         fontSize: '1rem',
-                        fontWeight: '300',
+                        fontWeight: '200',
                         color: '#F2ECE3',
                         paddingLeft: '0.5rem',
                         paddingRight: '0.5rem',
@@ -2186,7 +2207,7 @@ function App() {
             {/* 2) Heading */}
             <h2 className="heading-style-h2 text-style-allcaps font-lora" style={{
               fontSize: '2.5rem',
-              fontWeight: '300',
+              fontWeight: '200',
               lineHeight: 1.3,
               textTransform: 'uppercase',
               color: '#F2ECE3',
