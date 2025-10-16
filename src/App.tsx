@@ -1111,6 +1111,9 @@ function App() {
               muted
               loop
               playsInline
+              webkit-playsinline="true"
+              x5-playsinline="true"
+              preload="auto"
               style={{
                 width: '100%',
                 height: '100%',
@@ -1731,6 +1734,9 @@ function App() {
                   muted
                   loop
                   playsInline
+                  webkit-playsinline="true"
+                  x5-playsinline="true"
+                  preload="auto"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -2301,6 +2307,9 @@ function App() {
               muted
               loop
               playsInline
+              webkit-playsinline="true"
+              x5-playsinline="true"
+              preload="auto"
               style={{
                 width: '100%',
                 height: '100%',
@@ -2308,7 +2317,7 @@ function App() {
                 borderRadius: '0.5rem'
               }}
             >
-              <source src="/CTA-video.mp4" type="video/mp4" />
+              <source src="/last-cta-video.mp4" type="video/mp4" />
             </video>
           </div>
         </div>
