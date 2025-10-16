@@ -833,6 +833,28 @@ video::-webkit-media-controls-return-to-realtime-button {
   .text-weight-normal.text-style-allcaps.heading-style-h4 {
     font-size: 1.5rem !important;
   }
+  
+  /* Simplify CTA animation on mobile - remove scaling and border radius */
+  .cta-video_background,
+  .background-video.absolute {
+    border-radius: 0 !important;
+    transform: scale(1) !important;
+  }
+  
+  /* Remove padding from CTA content on mobile */
+  .cta-content {
+    padding: 0 !important;
+  }
+  
+  /* Reduce CTA track height on mobile */
+  .track-cta {
+    height: 100vh !important;
+  }
+  
+  /* Hero background padding on mobile */
+  .hero-background {
+    padding: 0.875rem !important;
+  }
 }
 
 /* Force font-weight for nav button text */

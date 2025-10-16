@@ -173,91 +173,70 @@ function App() {
 
     // Анимация CTA секции
     if (ctaRef.current) {
-      // Video scale анимация
+      // Video scale анимация (отключена на мобильных)
       const ctaVideoBackground = ctaRef.current.querySelector('.cta-video_background');
       if (ctaVideoBackground) {
-        gsap.set(ctaVideoBackground, {
-          scale: 0.5
-        });
-
-        // Переменная для плавной интерполяции
-        let targetScale = 0.5;
-        let currentScale = 0.5;
-        
-        ScrollTrigger.create({
-          trigger: ctaRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: window.innerWidth <= 768 ? 3.0 : 1.5, // Максимально плавная анимация
-          onUpdate: (self) => {
-            // Используем самый мягкий easing
-            const easedProgress = gsap.parseEase("power1.inOut")(self.progress);
-            targetScale = 0.5 + (0.5 * easedProgress);
-          }
-        });
-        
-        // Плавная интерполяция через requestAnimationFrame
-        const animateScale = () => {
-          const lerpFactor = window.innerWidth <= 768 ? 0.05 : 0.08; // Медленнее на мобильных
-          currentScale += (targetScale - currentScale) * lerpFactor;
-          
+        // На мобильных устройствах видео сразу нормального размера
+        if (window.innerWidth <= 768) {
           gsap.set(ctaVideoBackground, {
-            scale: currentScale,
-            force3D: true,
-            transformOrigin: "center center",
-            willChange: "transform",
-            // Дополнительные оптимизации для мобильных
-            ...(window.innerWidth <= 768 && {
-              transformPerspective: 1000,
-              transformStyle: "preserve-3d"
-            })
+            scale: 1,
+            force3D: true
+          });
+        } else {
+          // Десктопная анимация
+          gsap.set(ctaVideoBackground, {
+            scale: 0.5
+          });
+
+          // Переменная для плавной интерполяции
+          let targetScale = 0.5;
+          let currentScale = 0.5;
+          
+          ScrollTrigger.create({
+            trigger: ctaRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.5,
+            onUpdate: (self) => {
+              // Используем самый мягкий easing
+              const easedProgress = gsap.parseEase("power1.inOut")(self.progress);
+              targetScale = 0.5 + (0.5 * easedProgress);
+            }
           });
           
-          requestAnimationFrame(animateScale);
-        };
-        
-        animateScale();
+          // Плавная интерполяция через requestAnimationFrame
+          const animateScale = () => {
+            const lerpFactor = 0.08;
+            currentScale += (targetScale - currentScale) * lerpFactor;
+            
+            gsap.set(ctaVideoBackground, {
+              scale: currentScale,
+              force3D: true,
+              transformOrigin: "center center",
+              willChange: "transform"
+            });
+            
+            requestAnimationFrame(animateScale);
+          };
+          
+          animateScale();
+        }
       }
 
-      // SVG анимация
+      // SVG анимация (отключена - контент сразу виден)
       const ctaContent = ctaRef.current.querySelector('.cta-content');
       if (ctaContent) {
         gsap.set(ctaContent, {
-          opacity: 0,
-          y: '1rem'
-        });
-
-        ScrollTrigger.create({
-          trigger: ctaRef.current,
-          start: "54% bottom",
-          end: "79% bottom",
-          scrub: 0.25,
-          onUpdate: (self) => {
-            gsap.set(ctaContent, {
-              opacity: self.progress,
-              y: (1 - self.progress) + 'rem'
-            });
-          }
+          opacity: 1,
+          y: '0rem'
         });
       }
 
-      // Button анимация
+      // Button анимация (отключена - кнопка сразу видна)
       const buttonWrap = ctaRef.current.querySelector('.button-nav');
       if (buttonWrap) {
         gsap.set(buttonWrap, {
-          opacity: 0
-        });
-
-        ScrollTrigger.create({
-          trigger: ctaRef.current,
-          start: "63% bottom",
-          end: "88% bottom",
-          scrub: 0.25,
-          onUpdate: (self) => {
-            gsap.set(buttonWrap, {
-              opacity: self.progress
-            });
-          }
+          opacity: 1
         });
       }
     }
@@ -1566,7 +1545,7 @@ function App() {
       <section className="section_cta">
         <div className="track-cta" ref={ctaRef} style={{
           width: '100%',
-          height: '300vh',
+          height: window.innerWidth <= 768 ? '100vh' : '300vh',
           position: 'relative'
         }}>
           <div className="sticky-cta" style={{
@@ -1672,7 +1651,7 @@ function App() {
                 zIndex: 1,
                 position: 'absolute',
                 inset: '0%',
-                borderRadius: '0.5rem',
+                borderRadius: '0',
                 width: '100%',
                 height: '100%'
               }}>
@@ -1687,7 +1666,7 @@ function App() {
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    borderRadius: '0.5rem'
+                    borderRadius: '0'
                   }}
                 >
                   <source src="/CTA-video.mp4" type="video/mp4" />
@@ -1701,7 +1680,7 @@ function App() {
                   height: '100%',
                   position: 'absolute',
                   inset: '0%',
-                  borderRadius: '0.5rem'
+                  borderRadius: '0'
                 }}>
                 </div>
               </div>
