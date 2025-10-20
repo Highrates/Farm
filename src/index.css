@@ -867,6 +867,11 @@ video::-webkit-media-controls-return-to-realtime-button {
   }
 }
 
+/* Reduce color saturation for Hero video */
+.hero-background video {
+  filter: saturate(0.8);
+}
+
 /* Force font-weight for nav button text */
 .nav_link .nav-button_text.is-absolute {
   font-weight: 200 !important;
