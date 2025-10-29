@@ -1814,9 +1814,7 @@ function App() {
             }}>
               <div className="cta-content" style={{
                 width: '100%',
-                height: isMobile 
-                  ? 'calc(var(--vh-initial, 1vh) * 100)' 
-                  : '100%',
+                height: isMobile ? '800px' : '100%',
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
@@ -1824,8 +1822,8 @@ function App() {
                 alignItems: 'center',
                 zIndex: 2,
                 ...(isMobile && {
-                  minHeight: 'calc(var(--vh-initial, 1vh) * 100)',
-                  maxHeight: 'calc(var(--vh-initial, 1vh) * 100)',
+                  minHeight: '800px',
+                  maxHeight: '800px',
                   transition: 'none'
                 })
               }}>

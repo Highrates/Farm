@@ -980,15 +980,22 @@ video::-webkit-media-controls-start-playback-button {
   /* Remove padding from CTA content on mobile */
   .cta-content {
     padding: 0 !important;
-    /* Фиксируем высоту на начальное значение viewport для предотвращения прыжков */
-    height: calc(var(--vh-initial, 1vh) * 100) !important;
-    min-height: calc(var(--vh-initial, 1vh) * 100) !important;
-    max-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    /* Фиксированная высота 800px на мобильных - не меняется при скролле */
+    height: 800px !important;
+    min-height: 800px !important;
+    max-height: 800px !important;
+    /* Центрирование контента */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
     /* Отключаем переходы высоты для стабильности */
     transition: none !important;
     /* Предотвращаем ресайз контента */
     contain: layout style size !important;
     -webkit-contain: layout style size !important;
+    /* Фиксируем высоту чтобы она не менялась */
+    box-sizing: border-box !important;
   }
   
   /* Reduce CTA track height on mobile */
