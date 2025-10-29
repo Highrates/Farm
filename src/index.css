@@ -473,6 +473,10 @@ p.text-size-medium {
   .location_card {
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
+    /* Фиксируем высоту карточек на мобильных для предотвращения прыжков */
+    min-height: 580px !important;
+    height: 580px !important;
+    max-height: 580px !important;
   }
   
   .location_card h2.heading-style-h2.text-style-allcaps.font-lora {
@@ -652,10 +656,10 @@ video {
   /* Reduce animation complexity on mobile */
   .sticky-cta {
     position: relative !important;
-    /* Фиксируем высоту на начальное значение для предотвращения прыжков */
-    height: calc(var(--vh-initial, 1vh) * 100) !important;
-    min-height: calc(var(--vh-initial, 1vh) * 100) !important;
-    max-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    /* Фиксируем высоту 800px для предотвращения прыжков */
+    height: 800px !important;
+    min-height: 800px !important;
+    max-height: 800px !important;
     /* Отключаем переходы высоты */
     transition: none !important;
     will-change: transform;
@@ -878,6 +882,16 @@ video::-webkit-media-controls-start-playback-button {
   margin-bottom: 0 !important;
 }
 
+/* Убираем padding-bottom у location-wrap для уменьшения разрыва перед partners */
+.location-wrap {
+  padding-bottom: 0 !important;
+}
+
+/* Убираем padding-bottom у track для уменьшения разрыва перед features */
+.track {
+  padding-bottom: 0 !important;
+}
+
 /* Mobile Footer Styles */
 @media screen and (max-width: 767px) {
   /* Padding-global for all sections on mobile */
@@ -908,7 +922,7 @@ video::-webkit-media-controls-start-playback-button {
   /* Location-wrap on mobile */
   .location-wrap {
     padding-top: 6rem !important;
-    padding-bottom: 6rem !important;
+    padding-bottom: 0 !important;
     margin-bottom: 0 !important;
   }
   
@@ -922,7 +936,7 @@ video::-webkit-media-controls-start-playback-button {
   /* Track on mobile */
   .track {
     padding-top: 6rem !important;
-    padding-bottom: 6rem !important;
+    padding-bottom: 0 !important;
     margin-bottom: 0 !important;
   }
   
@@ -998,9 +1012,9 @@ video::-webkit-media-controls-start-playback-button {
     box-sizing: border-box !important;
   }
   
-  /* Reduce CTA track height on mobile */
+  /* Reduce CTA track height on mobile - фиксируем 800px */
   .track-cta {
-    height: calc(var(--vh, 1vh) * 100) !important;
+    height: 800px !important;
   }
   
   /* Hero background padding on mobile */

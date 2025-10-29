@@ -1396,7 +1396,7 @@ function App() {
                 width: '100%',
                 marginBottom: '5rem',
                 paddingTop: '12rem',
-                paddingBottom: '6rem',
+                paddingBottom: '0',
                 display: 'flex',
                 position: 'relative'
               }}
@@ -1790,13 +1790,11 @@ function App() {
       <section className="section_cta">
         <div className="track-cta" ref={ctaRef} style={{
           width: '100%',
-          height: 'calc(var(--vh, 1vh) * 100)',
+          height: isMobile ? '800px' : 'calc(var(--vh, 1vh) * 100)',
           position: 'relative'
         }}>
           <div className="sticky-cta" style={{
-            height: isMobile 
-              ? 'calc(var(--vh-initial, 1vh) * 100)' 
-              : 'calc(var(--vh, 1vh) * 100)',
+            height: isMobile ? '800px' : 'calc(var(--vh, 1vh) * 100)',
             display: 'flex',
             position: 'sticky',
             top: '0'
@@ -1964,7 +1962,7 @@ function App() {
               width: '100%',
               marginBottom: '5rem',
               paddingTop: '12rem',
-              paddingBottom: '6rem',
+              paddingBottom: '0',
               display: 'flex'
             }}>
               {/* 1) Page headings */}
@@ -2029,7 +2027,7 @@ function App() {
                     flexFlow: 'column',
                     justifyContent: 'flex-end',
                     alignItems: 'flex-start',
-                    minHeight: 'calc(var(--vh-initial, 1vh) * 70)',
+                    minHeight: isMobile ? '580px' : 'calc(var(--vh-initial, 1vh) * 70)',
                     padding: '2rem 8rem 2rem 2rem',
                     display: 'flex',
                     overflow: 'hidden',
@@ -2112,7 +2110,7 @@ function App() {
                     flexFlow: 'column',
                     justifyContent: 'flex-end',
                     alignItems: 'flex-start',
-                    minHeight: 'calc(var(--vh-initial, 1vh) * 70)',
+                    minHeight: isMobile ? '580px' : 'calc(var(--vh-initial, 1vh) * 70)',
                     padding: '2rem 8rem 2rem 2rem',
                     display: 'flex',
                     overflow: 'hidden',
