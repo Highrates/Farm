@@ -17,6 +17,9 @@ function App() {
   const locationRef = useRef<HTMLElement>(null);
   const partnerRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const ctaVideoRef = useRef<HTMLVideoElement>(null);
+  const lastCtaVideoRef = useRef<HTMLVideoElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   // Smooth scroll function
@@ -450,6 +453,53 @@ function App() {
     return () => {
       window.removeEventListener('resize', setVh);
       window.removeEventListener('orientationchange', setVh);
+    };
+  }, []);
+
+  // Программный запуск видео для мобильных устройств (iOS Safari требует этого)
+  useEffect(() => {
+    const cleanupFunctions: Array<() => void> = [];
+    
+    const playVideo = (videoRef: React.RefObject<HTMLVideoElement | null>) => {
+      if (videoRef.current) {
+        const video = videoRef.current;
+        
+        // Попытка запуска
+        const tryPlay = () => {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // Автовоспроизведение было заблокировано (нормально для некоторых устройств)
+              // Не логируем, так как это нормальное поведение на некоторых устройствах
+            });
+          }
+        };
+
+        // Пробуем запустить сразу
+        tryPlay();
+
+        // Также пробуем после загрузки данных видео
+        video.addEventListener('loadeddata', tryPlay, { once: true });
+        video.addEventListener('canplay', tryPlay, { once: true });
+        
+        // Сохраняем функцию очистки
+        cleanupFunctions.push(() => {
+          video.removeEventListener('loadeddata', tryPlay);
+          video.removeEventListener('canplay', tryPlay);
+        });
+      }
+    };
+
+    // Небольшая задержка для гарантии монтирования элементов
+    const timer = setTimeout(() => {
+      playVideo(heroVideoRef);
+      playVideo(ctaVideoRef);
+      playVideo(lastCtaVideoRef);
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      cleanupFunctions.forEach(cleanup => cleanup());
     };
   }, []);
 
@@ -1105,7 +1155,6 @@ function App() {
         ref={heroSectionRef}
         className="section hero" 
         style={{ 
-          minHeight: '100svh', 
           position: 'relative',
           transform: 'translate3d(0px, 0px, 0px)',
           scale: 1
@@ -1201,12 +1250,13 @@ function App() {
             }}
           >
             <video
+              ref={heroVideoRef}
               autoPlay
               muted
               loop
               playsInline
               controls={false}
-              preload="metadata"
+              preload="auto"
               style={{
                 width: '100%',
                 height: '100%',
@@ -1762,12 +1812,13 @@ function App() {
                 height: '100%'
               }}>
                 <video
+                  ref={ctaVideoRef}
                   autoPlay
                   muted
                   loop
                   playsInline
                   controls={false}
-                  preload="metadata"
+                  preload="auto"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -2329,12 +2380,13 @@ function App() {
             inset: '0%'
           }}>
             <video
+              ref={lastCtaVideoRef}
               autoPlay
               muted
               loop
               playsInline
               controls={false}
-              preload="metadata"
+              preload="auto"
               style={{
                 width: '100%',
                 height: '100%',
