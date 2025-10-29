@@ -445,14 +445,28 @@ function App() {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     };
+
+    // Фиксированное значение для hero-секции (только один раз при загрузке)
+    const setVhInitial = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh-initial', `${vh}px`);
+    };
     
+    // Устанавливаем оба значения при загрузке
     setVh();
+    setVhInitial();
+    
+    // Для остальных секций обновляем при resize и orientationchange
     window.addEventListener('resize', setVh);
     window.addEventListener('orientationchange', setVh);
+    
+    // Для hero-секции обновляем только при изменении ориентации (не при скролле)
+    window.addEventListener('orientationchange', setVhInitial);
     
     return () => {
       window.removeEventListener('resize', setVh);
       window.removeEventListener('orientationchange', setVh);
+      window.removeEventListener('orientationchange', setVhInitial);
     };
   }, []);
 
@@ -464,14 +478,46 @@ function App() {
       if (videoRef.current) {
         const video = videoRef.current;
         
+        // Убеждаемся, что controls полностью отключены программно
+        video.removeAttribute('controls');
+        video.controls = false;
+        video.setAttribute('controls', 'false');
+        
+        // Также убираем через DOM API для гарантии
+        if (video.hasAttribute('controls')) {
+          video.removeAttribute('controls');
+        }
+        
+        // Устанавливаем стили для скрытия controls
+        video.style.pointerEvents = 'none';
+        
         // Попытка запуска
         const tryPlay = () => {
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              // Автовоспроизведение было заблокировано (нормально для некоторых устройств)
-              // Не логируем, так как это нормальное поведение на некоторых устройствах
-            });
+          // Проверяем, что видео не воспроизводится
+          if (video.paused) {
+            // Еще раз убеждаемся, что controls отключены
+            video.controls = false;
+            video.removeAttribute('controls');
+            
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  // Видео успешно запущено
+                  video.muted = true; // Убеждаемся, что muted установлен
+                  video.controls = false; // Еще раз отключаем controls после запуска
+                  video.removeAttribute('controls');
+                })
+                .catch(() => {
+                  // Автовоспроизведение было заблокировано
+                  // Пробуем еще раз через небольшую задержку
+                  setTimeout(() => {
+                    video.controls = false;
+                    video.removeAttribute('controls');
+                    video.play().catch(() => {});
+                  }, 300);
+                });
+            }
           }
         };
 
@@ -479,13 +525,31 @@ function App() {
         tryPlay();
 
         // Также пробуем после загрузки данных видео
-        video.addEventListener('loadeddata', tryPlay, { once: true });
-        video.addEventListener('canplay', tryPlay, { once: true });
+        const loadHandler = () => {
+          video.controls = false;
+          video.removeAttribute('controls');
+          tryPlay();
+        };
+        video.addEventListener('loadeddata', loadHandler, { once: true });
+        video.addEventListener('canplay', loadHandler, { once: true });
+        video.addEventListener('canplaythrough', loadHandler, { once: true });
         
-        // Сохраняем функцию очистки
+        // При первом взаимодействии пользователя пробуем запустить
+        const userInteractionHandler = () => {
+          video.controls = false;
+          video.removeAttribute('controls');
+          tryPlay();
+        };
+        document.addEventListener('touchstart', userInteractionHandler, { once: true });
+        document.addEventListener('click', userInteractionHandler, { once: true });
+        
+        // Сохраняем функции очистки
         cleanupFunctions.push(() => {
-          video.removeEventListener('loadeddata', tryPlay);
-          video.removeEventListener('canplay', tryPlay);
+          video.removeEventListener('loadeddata', loadHandler);
+          video.removeEventListener('canplay', loadHandler);
+          video.removeEventListener('canplaythrough', loadHandler);
+          document.removeEventListener('touchstart', userInteractionHandler);
+          document.removeEventListener('click', userInteractionHandler);
         });
       }
     };
@@ -495,7 +559,7 @@ function App() {
       playVideo(heroVideoRef);
       playVideo(ctaVideoRef);
       playVideo(lastCtaVideoRef);
-    }, 100);
+    }, 200);
 
     return () => {
       clearTimeout(timer);
@@ -1255,13 +1319,15 @@ function App() {
               muted
               loop
               playsInline
-              controls={false}
               preload="auto"
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                borderRadius: '0.5rem'
+                borderRadius: '0.5rem',
+                pointerEvents: 'none',
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none'
               }}
             >
               <source src="/Hero-video.mp4" type="video/mp4" />
@@ -1817,13 +1883,15 @@ function App() {
                   muted
                   loop
                   playsInline
-                  controls={false}
                   preload="auto"
                   style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    borderRadius: '0'
+                    borderRadius: '0',
+                    pointerEvents: 'none',
+                    WebkitTouchCallout: 'none',
+                    WebkitUserSelect: 'none'
                   }}
                 >
                   <source src="/CTA-video.mp4" type="video/mp4" />
@@ -1931,7 +1999,7 @@ function App() {
                     flexFlow: 'column',
                     justifyContent: 'flex-end',
                     alignItems: 'flex-start',
-                    minHeight: '70vh',
+                    minHeight: 'calc(var(--vh-initial, 1vh) * 70)',
                     padding: '2rem 8rem 2rem 2rem',
                     display: 'flex',
                     overflow: 'hidden',
@@ -2014,7 +2082,7 @@ function App() {
                     flexFlow: 'column',
                     justifyContent: 'flex-end',
                     alignItems: 'flex-start',
-                    minHeight: '70vh',
+                    minHeight: 'calc(var(--vh-initial, 1vh) * 70)',
                     padding: '2rem 8rem 2rem 2rem',
                     display: 'flex',
                     overflow: 'hidden',
@@ -2385,13 +2453,15 @@ function App() {
               muted
               loop
               playsInline
-              controls={false}
               preload="auto"
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                borderRadius: '0.5rem'
+                borderRadius: '0.5rem',
+                pointerEvents: 'none',
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none'
               }}
             >
               <source src="/last-cta-video.mp4" type="video/mp4" />

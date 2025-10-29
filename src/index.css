@@ -139,11 +139,14 @@ html {
   will-change: transform;
   /* Fallback для старых браузеров */
   min-height: 100vh;
+  /* Фиксированная высота на начальном значении (не меняется при скролле) */
+  min-height: calc(var(--vh-initial, 1vh) * 100);
 }
 
 /* Dynamic Viewport Height для мобильных устройств (Chrome, Safari) */
 @supports (min-height: 100dvh) {
   .section.hero {
+    /* Используем dvh если поддерживается, иначе --vh-initial */
     min-height: 100dvh;
   }
 }
@@ -716,6 +719,49 @@ video::-webkit-media-controls-loading-panel {
 
 video::-webkit-media-controls-return-to-realtime-button {
   display: none !important;
+}
+
+/* Дополнительные правила для полного скрытия controls на мобильных */
+/* Специфичные правила для background-video */
+.background-video video,
+.background-video-last video,
+.background-video.absolute video {
+  pointer-events: none !important;
+}
+
+.background-video video::-webkit-media-controls,
+.background-video-last video::-webkit-media-controls,
+.background-video.absolute video::-webkit-media-controls,
+.background-video video::-webkit-media-controls-enclosure,
+.background-video-last video::-webkit-media-controls-enclosure,
+.background-video.absolute video::-webkit-media-controls-enclosure,
+.background-video video::-webkit-media-controls-panel,
+.background-video-last video::-webkit-media-controls-panel,
+.background-video.absolute video::-webkit-media-controls-panel,
+.background-video video::-webkit-media-controls-start-playback-button,
+.background-video-last video::-webkit-media-controls-start-playback-button,
+.background-video.absolute video::-webkit-media-controls-start-playback-button,
+.background-video video::-webkit-media-controls-overlay-play-button,
+.background-video-last video::-webkit-media-controls-overlay-play-button,
+.background-video.absolute video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Для всех video элементов управления также скрыты */
+video::-webkit-media-controls,
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Footer Styles */
