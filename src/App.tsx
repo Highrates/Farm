@@ -20,6 +20,7 @@ function App() {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const ctaVideoRef = useRef<HTMLVideoElement>(null);
   const lastCtaVideoRef = useRef<HTMLVideoElement>(null);
+  const lastCtaHeadingRef = useRef<HTMLHeadingElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   // Фиксируем размер экрана один раз при загрузке (не меняется динамически)
   const isMobile = useMemo(() => {
@@ -611,6 +612,31 @@ function App() {
       document.body.removeChild(testElement);
     }
   }, []);
+
+  // Устанавливаем размер заголовка "Наши ценности" для десктопа напрямую в DOM
+  useEffect(() => {
+    if (lastCtaHeadingRef.current) {
+      if (!isMobile) {
+        // На десктопе устанавливаем 3rem через CSS переменную или прямое присвоение
+        lastCtaHeadingRef.current.style.fontSize = '3rem';
+        // Дополнительно через setProperty с important
+        try {
+          lastCtaHeadingRef.current.style.setProperty('font-size', '3rem', 'important');
+        } catch (e) {
+          // Если не поддерживается, используем прямое присвоение
+          lastCtaHeadingRef.current.style.fontSize = '3rem';
+        }
+      } else {
+        // На мобильных устанавливаем 1.3rem
+        lastCtaHeadingRef.current.style.fontSize = '1.3rem';
+        try {
+          lastCtaHeadingRef.current.style.setProperty('font-size', '1.3rem', 'important');
+        } catch (e) {
+          lastCtaHeadingRef.current.style.fontSize = '1.3rem';
+        }
+      }
+    }
+  }, [isMobile]);
 
   // Анимация мобильного меню
   useEffect(() => {
@@ -1293,13 +1319,14 @@ function App() {
                 
                 <div 
                   ref={subtitleRef}
-                  className="hero-subtitle-text"
+                  className="hero-subtitle-text small-text"
                   style={{
                     maxWidth: '64ch',
-                    fontFamily: 'Geologica, sans-serif',
                     fontSize: '1rem',
-                    color: '#F2ECE3',
-                    marginTop: '1rem',
+                    fontWeight: '200',
+                    lineHeight: 1.5,
+                    color: 'rgb(242, 236, 227)',
+                    margin: '0px',
                     textAlign: 'center',
                     marginLeft: 'auto',
                     marginRight: 'auto'
@@ -2397,7 +2424,9 @@ function App() {
           backgroundColor: 'var(--background-color--background-secondary)',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: 'calc(var(--vh, 1vh) * 100)',
+          minHeight: isMobile ? '800px' : 'calc(var(--vh, 1vh) * 100)',
+          height: isMobile ? '800px' : 'auto',
+          maxHeight: isMobile ? '800px' : 'none',
           display: 'flex',
           position: 'relative'
         }}>
@@ -2432,15 +2461,18 @@ function App() {
             </div>
 
             {/* 2) Heading */}
-            <h2 className="heading-style-h2 text-style-allcaps font-lora" style={{
-              fontSize: '2.5rem',
-              fontWeight: '200',
-              lineHeight: 1.3,
-              textTransform: 'uppercase',
-              color: '#F2ECE3',
-              margin: 0,
-              marginBottom: '2rem'
-            }}>
+            <h2 
+              ref={lastCtaHeadingRef}
+              className="heading-style-h2 text-style-allcaps font-lora last-cta-heading" 
+              style={{
+                fontWeight: '200',
+                lineHeight: 1.3,
+                textTransform: 'uppercase',
+                color: '#F2ECE3',
+                margin: 0,
+                marginBottom: '2rem'
+              }}
+            >
               Наши ценности
             </h2>
 

@@ -17,6 +17,11 @@ h2[class*="heading-style-h2"],
   font-size: 1.5rem !important;
 }
 
+/* Exception: Last CTA heading - размер как у text-weight-normal text-style-allcaps heading-style-h4 */
+.section_last-cta h2.heading-style-h2.text-style-allcaps.font-lora {
+  font-size: 1.3rem !important;
+}
+
 /* CRITICAL: Force Lora with font-weight 200 for all Lora headings */
 h1.heading-style-h1,
 .heading-style-h1,
@@ -26,6 +31,13 @@ h1[class*="heading-style-h1"],
 h4[class*="heading-style-h4"] {
   font-family: 'Lora, serif' !important;
   font-weight: 200 !important;
+}
+
+/* Margin для heading-style-h1 */
+.heading-style-h1,
+h1.heading-style-h1,
+h1[class*="heading-style-h1"] {
+  margin-bottom: 24px !important;
 }
 
 /* Force Lora for mobile menu */
@@ -511,13 +523,28 @@ p.text-size-medium {
   }
   
   /* Last CTA на мобильных */
+  .section_last-cta .cta_background {
+    min-height: 800px !important;
+    height: 800px !important;
+    max-height: 800px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  
   .section_last-cta .cta_content {
     padding-left: 1rem !important;
     padding-right: 1rem !important;
+    display: flex !important;
+    flex-flow: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
   }
   
   .section_last-cta .heading-style-h2.text-style-allcaps.font-lora {
     color: rgb(242, 236, 227) !important;
+    font-size: 1.5rem !important;
   }
 }
 
@@ -1069,4 +1096,11 @@ video::-webkit-media-controls-start-playback-button {
 /* Force font-weight for button text */
 .button-text {
   font-weight: 200 !important;
+}
+
+/* Максимальная специфичность для Last CTA heading на десктопе - перекрывает все другие правила */
+html body section.section_last-cta h2.heading-style-h2.text-style-allcaps.font-lora,
+body section.section_last-cta h2.heading-style-h2.text-style-allcaps.font-lora,
+section.section_last-cta h2.heading-style-h2.text-style-allcaps.font-lora {
+  font-size: 1.3rem !important;
 }
