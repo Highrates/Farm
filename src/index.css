@@ -149,6 +149,13 @@ html {
     /* Используем dvh если поддерживается, иначе --vh-initial */
     min-height: 100dvh;
   }
+  
+  /* На мобильных фиксируем высоту на начальном значении */
+  @media (max-width: 768px) {
+    .section.hero {
+      min-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    }
+  }
 }
 
 /* Mobile menu styles */
@@ -645,11 +652,20 @@ video {
   /* Reduce animation complexity on mobile */
   .sticky-cta {
     position: relative !important;
+    /* Фиксируем высоту на начальное значение для предотвращения прыжков */
+    height: calc(var(--vh-initial, 1vh) * 100) !important;
+    min-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    max-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    /* Отключаем переходы высоты */
+    transition: none !important;
     will-change: transform;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
+    /* Предотвращаем ресайз */
+    contain: layout style size !important;
+    -webkit-contain: layout style size !important;
   }
   
   /* Дополнительная оптимизация для всего CTA контейнера */
@@ -964,6 +980,15 @@ video::-webkit-media-controls-start-playback-button {
   /* Remove padding from CTA content on mobile */
   .cta-content {
     padding: 0 !important;
+    /* Фиксируем высоту на начальное значение viewport для предотвращения прыжков */
+    height: calc(var(--vh-initial, 1vh) * 100) !important;
+    min-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    max-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    /* Отключаем переходы высоты для стабильности */
+    transition: none !important;
+    /* Предотвращаем ресайз контента */
+    contain: layout style size !important;
+    -webkit-contain: layout style size !important;
   }
   
   /* Reduce CTA track height on mobile */
@@ -974,6 +999,24 @@ video::-webkit-media-controls-start-playback-button {
   /* Hero background padding on mobile */
   .hero-background {
     padding: 0.875rem !important;
+    /* Фиксируем высоту hero-background на мобильных, чтобы избежать изменения размера при скролле */
+    height: calc(var(--vh-initial, 1vh) * 100) !important;
+    min-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    max-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    /* Отключаем переходы высоты */
+    transition: none !important;
+    /* Предотвращаем ресайз */
+    contain: layout style size !important;
+    -webkit-contain: layout style size !important;
+  }
+  
+  /* Также фиксируем hero-component на мобильных */
+  .hero-component {
+    min-height: calc(var(--vh-initial, 1vh) * 100) !important;
+    height: calc(var(--vh-initial, 1vh) * 100) !important;
+    transition: none !important;
+    contain: layout style size !important;
+    -webkit-contain: layout style size !important;
   }
   
   /* CTA logo wrap width on mobile */

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -21,6 +21,13 @@ function App() {
   const ctaVideoRef = useRef<HTMLVideoElement>(null);
   const lastCtaVideoRef = useRef<HTMLVideoElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  // Фиксируем размер экрана один раз при загрузке (не меняется динамически)
+  const isMobile = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  }, []); // Пустой массив зависимостей - вычисляется только один раз
 
   // Smooth scroll function
   const smoothScrollTo = (targetId: string) => {
@@ -353,24 +360,31 @@ function App() {
           // Устанавливаем начальное состояние для всех слов
           const words = pageHeadings.querySelectorAll('.word');
           if (words.length > 0) {
-            gsap.set(words, {
-              opacity: 0
-            });
-            
-            // Анимация появления
-            ScrollTrigger.create({
-              trigger: pageHeadings,
-              start: "top bottom",
-              end: "bottom top",
-              onEnter: () => {
-                gsap.to(words, {
-                  opacity: 1,
-                  duration: 0.25,
-                  stagger: 0.02,
-                  ease: "none"
-                });
-              }
-            });
+            // На мобильных отключаем анимацию - показываем текст сразу
+            if (isMobile) {
+              gsap.set(words, {
+                opacity: 1
+              });
+            } else {
+              gsap.set(words, {
+                opacity: 0
+              });
+              
+              // Анимация появления только на десктопе
+              ScrollTrigger.create({
+                trigger: pageHeadings,
+                start: "top bottom",
+                end: "bottom top",
+                onEnter: () => {
+                  gsap.to(words, {
+                    opacity: 1,
+                    duration: 0.25,
+                    stagger: 0.02,
+                    ease: "none"
+                  });
+                }
+              });
+            }
           }
         }
       });
@@ -411,24 +425,31 @@ function App() {
           // Устанавливаем начальное состояние для всех слов
           const words = pageHeadings.querySelectorAll('.word');
           if (words.length > 0) {
-            gsap.set(words, {
-              opacity: 0
-            });
-            
-            // Анимация появления
-            ScrollTrigger.create({
-              trigger: pageHeadings,
-              start: "top bottom",
-              end: "bottom top",
-              onEnter: () => {
-                gsap.to(words, {
-                  opacity: 1,
-                  duration: 0.25,
-                  stagger: 0.02,
-                  ease: "none"
-                });
-              }
-            });
+            // На мобильных отключаем анимацию - показываем текст сразу
+            if (isMobile) {
+              gsap.set(words, {
+                opacity: 1
+              });
+            } else {
+              gsap.set(words, {
+                opacity: 0
+              });
+              
+              // Анимация появления только на десктопе
+              ScrollTrigger.create({
+                trigger: pageHeadings,
+                start: "top bottom",
+                end: "bottom top",
+                onEnter: () => {
+                  gsap.to(words, {
+                    opacity: 1,
+                    duration: 0.25,
+                    stagger: 0.02,
+                    ease: "none"
+                  });
+                }
+              });
+            }
           }
         }
       });
@@ -437,7 +458,7 @@ function App() {
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, []);
+  }, [isMobile]); // Добавляем isMobile в зависимости, чтобы код учитывал мобильную версию
 
   // Установка CSS переменной --vh для правильного расчета высоты viewport на мобильных
   useEffect(() => {
@@ -1241,7 +1262,9 @@ function App() {
                 textAlign: 'center',
                 justifyContent: 'center',
                 alignItems: 'center',
-                minHeight: '100svh',
+                minHeight: isMobile 
+                  ? 'calc(var(--vh-initial, 1vh) * 100)' 
+                  : '100svh',
                 display: 'flex',
                 position: 'relative'
               }}
@@ -1771,7 +1794,9 @@ function App() {
           position: 'relative'
         }}>
           <div className="sticky-cta" style={{
-            height: 'calc(var(--vh, 1vh) * 100)',
+            height: isMobile 
+              ? 'calc(var(--vh-initial, 1vh) * 100)' 
+              : 'calc(var(--vh, 1vh) * 100)',
             display: 'flex',
             position: 'sticky',
             top: '0'
@@ -1789,13 +1814,20 @@ function App() {
             }}>
               <div className="cta-content" style={{
                 width: '100%',
-                height: '100%',
+                height: isMobile 
+                  ? 'calc(var(--vh-initial, 1vh) * 100)' 
+                  : '100%',
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                zIndex: 2
+                zIndex: 2,
+                ...(isMobile && {
+                  minHeight: 'calc(var(--vh-initial, 1vh) * 100)',
+                  maxHeight: 'calc(var(--vh-initial, 1vh) * 100)',
+                  transition: 'none'
+                })
               }}>
                 <div className="cta-logo-wrap" style={{ width: '50vw', marginBottom: '2rem' }}>
                   <img 
