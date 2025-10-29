@@ -136,45 +136,58 @@ function App() {
 
     // Анимация заголовков в About секции
     if (trackRef.current) {
-      const pageHeadings = trackRef.current.querySelector('.page-headings.text-align-center');
-      if (pageHeadings) {
-        // Разделяем текст на слова для анимации
-        const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-        const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-        
-        if (textStyleAllcaps && textStyleAllcaps.textContent) {
-          const text = textStyleAllcaps.textContent;
-          textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-        }
-        
-        if (headingStyleH2 && headingStyleH2.textContent) {
-          const text = headingStyleH2.textContent.trim();
-          headingStyleH2.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-        }
-        
-        // Устанавливаем начальное состояние для всех слов
-        const words = pageHeadings.querySelectorAll('.word');
-        if (words.length > 0) {
-          gsap.set(words, {
-            opacity: 0
-          });
+      requestAnimationFrame(() => {
+        const pageHeadings = trackRef.current?.querySelector('.page-headings.text-align-center');
+        if (pageHeadings) {
+          // Разделяем текст на слова для анимации
+          const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
+          const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
           
-          // Анимация появления
-          ScrollTrigger.create({
-            trigger: pageHeadings,
-            start: "top bottom",
-            end: "bottom top",
-            onEnter: () => {
-              gsap.to(words, {
-                opacity: 1,
-                duration: 0.25,
-                stagger: 0.02,
-                ease: "none"
-              });
+          if (textStyleAllcaps && textStyleAllcaps.textContent && textStyleAllcaps.textContent.trim()) {
+            try {
+              const text = textStyleAllcaps.textContent.trim();
+              textStyleAllcaps.innerHTML = text.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
+            } catch (e) {
+              console.warn('Ошибка при обработке textStyleAllcaps в about:', e);
             }
-          });
+          }
+          
+          if (headingStyleH2 && headingStyleH2.textContent && headingStyleH2.textContent.trim()) {
+            try {
+              const text = headingStyleH2.textContent.trim();
+              const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
+              if (cleanText) {
+                headingStyleH2.innerHTML = cleanText.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
+              }
+            } catch (e) {
+              console.warn('Ошибка при обработке headingStyleH2 в about:', e);
+            }
+          }
+          
+          // Устанавливаем начальное состояние для всех слов
+          const words = pageHeadings.querySelectorAll('.word');
+          if (words.length > 0) {
+            gsap.set(words, {
+              opacity: 0
+            });
+            
+            // Анимация появления
+            ScrollTrigger.create({
+              trigger: pageHeadings,
+              start: "top bottom",
+              end: "bottom top",
+              onEnter: () => {
+                gsap.to(words, {
+                  opacity: 1,
+                  duration: 0.25,
+                  stagger: 0.02,
+                  ease: "none"
+                });
+              }
+            });
+          }
         }
-      }
+      });
     }
 
     // Анимация CTA секции
@@ -250,137 +263,193 @@ function App() {
 
     // Анимация заголовков в Features секции
     if (featuresRef.current) {
-      const pageHeadings = featuresRef.current.querySelector('.page-headings.text-align-center');
-      if (pageHeadings) {
-        // Разделяем текст на слова для анимации
-        const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-        const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-        
-        if (textStyleAllcaps && textStyleAllcaps.textContent) {
-          const text = textStyleAllcaps.textContent;
-          textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-        }
-        
-        if (headingStyleH2 && headingStyleH2.textContent) {
-          const text = headingStyleH2.textContent.trim();
-          headingStyleH2.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-        }
-        
-        // Устанавливаем начальное состояние для всех слов
-        const words = pageHeadings.querySelectorAll('.word');
-        if (words.length > 0) {
-          gsap.set(words, {
-            opacity: 0
-          });
+      requestAnimationFrame(() => {
+        const pageHeadings = featuresRef.current?.querySelector('.page-headings.text-align-center');
+        if (pageHeadings) {
+          // Разделяем текст на слова для анимации
+          const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
+          const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
           
-          // Анимация появления
-          ScrollTrigger.create({
-            trigger: pageHeadings,
-            start: "top bottom",
-            end: "bottom top",
-            onEnter: () => {
-              gsap.to(words, {
-                opacity: 1,
-                duration: 0.25,
-                stagger: 0.02,
-                ease: "none"
-              });
+          if (textStyleAllcaps && textStyleAllcaps.textContent && textStyleAllcaps.textContent.trim()) {
+            try {
+              const text = textStyleAllcaps.textContent.trim();
+              textStyleAllcaps.innerHTML = text.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
+            } catch (e) {
+              console.warn('Ошибка при обработке textStyleAllcaps в features:', e);
             }
-          });
+          }
+          
+          if (headingStyleH2 && headingStyleH2.textContent && headingStyleH2.textContent.trim()) {
+            try {
+              const text = headingStyleH2.textContent.trim();
+              const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
+              if (cleanText) {
+                headingStyleH2.innerHTML = cleanText.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
+              }
+            } catch (e) {
+              console.warn('Ошибка при обработке headingStyleH2 в features:', e);
+            }
+          }
+          
+          // Устанавливаем начальное состояние для всех слов
+          const words = pageHeadings.querySelectorAll('.word');
+          if (words.length > 0) {
+            gsap.set(words, {
+              opacity: 0
+            });
+            
+            // Анимация появления
+            ScrollTrigger.create({
+              trigger: pageHeadings,
+              start: "top bottom",
+              end: "bottom top",
+              onEnter: () => {
+                gsap.to(words, {
+                  opacity: 1,
+                  duration: 0.25,
+                  stagger: 0.02,
+                  ease: "none"
+                });
+              }
+            });
+          }
         }
-      }
+      });
     }
 
     // Анимация заголовков в Location секции
     if (locationRef.current) {
-      const pageHeadings = locationRef.current.querySelector('.page-headings.text-align-center');
-      if (pageHeadings) {
-        // Разделяем текст на слова для анимации
-        const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-        const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-        
-        if (textStyleAllcaps && textStyleAllcaps.textContent) {
-          const text = textStyleAllcaps.textContent;
-          textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-        }
-        
-        if (headingStyleH2 && headingStyleH2.textContent) {
-          const text = headingStyleH2.textContent.trim();
-          headingStyleH2.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-        }
-        
-        // Устанавливаем начальное состояние для всех слов
-        const words = pageHeadings.querySelectorAll('.word');
-        if (words.length > 0) {
-          gsap.set(words, {
-            opacity: 0
-          });
+      requestAnimationFrame(() => {
+        const pageHeadings = locationRef.current?.querySelector('.page-headings.text-align-center');
+        if (pageHeadings) {
+          // Разделяем текст на слова для анимации
+          const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
+          const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
           
-          // Анимация появления
-          ScrollTrigger.create({
-            trigger: pageHeadings,
-            start: "top bottom",
-            end: "bottom top",
-            onEnter: () => {
-              gsap.to(words, {
-                opacity: 1,
-                duration: 0.25,
-                stagger: 0.02,
-                ease: "none"
-              });
+          if (textStyleAllcaps && textStyleAllcaps.textContent && textStyleAllcaps.textContent.trim()) {
+            try {
+              const text = textStyleAllcaps.textContent.trim();
+              textStyleAllcaps.innerHTML = text.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
+            } catch (e) {
+              console.warn('Ошибка при обработке textStyleAllcaps в location:', e);
             }
-          });
+          }
+          
+          if (headingStyleH2 && headingStyleH2.textContent && headingStyleH2.textContent.trim()) {
+            try {
+              const text = headingStyleH2.textContent.trim();
+              const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
+              if (cleanText) {
+                headingStyleH2.innerHTML = cleanText.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
+              }
+            } catch (e) {
+              console.warn('Ошибка при обработке headingStyleH2 в location:', e);
+            }
+          }
+          
+          // Устанавливаем начальное состояние для всех слов
+          const words = pageHeadings.querySelectorAll('.word');
+          if (words.length > 0) {
+            gsap.set(words, {
+              opacity: 0
+            });
+            
+            // Анимация появления
+            ScrollTrigger.create({
+              trigger: pageHeadings,
+              start: "top bottom",
+              end: "bottom top",
+              onEnter: () => {
+                gsap.to(words, {
+                  opacity: 1,
+                  duration: 0.25,
+                  stagger: 0.02,
+                  ease: "none"
+                });
+              }
+            });
+          }
         }
-      }
+      });
     }
 
     // Анимация заголовков в Partners секции
     if (partnerRef.current) {
-      const pageHeadings = partnerRef.current.querySelector('.page-headings.text-align-center');
-      if (pageHeadings) {
-        // Разделяем текст на слова для анимации
-        const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-        const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-        
-        if (textStyleAllcaps && textStyleAllcaps.textContent) {
-          const text = textStyleAllcaps.textContent;
-          textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-        }
-        
-        if (headingStyleH2 && headingStyleH2.textContent) {
-          const text = headingStyleH2.textContent.trim();
-          // Убираем <br /> теги перед разделением на слова
-          const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ');
-          headingStyleH2.innerHTML = cleanText.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-        }
-        
-        // Устанавливаем начальное состояние для всех слов
-        const words = pageHeadings.querySelectorAll('.word');
-        if (words.length > 0) {
-          gsap.set(words, {
-            opacity: 0
-          });
+      // Небольшая задержка для гарантии готовности DOM
+      requestAnimationFrame(() => {
+        const pageHeadings = partnerRef.current?.querySelector('.page-headings.text-align-center');
+        if (pageHeadings) {
+          // Разделяем текст на слова для анимации
+          const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
+          const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
           
-          // Анимация появления
-          ScrollTrigger.create({
-            trigger: pageHeadings,
-            start: "top bottom",
-            end: "bottom top",
-            onEnter: () => {
-              gsap.to(words, {
-                opacity: 1,
-                duration: 0.25,
-                stagger: 0.02,
-                ease: "none"
-              });
+          if (textStyleAllcaps && textStyleAllcaps.textContent && textStyleAllcaps.textContent.trim()) {
+            try {
+              const text = textStyleAllcaps.textContent.trim();
+              textStyleAllcaps.innerHTML = text.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
+            } catch (e) {
+              console.warn('Ошибка при обработке textStyleAllcaps в partners:', e);
             }
-          });
+          }
+          
+          if (headingStyleH2 && headingStyleH2.textContent && headingStyleH2.textContent.trim()) {
+            try {
+              const text = headingStyleH2.textContent.trim();
+              // Убираем любые HTML теги и лишние пробелы
+              const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
+              if (cleanText) {
+                headingStyleH2.innerHTML = cleanText.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
+              }
+            } catch (e) {
+              console.warn('Ошибка при обработке headingStyleH2 в partners:', e);
+            }
+          }
+          
+          // Устанавливаем начальное состояние для всех слов
+          const words = pageHeadings.querySelectorAll('.word');
+          if (words.length > 0) {
+            gsap.set(words, {
+              opacity: 0
+            });
+            
+            // Анимация появления
+            ScrollTrigger.create({
+              trigger: pageHeadings,
+              start: "top bottom",
+              end: "bottom top",
+              onEnter: () => {
+                gsap.to(words, {
+                  opacity: 1,
+                  duration: 0.25,
+                  stagger: 0.02,
+                  ease: "none"
+                });
+              }
+            });
+          }
         }
-      }
+      });
     }
 
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+
+  // Установка CSS переменной --vh для правильного расчета высоты viewport на мобильных
+  useEffect(() => {
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    setVh();
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+    
+    return () => {
+      window.removeEventListener('resize', setVh);
+      window.removeEventListener('orientationchange', setVh);
     };
   }, []);
 
@@ -440,7 +509,7 @@ function App() {
   }, [isMobileMenuOpen]);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#F2ECE3' }}>
+    <div style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', backgroundColor: '#F2ECE3' }}>
       {/* Skip to main content link for accessibility */}
       <a href="#main-content" className="skip-to-content">
         Перейти к основному содержанию
@@ -882,7 +951,7 @@ function App() {
           top: 0,
           left: 0,
           width: '100%',
-          height: '100vh',
+          height: 'calc(var(--vh, 1vh) * 100)',
           backgroundColor: 'rgba(0, 0, 0, 0.9)',
           zIndex: 10000,
           display: 'none',
@@ -1582,11 +1651,11 @@ function App() {
       <section className="section_cta">
         <div className="track-cta" ref={ctaRef} style={{
           width: '100%',
-          height: window.innerWidth <= 768 ? '100vh' : '300vh',
+          height: 'calc(var(--vh, 1vh) * 100)',
           position: 'relative'
         }}>
           <div className="sticky-cta" style={{
-            height: '100vh',
+            height: 'calc(var(--vh, 1vh) * 100)',
             display: 'flex',
             position: 'sticky',
             top: '0'
@@ -2024,11 +2093,7 @@ function App() {
                     margin: 0,
                     textAlign: 'center'
                   }}>
-                    Наши ценности — честность, качество, доверие.<br />
-                    Мы открыты к партнёрству с теми, кто разделяет наш подход:<br />
-                    ценит прозрачность происхождения продукта и его качество;<br />
-                    поддерживает локальных производителей и семейные фермы.<br />
-                    С нами ваши гости и покупатели будут точно знать, откуда пришёл продукт и в каких условиях он создан. Мы проверяем и одобряем каждую партию товара.<br />
+                    Наши ценности — честность, качество, доверие. Мы открыты к партнёрству с теми, кто разделяет наш подход: ценит прозрачность происхождения продукта и его качество; поддерживает локальных производителей и семейные фермы. С нами ваши гости и покупатели будут точно знать, откуда пришёл продукт и в каких условиях он создан. Мы проверяем и одобряем каждую партию товара.
                     
                   </h2>
                 </div>
@@ -2185,7 +2250,7 @@ function App() {
           backgroundColor: 'var(--background-color--background-secondary)',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: '100vh',
+          minHeight: 'calc(var(--vh, 1vh) * 100)',
           display: 'flex',
           position: 'relative'
         }}>
@@ -2297,7 +2362,8 @@ function App() {
               <div className="footer_component">
                 <div className="footer_left">
                   <h3 className="heading-style-h3 is-small">
-                    Развиваем этичное фермерство, основанное на прозрачности и экологичности. Качество, рожденное природой, а не технологиями.
+                    Развиваем этичное фермерство, основанное на прозрачности и экологичности.<br />
+                    Качество, рожденное природой, а не технологиями.
                   </h3>
                   <div className="credits">
                     <div className="text-size-regular">

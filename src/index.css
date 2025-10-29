@@ -146,7 +146,7 @@ html {
   top: 0 !important;
   left: 0 !important;
   width: 100% !important;
-  height: 100vh !important;
+  height: calc(var(--vh, 1vh) * 100) !important;
   z-index: 10000 !important;
 }
 
@@ -264,8 +264,8 @@ html {
   top: 0 !important;
   right: 0 !important;
   width: 30% !important;
-  min-height: 100vh !important;
-  height: 100vh !important;
+  min-height: calc(var(--vh, 1vh) * 100) !important;
+  height: calc(var(--vh, 1vh) * 100) !important;
   background-color: rgba(38, 45, 38, 0.9) !important;
   z-index: 3 !important;
   display: flex !important;
@@ -287,7 +287,7 @@ html {
 }
 
 .sticky-cta {
-  height: 100vh !important;
+  height: calc(var(--vh, 1vh) * 100) !important;
 }
 
 .cta-video_background {
@@ -632,6 +632,7 @@ video {
   
   /* Reduce animation complexity on mobile */
   .sticky-cta {
+    position: relative !important;
     will-change: transform;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -912,7 +913,7 @@ video::-webkit-media-controls-return-to-realtime-button {
   
   /* Reduce CTA track height on mobile */
   .track-cta {
-    height: 100vh !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
   }
   
   /* Hero background padding on mobile */
