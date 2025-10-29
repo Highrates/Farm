@@ -15,6 +15,7 @@ function App() {
   const trackRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLElement>(null);
   const locationRef = useRef<HTMLElement>(null);
+  const partnerRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
@@ -89,8 +90,8 @@ function App() {
     if (subtitleRef.current) {
       // Разбиваем на строки
       const lines = [
-        'Семейная ферма, где уважают землю и заботятся о животных',
-        'Чистая вода, натуральные корма и бережный уход, простые правила, из которых рождается вкус'
+        'Семейная ферма, где заботятся о здоровье животных и земле.',
+        'Мясные продукты из экологически чистой деревни для оптовых поставок и HoReCa'
       ];
       
       // Создаем обертку для текста с анимацией
@@ -134,41 +135,46 @@ function App() {
     }
 
     // Анимация заголовков в About секции
-    const pageHeadings = document.querySelector('.page-headings.text-align-center');
-    if (pageHeadings) {
-      // Разделяем текст на слова для анимации
-      const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-      const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-      
-      if (textStyleAllcaps) {
-        const text = textStyleAllcaps.textContent || '';
-        textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-      }
-      
-      if (headingStyleH2) {
-        const text = headingStyleH2.textContent || '';
-        headingStyleH2.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-      }
-      
-      // Устанавливаем начальное состояние
-      gsap.set(pageHeadings.querySelectorAll('.word'), {
-        opacity: 0
-      });
-      
-      // Анимация появления
-      ScrollTrigger.create({
-        trigger: pageHeadings,
-        start: "top bottom",
-        end: "bottom top",
-        onEnter: () => {
-          gsap.to(pageHeadings.querySelectorAll('.word'), {
-            opacity: 1,
-            duration: 0.25,
-            stagger: 0.02,
-            ease: "none"
+    if (trackRef.current) {
+      const pageHeadings = trackRef.current.querySelector('.page-headings.text-align-center');
+      if (pageHeadings) {
+        // Разделяем текст на слова для анимации
+        const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
+        const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
+        
+        if (textStyleAllcaps && textStyleAllcaps.textContent) {
+          const text = textStyleAllcaps.textContent;
+          textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+        }
+        
+        if (headingStyleH2 && headingStyleH2.textContent) {
+          const text = headingStyleH2.textContent.trim();
+          headingStyleH2.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+        }
+        
+        // Устанавливаем начальное состояние для всех слов
+        const words = pageHeadings.querySelectorAll('.word');
+        if (words.length > 0) {
+          gsap.set(words, {
+            opacity: 0
+          });
+          
+          // Анимация появления
+          ScrollTrigger.create({
+            trigger: pageHeadings,
+            start: "top bottom",
+            end: "bottom top",
+            onEnter: () => {
+              gsap.to(words, {
+                opacity: 1,
+                duration: 0.25,
+                stagger: 0.02,
+                ease: "none"
+              });
+            }
           });
         }
-      });
+      }
     }
 
     // Анимация CTA секции
@@ -250,35 +256,38 @@ function App() {
         const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
         const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
         
-        if (textStyleAllcaps) {
-          const text = textStyleAllcaps.textContent || '';
+        if (textStyleAllcaps && textStyleAllcaps.textContent) {
+          const text = textStyleAllcaps.textContent;
           textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
         }
         
-        if (headingStyleH2) {
-          const text = headingStyleH2.textContent || '';
+        if (headingStyleH2 && headingStyleH2.textContent) {
+          const text = headingStyleH2.textContent.trim();
           headingStyleH2.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
         }
         
-        // Устанавливаем начальное состояние
-        gsap.set(pageHeadings.querySelectorAll('.word'), {
-          opacity: 0
-        });
-        
-        // Анимация появления
-        ScrollTrigger.create({
-          trigger: pageHeadings,
-          start: "top bottom",
-          end: "bottom top",
-          onEnter: () => {
-            gsap.to(pageHeadings.querySelectorAll('.word'), {
-              opacity: 1,
-              duration: 0.25,
-              stagger: 0.02,
-              ease: "none"
-            });
-          }
-        });
+        // Устанавливаем начальное состояние для всех слов
+        const words = pageHeadings.querySelectorAll('.word');
+        if (words.length > 0) {
+          gsap.set(words, {
+            opacity: 0
+          });
+          
+          // Анимация появления
+          ScrollTrigger.create({
+            trigger: pageHeadings,
+            start: "top bottom",
+            end: "bottom top",
+            onEnter: () => {
+              gsap.to(words, {
+                opacity: 1,
+                duration: 0.25,
+                stagger: 0.02,
+                ease: "none"
+              });
+            }
+          });
+        }
       }
     }
 
@@ -290,35 +299,83 @@ function App() {
         const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
         const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
         
-        if (textStyleAllcaps) {
-          const text = textStyleAllcaps.textContent || '';
+        if (textStyleAllcaps && textStyleAllcaps.textContent) {
+          const text = textStyleAllcaps.textContent;
           textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
         }
         
-        if (headingStyleH2) {
-          const text = headingStyleH2.textContent || '';
+        if (headingStyleH2 && headingStyleH2.textContent) {
+          const text = headingStyleH2.textContent.trim();
           headingStyleH2.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
         }
         
-        // Устанавливаем начальное состояние
-        gsap.set(pageHeadings.querySelectorAll('.word'), {
-          opacity: 0
-        });
+        // Устанавливаем начальное состояние для всех слов
+        const words = pageHeadings.querySelectorAll('.word');
+        if (words.length > 0) {
+          gsap.set(words, {
+            opacity: 0
+          });
+          
+          // Анимация появления
+          ScrollTrigger.create({
+            trigger: pageHeadings,
+            start: "top bottom",
+            end: "bottom top",
+            onEnter: () => {
+              gsap.to(words, {
+                opacity: 1,
+                duration: 0.25,
+                stagger: 0.02,
+                ease: "none"
+              });
+            }
+          });
+        }
+      }
+    }
+
+    // Анимация заголовков в Partners секции
+    if (partnerRef.current) {
+      const pageHeadings = partnerRef.current.querySelector('.page-headings.text-align-center');
+      if (pageHeadings) {
+        // Разделяем текст на слова для анимации
+        const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
+        const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
         
-        // Анимация появления
-        ScrollTrigger.create({
-          trigger: pageHeadings,
-          start: "top bottom",
-          end: "bottom top",
-          onEnter: () => {
-            gsap.to(pageHeadings.querySelectorAll('.word'), {
-              opacity: 1,
-              duration: 0.25,
-              stagger: 0.02,
-              ease: "none"
-            });
-          }
-        });
+        if (textStyleAllcaps && textStyleAllcaps.textContent) {
+          const text = textStyleAllcaps.textContent;
+          textStyleAllcaps.innerHTML = text.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+        }
+        
+        if (headingStyleH2 && headingStyleH2.textContent) {
+          const text = headingStyleH2.textContent.trim();
+          // Убираем <br /> теги перед разделением на слова
+          const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ');
+          headingStyleH2.innerHTML = cleanText.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+        }
+        
+        // Устанавливаем начальное состояние для всех слов
+        const words = pageHeadings.querySelectorAll('.word');
+        if (words.length > 0) {
+          gsap.set(words, {
+            opacity: 0
+          });
+          
+          // Анимация появления
+          ScrollTrigger.create({
+            trigger: pageHeadings,
+            start: "top bottom",
+            end: "bottom top",
+            onEnter: () => {
+              gsap.to(words, {
+                opacity: 1,
+                duration: 0.25,
+                stagger: 0.02,
+                ease: "none"
+              });
+            }
+          });
+        }
       }
     }
 
@@ -1043,7 +1100,8 @@ function App() {
                     marginRight: 'auto'
                   }}
                 >
-                  Чистая вода, натуральные корма и бережный уход — простые правила, из которых рождается вкус
+                  Семейная ферма, где заботятся о здоровье животных и земле.<br />
+                  Мясные продукты из экологически чистой деревни для оптовых поставок и HoReCa
                 </div>
               </div>
             </div>
@@ -1094,8 +1152,7 @@ function App() {
             <div 
               className="video-overlay"
               style={{
-                opacity: 0.46,
-                backgroundImage: 'radial-gradient(circle, #17141100 32%, #000000ba)',
+                backgroundColor: 'rgba(0, 0, 0, 0.10)',
                 zIndex: 2,
                 width: '100%',
                 height: '100%',
@@ -1124,118 +1181,94 @@ function App() {
               ref={trackRef}
               className="track"
               style={{
-                height: '100vh',
+                gap: '4rem',
+                flexFlow: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                marginBottom: '5rem',
+                paddingTop: '12rem',
+                paddingBottom: '6rem',
+                display: 'flex',
                 position: 'relative'
               }}
             >
               <div 
-                className="sticky"
+                className="page-headings text-align-center"
                 style={{
-                  position: 'sticky',
-                  top: '0'
+                  gridColumnGap: '1rem',
+                  gridRowGap: '1rem',
+                  flexFlow: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  maxWidth: '100ch',
+                  display: 'flex'
+                }}
+              >
+                <h3 
+                  className="text-style-allcaps"
+                  style={{
+                    fontFamily: 'Geologica, sans-serif',
+                    fontSize: '1rem',
+                    fontWeight: '200',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: '#1f2937',
+                    margin: 0,
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Возрождаем традиции ради будущего
+                </h3>
+                
+                <div
+                  className="heading-style-h2"
+                  style={{
+                    fontFamily: 'Lora, serif',
+                    fontSize: '1.5rem',
+                    fontWeight: '200',
+                    lineHeight: 1.4,
+                    color: '#1f2937',
+                    margin: 0,
+                    textAlign: 'center'
+                  }}
+                >
+                  Мы — семья, которая решила сохранить родовую землю и вдохнуть жизнь в традиции предков. В самом сердце Воронежской области, там, где жили наши бабушки и дедушки, мы создали ферму — и вместе с ней будущее для наших детей. Здесь каждое животное — часть большой истории, а каждый день наполнен трудом, любовью и вниманием к природе. Мы верим: ферма — это не просто хозяйство, а особый образ жизни и ответственность. Это место, где традиции встречаются с современными технологиями, а качество становится главным смыслом.
+                </div>
+              </div>
+              
+              <div 
+                className="photos-wrap"
+                style={{
+                  width: '80vh',
+                  height: '45vh',
+                  position: 'relative'
                 }}
               >
                 <div 
-                  className="frame"
+                  className="photo-wrap_first"
                   style={{
-                    display: 'block'
+                    borderRadius: '1rem',
+                    width: '100%',
+                    height: '100%',
+                    position: 'absolute',
+                    inset: '0%',
+                    overflow: 'hidden'
                   }}
                 >
-                  <div 
-                    className="sticky_element"
+                  <img
+                    src="/pic1.jpg"
+                    alt="Ферма фото 1"
+                    loading="lazy"
                     style={{
-                      gridColumnGap: '5rem',
-                      gridRowGap: '5rem',
-                      flexFlow: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: '100vh',
-                      display: 'flex',
-                      position: 'sticky',
-                      top: '0'
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      borderRadius: '1rem'
                     }}
-                  >
-                    <div 
-                      className="page-headings text-align-center"
-                      style={{
-                        gridColumnGap: '1rem',
-                        gridRowGap: '1rem',
-                        flexFlow: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        maxWidth: '100ch',
-                        display: 'flex'
-                      }}
-                    >
-                      <h3 
-                        className="text-style-allcaps"
-                        style={{
-                          fontFamily: 'Geologica, sans-serif',
-                          fontSize: '1rem',
-                          fontWeight: '200',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                          color: '#1f2937',
-                          margin: 0,
-                          whiteSpace: 'nowrap'
-                        }}
-                      >
-                        Возвращение к корням
-                      </h3>
-                      
-                      <h2 
-                        className="heading-style-h2"
-                        style={{
-                          fontFamily: 'Geologica, sans-serif !important',
-                          fontSize: '1.5rem',
-                          fontWeight: '200',
-                          lineHeight: 1.4,
-                          color: '#1f2937',
-                          margin: 0,
-                          textAlign: 'center'
-                        }}
-                      >
-                        Мы — семья, которая решила сохранить родовую землю и вдохнуть жизнь в традиции предков. В самом сердце Воронежской области, там, где жили наши бабушки и дедушки, мы создали ферму — и вместе с ней будущее для наших детей.&nbsp;
-                        <br /><br />
-                        Мы&nbsp;верим: ферма — это не просто хозяйство, а особый образ жизни и ответственность. Это место, где традиции встречаются с современными технологиями, а качество становится главным смыслом.
-                      </h2>
-                    </div>
-                    
-                    <div 
-                      className="photos-wrap"
-                      style={{
-                        width: '80vh',
-                        height: '45vh',
-                        position: 'relative'
-                      }}
-                    >
-                      <div 
-                        className="photo-wrap_first"
-                        style={{
-                          borderRadius: '1rem',
-                          width: '100%',
-                          height: '100%',
-                          position: 'absolute',
-                          inset: '0%',
-                          overflow: 'hidden'
-                        }}
-                      >
-                        <img
-                          src="/pic1.jpg"
-                          alt="Ферма фото 1"
-                          loading="lazy"
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            borderRadius: '1rem'
-                          }}
-                        />
-                      </div>
-                      
-                    </div>
-                  </div>
+                  />
                 </div>
+                
               </div>
             </div>
           </div>
@@ -1246,11 +1279,7 @@ function App() {
       <section 
         id="section_features"
         ref={featuresRef}
-        className="section_features" 
-        style={{
-          paddingTop: '8rem',
-          paddingBottom: '8rem'
-        }}
+        className="section_features"
       >
         <div className="padding-global" style={{
           paddingLeft: '1.5rem',
@@ -1290,13 +1319,13 @@ function App() {
                     whiteSpace: 'nowrap'
                   }}
                 >
-                  Наши продукты
+                  Наш продукт
                 </h3>
                 
                 <h2 
                   className="heading-style-h2"
                   style={{
-                    fontFamily: 'Geologica, sans-serif',
+                    fontFamily: 'Lora, serif',
                     fontSize: '1.5rem',
                     fontWeight: '200',
                     lineHeight: 1.4,
@@ -1372,7 +1401,7 @@ function App() {
                   />
                   
                   {/* Text */}
-                  <p className="text-size-medium" style={{
+                  <div style={{
                     fontFamily: 'Geologica, sans-serif',
                     fontSize: '1.125rem',
                     fontWeight: '200',
@@ -1380,8 +1409,16 @@ function App() {
                     color: '#1f2937',
                     margin: 0
                   }}>
-                    Наш скот — породы Абердин Ангус. Летом он пасётся на сочных пастбищных травах, зимой — получает сено и силос. Мы используем минимум ветеринарных препаратов и верим, что вкус мяса начинается именно с питания и заботы о животных. Поэтому каждый стейк — это не просто продукт, а результат кропотливого труда и уважения к природе.
-        </p>
+                    <p className="text-size-medium" style={{ margin: 0, marginBottom: '1.5rem' }}>
+                      Абердин-ангус — мраморная порода, которую ценят за структуру, сочный и нежный вкус.
+                    </p>
+                    <p className="text-size-medium" style={{ margin: 0, marginBottom: '1.5rem' }}>
+                      Мы окружаем наших коров и бычков любовью и заботой. Они свободно пасутся на пастбищах, получают простой и натуральный рацион без заменителей и искусственных стимуляторов.
+                    </p>
+                    <p className="text-size-medium" style={{ margin: 0 }}>
+                      Благодаря тому, что у нас Абердин-ангус питается травяным кормом, говядина имеет яркий вкус и нежные жировые прослойки. Она более постная и содержит больше белка, чем у животных на зерновом откорме.
+                    </p>
+                  </div>
       </div>
               </div>
 
@@ -1731,7 +1768,7 @@ function App() {
                   color: '#1f2937',
                   margin: 0
                 }}>
-                  НАШЕ МЕСТО
+                  МЕСТО
                 </h3>
                 
                 {/* 2) Max width medium */}
@@ -1740,7 +1777,7 @@ function App() {
                   maxWidth: '72ch'
                 }}>
                   <h2 className="heading-style-h2" style={{
-                    fontFamily: 'Geologica, sans-serif',
+                    fontFamily: 'Lora, serif',
                     fontSize: '1.5rem',
                     fontWeight: '200',
                     lineHeight: 1.4,
@@ -1748,8 +1785,7 @@ function App() {
                     margin: 0,
                     textAlign: 'center'
                   }}>
-                    Родная земля — источник силы и вдохновения<br />
-                    Наша ферма находится в Воронежской области, в Лискинском районе, селе Аношкино. Это земля наших предков, которая хранит память поколений.
+                    Родная земля — источник силы и вдохновения. Наша ферма находится в Воронежской области, в Лискинском районе, селе Аношкино. Это земля наших предков, которая хранит память поколений. Здесь — простор, тишина и настоящая деревенская жизнь. Мы создали ферму, где к животным относятся с уважением, а чистая среда и натуральные корма стали основой вкуса, который невозможно подменить.
                   </h2>
                 </div>
               </div>
@@ -1933,7 +1969,7 @@ function App() {
         </div>
       </section>
 
-      <section id="section_partners" className="section_partners">
+      <section id="section_partners" ref={partnerRef} className="section_partners">
         <div className="padding-global" style={{
           paddingLeft: '1.5rem',
           paddingRight: '1.5rem'
@@ -1966,7 +2002,7 @@ function App() {
                 <h3 className="text-style-allcaps" style={{
                   fontFamily: 'Geologica, sans-serif',
                   fontSize: '1rem',
-                  fontWeight: 300,
+                  fontWeight: 200,
                   textTransform: 'uppercase',
                   letterSpacing: '0.05em',
                   color: '#1f2937',
@@ -1980,7 +2016,7 @@ function App() {
                   maxWidth: '72ch'
                 }}>
                   <h2 className="heading-style-h2" style={{
-                    fontFamily: 'Geologica, sans-serif',
+                    fontFamily: 'Lora, serif',
                     fontSize: '1.5rem',
                     fontWeight: 200,
                     lineHeight: 1.4,
@@ -1988,10 +2024,11 @@ function App() {
                     margin: 0,
                     textAlign: 'center'
                   }}>
-                    Мы открыты к партнёрству с теми, кто разделяет наш подход,<br />
-                    ценит прозрачность происхождения продукта и его качество,<br />
+                    Наши ценности — честность, качество, доверие.<br />
+                    Мы открыты к партнёрству с теми, кто разделяет наш подход:<br />
+                    ценит прозрачность происхождения продукта и его качество;<br />
                     поддерживает локальных производителей и семейные фермы.<br />
-                    С нами ваши гости и покупатели будут точно знать, откуда пришёл продукт, и в каких условиях он создан.<br />
+                    С нами ваши гости и покупатели будут точно знать, откуда пришёл продукт и в каких условиях он создан. Мы проверяем и одобряем каждую партию товара.<br />
                     
                   </h2>
                 </div>
@@ -2069,11 +2106,10 @@ function App() {
                     color: '#1f2937',
                     margin: 0
                   }}>
-                    Мы предлагаем:<br />
-                    гибкие условия поставки (цены, объёмы, тестовые партии);<br />
-                    индивидуальные решения для ресторанов и магазинов;<br />
-                    гарантию: за каждое поставленное мясо мы отвечаем лично.<br />
-                    Сотрудничая с нами, вы получаете не просто продукт, а надёжного партнёра, который дорожит вашим доверием.
+                    - Гибкие условия поставки (объёмы, тестовые партии);<br />
+                    - Индивидуальные решения для ресторанов и магазинов;<br />
+                    - Гарантию качества (лично отвечаем за каждую поставленную партию, предоставляем сертификаты);<br />
+                    - Своевременную поставку (тщательно контролируем логистику и температурные режимы).
                   </p>
 
                   {/* Button */}
@@ -2206,7 +2242,8 @@ function App() {
               margin: 0,
               maxWidth: '60ch'
             }}>
-              Мы хотим, чтобы наши дети жили в мире, где еда означает здоровье, честность и уважение к природе и людям. И чтобы вы знали: на вашем столе — мясо, выращенное в согласии с землёй и традициями.
+              Мы верим в мир, в котором еда дарит здоровье и означает честное, уважительное отношение к природе и людям. Мир, где вы точно знаете, что продукты выращены в гармонии с землёй и вековыми традициями.<br /><br />
+              Наша миссия — сохранять и развивать деревню, уважать землю, передавать опыт предков и кормить людей продуктом, которому можно доверять.
             </p>
           </div>
 
@@ -2260,7 +2297,7 @@ function App() {
               <div className="footer_component">
                 <div className="footer_left">
                   <h3 className="heading-style-h3 is-small">
-                    Мы хотим сохранять и развивать деревню, уважать землю, передавать опыт предков и кормить людей продуктом, которому можно доверять.
+                    Развиваем этичное фермерство, основанное на прозрачности и экологичности. Качество, рожденное природой, а не технологиями.
                   </h3>
                   <div className="credits">
                     <div className="text-size-regular">
