@@ -107,18 +107,18 @@ function App() {
 
   // Блокировка скролла при открытом меню
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    if (isMobileMenuOpen && isMobile) {
       // Сохраняем текущую позицию скролла
       const scrollY = window.scrollY;
       
-      // Блокируем скролл
+      // Блокируем скролл (только на мобильных)
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.left = '0';
       document.body.style.right = '0';
       document.body.style.overflow = 'hidden';
-    } else {
-      // Восстанавливаем позицию скролла
+    } else if (!isMobileMenuOpen && isMobile) {
+      // Восстанавливаем позицию скролла (только на мобильных)
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
@@ -130,13 +130,15 @@ function App() {
 
     // Cleanup при размонтировании компонента
     return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.overflow = '';
+      if (isMobile) {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.overflow = '';
+      }
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, isMobile]);
 
   // Анимация заголовка героя
   useEffect(() => {
@@ -249,7 +251,7 @@ function App() {
   }, [isMobile]);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-bg)' }}>
+    <div style={{ minHeight: '100vh' }}>
       <div className="main-wrapper">
         {/* Navbar */}
         <nav 
