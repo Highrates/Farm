@@ -32,29 +32,12 @@ function App() {
       const distance = targetPosition - startPosition;
       const duration = 1500; // 1.5 секунды
       let start: number | null = null;
-      let animationId: number | null = null;
-      let isScrolling = true;
 
       const easeInOutCubic = (t: number): number => {
         return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
       };
 
-      // Прерываем анимацию при попытке пользователя скроллить
-      const cancelScroll = () => {
-        isScrolling = false;
-        if (animationId) {
-          cancelAnimationFrame(animationId);
-        }
-        window.removeEventListener('wheel', cancelScroll);
-        window.removeEventListener('touchmove', cancelScroll);
-      };
-
-      window.addEventListener('wheel', cancelScroll, { passive: true });
-      window.addEventListener('touchmove', cancelScroll, { passive: true });
-
       const animation = (currentTime: number) => {
-        if (!isScrolling) return;
-        
         if (start === null) start = currentTime;
         const timeElapsed = currentTime - start;
         const progress = Math.min(timeElapsed / duration, 1);
@@ -62,15 +45,12 @@ function App() {
         
         window.scrollTo(0, startPosition + distance * ease);
         
-        if (timeElapsed < duration && isScrolling) {
-          animationId = requestAnimationFrame(animation);
-        } else {
-          window.removeEventListener('wheel', cancelScroll);
-          window.removeEventListener('touchmove', cancelScroll);
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
         }
       };
 
-      animationId = requestAnimationFrame(animation);
+      requestAnimationFrame(animation);
     }
     // Закрываем мобильное меню если открыто
     if (isMobileMenuOpen) {
@@ -125,6 +105,27 @@ function App() {
     }
   }, [isMobileMenuOpen]);
 
+  // Блокировка скролла при открытом меню
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      // Сохраняем текущую ширину scrollbar
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      
+      // Блокируем скролл и компенсируем исчезновение scrollbar
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+            } else {
+      // Восстанавливаем
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+    }
+
+    // Cleanup при размонтировании компонента
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+    };
+  }, [isMobileMenuOpen]);
 
   // Анимация заголовка героя
   useEffect(() => {
@@ -249,7 +250,7 @@ function App() {
             zIndex: 10000,
             backgroundColor: 'transparent',
             width: '100%',
-            paddingTop: isMobile ? '0.5rem' : '2.5rem',
+            paddingTop: isMobile ? '1rem' : '2.5rem',
             position: 'absolute',
             top: 0,
             left: 0,
@@ -597,10 +598,7 @@ function App() {
         className="mobile-menu"
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          inset: 0,
           width: '100%',
           height: '100%',
           backgroundColor: 'rgba(38, 45, 38, 0.9)',
@@ -1231,7 +1229,7 @@ function App() {
                       height: 'auto',
                     objectFit: 'contain',
                     marginTop: isMobile ? '-100px' : '-120px',
-                    marginRight: isMobile ? '-260px' : '-400px',
+                    marginRight: isMobile ? '-178px' : '-400px',
                     transform: 'rotate(8deg)'
                     }}
                   />
