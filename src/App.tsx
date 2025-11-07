@@ -32,12 +32,29 @@ function App() {
       const distance = targetPosition - startPosition;
       const duration = 1500; // 1.5 секунды
       let start: number | null = null;
+      let animationId: number | null = null;
+      let isScrolling = true;
 
       const easeInOutCubic = (t: number): number => {
         return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
       };
 
+      // Прерываем анимацию при попытке пользователя скроллить
+      const cancelScroll = () => {
+        isScrolling = false;
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+        window.removeEventListener('wheel', cancelScroll);
+        window.removeEventListener('touchmove', cancelScroll);
+      };
+
+      window.addEventListener('wheel', cancelScroll, { passive: true });
+      window.addEventListener('touchmove', cancelScroll, { passive: true });
+
       const animation = (currentTime: number) => {
+        if (!isScrolling) return;
+        
         if (start === null) start = currentTime;
         const timeElapsed = currentTime - start;
         const progress = Math.min(timeElapsed / duration, 1);
@@ -45,12 +62,15 @@ function App() {
         
         window.scrollTo(0, startPosition + distance * ease);
         
-        if (timeElapsed < duration) {
-          requestAnimationFrame(animation);
+        if (timeElapsed < duration && isScrolling) {
+          animationId = requestAnimationFrame(animation);
+        } else {
+          window.removeEventListener('wheel', cancelScroll);
+          window.removeEventListener('touchmove', cancelScroll);
         }
       };
 
-      requestAnimationFrame(animation);
+      animationId = requestAnimationFrame(animation);
     }
     // Закрываем мобильное меню если открыто
     if (isMobileMenuOpen) {
