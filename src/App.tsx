@@ -108,22 +108,33 @@ function App() {
   // Блокировка скролла при открытом меню
   useEffect(() => {
     if (isMobileMenuOpen) {
-      // Сохраняем текущую ширину scrollbar
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      // Сохраняем текущую позицию скролла
+      const scrollY = window.scrollY;
       
-      // Блокируем скролл и компенсируем исчезновение scrollbar
+      // Блокируем скролл
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
       document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-            } else {
-      // Восстанавливаем
-      document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = '0px';
+    } else {
+      // Восстанавливаем позицию скролла
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
 
     // Cleanup при размонтировании компонента
     return () => {
-      document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = '0px';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
     };
   }, [isMobileMenuOpen]);
 
@@ -250,7 +261,7 @@ function App() {
             zIndex: 10000,
             backgroundColor: 'transparent',
             width: '100%',
-            paddingTop: isMobile ? '1rem' : '2.5rem',
+            paddingTop: isMobile ? '0.5rem' : '2.5rem',
             position: 'absolute',
             top: 0,
             left: 0,
