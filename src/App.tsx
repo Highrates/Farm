@@ -105,40 +105,32 @@ function App() {
     }
   }, [isMobileMenuOpen]);
 
-  // Блокировка скролла при открытом меню
+  // Блокировка скролла при открытом меню (только на мобильных)
   useEffect(() => {
-    if (isMobileMenuOpen && isMobile) {
+    if (isMobile && isMobileMenuOpen) {
       // Сохраняем текущую позицию скролла
       const scrollY = window.scrollY;
       
-      // Блокируем скролл (только на мобильных)
+      // Блокируем скролл
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.left = '0';
       document.body.style.right = '0';
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
-    } else if (!isMobileMenuOpen && isMobile) {
-      // Восстанавливаем позицию скролла (только на мобильных)
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.overflow = '';
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    }
-
-    // Cleanup при размонтировании компонента
-    return () => {
-      if (isMobile) {
+      
+      return () => {
+        // Восстанавливаем при размонтировании
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.left = '';
         document.body.style.right = '';
+        document.body.style.width = '';
         document.body.style.overflow = '';
-      }
-    };
-  }, [isMobileMenuOpen, isMobile]);
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isMobile, isMobileMenuOpen]);
 
   // Анимация заголовка героя
   useEffect(() => {
