@@ -1018,7 +1018,7 @@ nginx -t
 systemctl reload nginx
 ```
 Для деплоя:
-ssh appuser@ip
-password: 
+ssh root@ip
+
 ./deploy.sh
 

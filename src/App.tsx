@@ -1,648 +1,85 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 function App() {
-  const heroSectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLDivElement>(null);
   const navbarRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const featuresRef = useRef<HTMLElement>(null);
-  const locationRef = useRef<HTMLElement>(null);
-  const partnerRef = useRef<HTMLElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
-  const ctaVideoRef = useRef<HTMLVideoElement>(null);
-  const lastCtaVideoRef = useRef<HTMLVideoElement>(null);
-  const lastCtaHeadingRef = useRef<HTMLHeadingElement>(null);
+  const heroTitleRef = useRef<HTMLHeadingElement>(null);
+  const signatureRef = useRef<HTMLDivElement>(null);
+  const aboutSignatureRef = useRef<HTMLDivElement>(null);
+  const heroCardsRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  // Фиксируем размер экрана один раз при загрузке (не меняется динамически)
-  const isMobile = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth <= 768;
-    }
-    return false;
-  }, []); // Пустой массив зависимостей - вычисляется только один раз
+  const [isMobile, setIsMobile] = React.useState(false);
+  
+  // Проверка размера экрана
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
-  // Smooth scroll function
-  const smoothScrollTo = (targetId: string) => {
-    const targetElement = document.getElementById(targetId);
-    if (targetElement) {
-      const offsetTop = targetElement.offsetTop - 80; // Account for navbar height
-      
-      gsap.to(window, {
-        duration: 1.5,
-        scrollTo: { y: offsetTop, autoKill: false },
-        ease: "power2.inOut"
-      });
+  // Функция плавного скролла
+  const smoothScrollTo = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      const targetPosition = section.offsetTop;
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      const duration = 1500; // 1.5 секунды
+      let start: number | null = null;
+
+      const easeInOutCubic = (t: number): number => {
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+      };
+
+      const animation = (currentTime: number) => {
+        if (start === null) start = currentTime;
+        const timeElapsed = currentTime - start;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const ease = easeInOutCubic(progress);
+        
+        window.scrollTo(0, startPosition + distance * ease);
+        
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      };
+
+      requestAnimationFrame(animation);
+    }
+    // Закрываем мобильное меню если открыто
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
     }
   };
 
-  useEffect(() => {
-    if (heroSectionRef.current) {
-      // Начальные стили
-      gsap.set(heroSectionRef.current, {
-        transform: 'translate3d(0px, 0px, 0px)',
-        scale: 1
-      });
-
-      // ScrollTrigger анимация
-      ScrollTrigger.create({
-        trigger: heroSectionRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: 1,
-        refreshPriority: -1,
-        onUpdate: (self) => {
-          // Интерполируем scale от 1 до 0.9
-          const scale = 1 - (self.progress * 0.1); // 1 - (0 * 0.1) = 1, 1 - (1 * 0.1) = 0.9
-          gsap.set(heroSectionRef.current, {
-            scale: scale,
-            force3D: true,
-            transformOrigin: "center center"
-          });
-        }
-      });
-    }
-
-    // Анимация заголовка
-    if (headingRef.current) {
-      // Разбиваем на строки
-      const lines = ['РОМАНОВЫ', 'ПРОСТОРЫ'];
-      
-      headingRef.current.innerHTML = lines.map(line => 
-        `<div class="line">${line.split('').map(char => 
-          char === ' ' ? '<span>&nbsp;</span>' : `<span>${char}</span>`
-        ).join('')}</div>`
-      ).join('');
-
-      const letters = headingRef.current.querySelectorAll('span');
-      
-      // Начальное состояние - все буквы прозрачные
-      gsap.set(letters, { opacity: 0 });
-
-      // Анимация появления букв
-      gsap.to(letters, {
-        opacity: 1,
-        duration: 1,
-        delay: 0.3,
-        ease: "power3.in",
-        stagger: 0.05 // 50ms между буквами
-      });
-    }
-
-    // Анимация подзаголовка
-    if (subtitleRef.current) {
-      // Разбиваем на строки
-      const lines = [
-        'Семейная ферма, где заботятся о здоровье животных и земле.',
-        'Мясные продукты из экологически чистой деревни для оптовых поставок и HoReCa'
-      ];
-      
-      // Создаем обертку для текста с анимацией
-      subtitleRef.current.innerHTML = `<div class="subtitle-text-wrapper" style="max-width: 64ch; text-align: center; margin: 0 auto;">${lines.map(line => 
-        `<div class="subtitle-line">${line.split(' ').map(word => 
-          `<span class="word">${word}</span>`
-        ).join(' ')}</div>`
-      ).join('')}</div>`;
-
-      const subtitleWords = subtitleRef.current.querySelectorAll('.word');
-      
-      // Начальное состояние - все слова прозрачные
-      gsap.set(subtitleWords, { opacity: 0 });
-
-      // Анимация появления слов подзаголовка
-      gsap.to(subtitleWords, {
-        opacity: 1,
-        duration: 1,
-        delay: 0.3, // Начинаем одновременно с заголовком
-        ease: "power3.in",
-        stagger: 0.1 // 100ms между словами
-      });
-    }
-
     // Анимация navbar
+  useEffect(() => {
     if (navbarRef.current) {
-      // Начальное состояние - navbar скрыт сверху
       gsap.set(navbarRef.current, {
         opacity: 0,
         y: '-1rem'
       });
 
-      // Анимация появления navbar
       gsap.to(navbarRef.current, {
         opacity: 1,
         y: '0',
         duration: 0.6,
-        delay: 2, // Начинаем через 2 секунды
+        delay: 0.5,
         ease: "power2.out"
       });
     }
-
-    // Анимация заголовков в About секции
-    if (trackRef.current) {
-      requestAnimationFrame(() => {
-        const pageHeadings = trackRef.current?.querySelector('.page-headings.text-align-center');
-        if (pageHeadings) {
-          // Разделяем текст на слова для анимации
-          const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-          const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-          
-          if (textStyleAllcaps && textStyleAllcaps.textContent && textStyleAllcaps.textContent.trim()) {
-            try {
-              const text = textStyleAllcaps.textContent.trim();
-              textStyleAllcaps.innerHTML = text.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
-            } catch (e) {
-              console.warn('Ошибка при обработке textStyleAllcaps в about:', e);
-            }
-          }
-          
-          if (headingStyleH2 && headingStyleH2.textContent && headingStyleH2.textContent.trim()) {
-            try {
-              const text = headingStyleH2.textContent.trim();
-              const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
-              if (cleanText) {
-                headingStyleH2.innerHTML = cleanText.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
-              }
-            } catch (e) {
-              console.warn('Ошибка при обработке headingStyleH2 в about:', e);
-            }
-          }
-          
-          // Устанавливаем начальное состояние для всех слов
-          const words = pageHeadings.querySelectorAll('.word');
-          if (words.length > 0) {
-            gsap.set(words, {
-              opacity: 0
-            });
-            
-            // Анимация появления
-            ScrollTrigger.create({
-              trigger: pageHeadings,
-              start: "top bottom",
-              end: "bottom top",
-              onEnter: () => {
-                gsap.to(words, {
-                  opacity: 1,
-                  duration: 0.25,
-                  stagger: 0.02,
-                  ease: "none"
-                });
-              }
-            });
-          }
-        }
-      });
-    }
-
-    // Анимация CTA секции
-    if (ctaRef.current) {
-      // Video scale анимация (отключена на мобильных)
-      const ctaVideoBackground = ctaRef.current.querySelector('.cta-video_background');
-      if (ctaVideoBackground) {
-        // На мобильных устройствах видео сразу нормального размера
-        if (window.innerWidth <= 768) {
-          gsap.set(ctaVideoBackground, {
-            scale: 1,
-            force3D: true
-          });
-        } else {
-          // Десктопная анимация
-          gsap.set(ctaVideoBackground, {
-            scale: 0.5
-          });
-
-          // Переменная для плавной интерполяции
-          let targetScale = 0.5;
-          let currentScale = 0.5;
-          
-          ScrollTrigger.create({
-            trigger: ctaRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1.5,
-            onUpdate: (self) => {
-              // Используем самый мягкий easing
-              const easedProgress = gsap.parseEase("power1.inOut")(self.progress);
-              targetScale = 0.5 + (0.5 * easedProgress);
-            }
-          });
-          
-          // Плавная интерполяция через requestAnimationFrame
-          const animateScale = () => {
-            const lerpFactor = 0.08;
-            currentScale += (targetScale - currentScale) * lerpFactor;
-            
-            gsap.set(ctaVideoBackground, {
-              scale: currentScale,
-              force3D: true,
-              transformOrigin: "center center",
-              willChange: "transform"
-            });
-            
-            requestAnimationFrame(animateScale);
-          };
-          
-          animateScale();
-        }
-      }
-
-      // SVG анимация (отключена - контент сразу виден)
-      const ctaContent = ctaRef.current.querySelector('.cta-content');
-      if (ctaContent) {
-        gsap.set(ctaContent, {
-          opacity: 1,
-          y: '0rem'
-        });
-      }
-
-      // Button анимация (отключена - кнопка сразу видна)
-      const buttonWrap = ctaRef.current.querySelector('.button-nav');
-      if (buttonWrap) {
-        gsap.set(buttonWrap, {
-          opacity: 1
-        });
-      }
-    }
-
-
-    // Анимация заголовков в Features секции
-    if (featuresRef.current) {
-      requestAnimationFrame(() => {
-        const pageHeadings = featuresRef.current?.querySelector('.page-headings.text-align-center');
-        if (pageHeadings) {
-          // Разделяем текст на слова для анимации
-          const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-          const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-          
-          if (textStyleAllcaps && textStyleAllcaps.textContent && textStyleAllcaps.textContent.trim()) {
-            try {
-              const text = textStyleAllcaps.textContent.trim();
-              textStyleAllcaps.innerHTML = text.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
-            } catch (e) {
-              console.warn('Ошибка при обработке textStyleAllcaps в features:', e);
-            }
-          }
-          
-          if (headingStyleH2 && headingStyleH2.textContent && headingStyleH2.textContent.trim()) {
-            try {
-              const text = headingStyleH2.textContent.trim();
-              const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
-              if (cleanText) {
-                headingStyleH2.innerHTML = cleanText.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
-              }
-            } catch (e) {
-              console.warn('Ошибка при обработке headingStyleH2 в features:', e);
-            }
-          }
-          
-          // Устанавливаем начальное состояние для всех слов
-          const words = pageHeadings.querySelectorAll('.word');
-          if (words.length > 0) {
-            gsap.set(words, {
-              opacity: 0
-            });
-            
-            // Анимация появления
-            ScrollTrigger.create({
-              trigger: pageHeadings,
-              start: "top bottom",
-              end: "bottom top",
-              onEnter: () => {
-                gsap.to(words, {
-                  opacity: 1,
-                  duration: 0.25,
-                  stagger: 0.02,
-                  ease: "none"
-                });
-              }
-            });
-          }
-        }
-      });
-    }
-
-    // Анимация заголовков в Location секции
-    if (locationRef.current) {
-      requestAnimationFrame(() => {
-        const pageHeadings = locationRef.current?.querySelector('.page-headings.text-align-center');
-        if (pageHeadings) {
-          // Разделяем текст на слова для анимации
-          const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-          const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-          
-          if (textStyleAllcaps && textStyleAllcaps.textContent && textStyleAllcaps.textContent.trim()) {
-            try {
-              const text = textStyleAllcaps.textContent.trim();
-              textStyleAllcaps.innerHTML = text.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
-            } catch (e) {
-              console.warn('Ошибка при обработке textStyleAllcaps в location:', e);
-            }
-          }
-          
-          if (headingStyleH2 && headingStyleH2.textContent && headingStyleH2.textContent.trim()) {
-            try {
-              const text = headingStyleH2.textContent.trim();
-              const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
-              if (cleanText) {
-                headingStyleH2.innerHTML = cleanText.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
-              }
-            } catch (e) {
-              console.warn('Ошибка при обработке headingStyleH2 в location:', e);
-            }
-          }
-          
-          // Устанавливаем начальное состояние для всех слов
-          const words = pageHeadings.querySelectorAll('.word');
-          if (words.length > 0) {
-            // На мобильных отключаем анимацию - показываем текст сразу
-            if (isMobile) {
-              gsap.set(words, {
-                opacity: 1
-              });
-            } else {
-              gsap.set(words, {
-                opacity: 0
-              });
-              
-              // Анимация появления только на десктопе
-              ScrollTrigger.create({
-                trigger: pageHeadings,
-                start: "top bottom",
-                end: "bottom top",
-                onEnter: () => {
-                  gsap.to(words, {
-                    opacity: 1,
-                    duration: 0.25,
-                    stagger: 0.02,
-                    ease: "none"
-                  });
-                }
-              });
-            }
-          }
-        }
-      });
-    }
-
-    // Анимация заголовков в Partners секции
-    if (partnerRef.current) {
-      // Небольшая задержка для гарантии готовности DOM
-      requestAnimationFrame(() => {
-        const pageHeadings = partnerRef.current?.querySelector('.page-headings.text-align-center');
-        if (pageHeadings) {
-          // Разделяем текст на слова для анимации
-          const textStyleAllcaps = pageHeadings.querySelector('.text-style-allcaps');
-          const headingStyleH2 = pageHeadings.querySelector('.heading-style-h2');
-          
-          if (textStyleAllcaps && textStyleAllcaps.textContent && textStyleAllcaps.textContent.trim()) {
-            try {
-              const text = textStyleAllcaps.textContent.trim();
-              textStyleAllcaps.innerHTML = text.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
-            } catch (e) {
-              console.warn('Ошибка при обработке textStyleAllcaps в partners:', e);
-            }
-          }
-          
-          if (headingStyleH2 && headingStyleH2.textContent && headingStyleH2.textContent.trim()) {
-            try {
-              const text = headingStyleH2.textContent.trim();
-              // Убираем любые HTML теги и лишние пробелы
-              const cleanText = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
-              if (cleanText) {
-                headingStyleH2.innerHTML = cleanText.split(' ').filter(word => word.length > 0).map(word => `<span class="word">${word}</span>`).join(' ');
-              }
-            } catch (e) {
-              console.warn('Ошибка при обработке headingStyleH2 в partners:', e);
-            }
-          }
-          
-          // Устанавливаем начальное состояние для всех слов
-          const words = pageHeadings.querySelectorAll('.word');
-          if (words.length > 0) {
-            // На мобильных отключаем анимацию - показываем текст сразу
-            if (isMobile) {
-              gsap.set(words, {
-                opacity: 1
-              });
-            } else {
-              gsap.set(words, {
-                opacity: 0
-              });
-              
-              // Анимация появления только на десктопе
-              ScrollTrigger.create({
-                trigger: pageHeadings,
-                start: "top bottom",
-                end: "bottom top",
-                onEnter: () => {
-                  gsap.to(words, {
-                    opacity: 1,
-                    duration: 0.25,
-                    stagger: 0.02,
-                    ease: "none"
-                  });
-                }
-              });
-            }
-          }
-        }
-      });
-    }
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, [isMobile]); // Добавляем isMobile в зависимости, чтобы код учитывал мобильную версию
-
-  // Установка CSS переменной --vh для правильного расчета высоты viewport на мобильных
-  useEffect(() => {
-    const setVh = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-
-    // Фиксированное значение для hero-секции (только один раз при загрузке)
-    const setVhInitial = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh-initial', `${vh}px`);
-    };
-    
-    // Устанавливаем оба значения при загрузке
-    setVh();
-    setVhInitial();
-    
-    // Для остальных секций обновляем при resize и orientationchange
-    window.addEventListener('resize', setVh);
-    window.addEventListener('orientationchange', setVh);
-    
-    // Для hero-секции обновляем только при изменении ориентации (не при скролле)
-    window.addEventListener('orientationchange', setVhInitial);
-    
-    return () => {
-      window.removeEventListener('resize', setVh);
-      window.removeEventListener('orientationchange', setVh);
-      window.removeEventListener('orientationchange', setVhInitial);
-    };
   }, []);
-
-  // Программный запуск видео для мобильных устройств (iOS Safari требует этого)
-  useEffect(() => {
-    const cleanupFunctions: Array<() => void> = [];
-    
-    const playVideo = (videoRef: React.RefObject<HTMLVideoElement | null>) => {
-      if (videoRef.current) {
-        const video = videoRef.current;
-        
-        // Убеждаемся, что controls полностью отключены программно
-        video.removeAttribute('controls');
-        video.controls = false;
-        video.setAttribute('controls', 'false');
-        
-        // Также убираем через DOM API для гарантии
-        if (video.hasAttribute('controls')) {
-          video.removeAttribute('controls');
-        }
-        
-        // Устанавливаем стили для скрытия controls
-        video.style.pointerEvents = 'none';
-        
-        // Попытка запуска
-        const tryPlay = () => {
-          // Проверяем, что видео не воспроизводится
-          if (video.paused) {
-            // Еще раз убеждаемся, что controls отключены
-            video.controls = false;
-            video.removeAttribute('controls');
-            
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-              playPromise
-                .then(() => {
-                  // Видео успешно запущено
-                  video.muted = true; // Убеждаемся, что muted установлен
-                  video.controls = false; // Еще раз отключаем controls после запуска
-                  video.removeAttribute('controls');
-                })
-                .catch(() => {
-                  // Автовоспроизведение было заблокировано
-                  // Пробуем еще раз через небольшую задержку
-                  setTimeout(() => {
-                    video.controls = false;
-                    video.removeAttribute('controls');
-                    video.play().catch(() => {});
-                  }, 300);
-                });
-            }
-          }
-        };
-
-        // Пробуем запустить сразу
-        tryPlay();
-
-        // Также пробуем после загрузки данных видео
-        const loadHandler = () => {
-          video.controls = false;
-          video.removeAttribute('controls');
-          tryPlay();
-        };
-        video.addEventListener('loadeddata', loadHandler, { once: true });
-        video.addEventListener('canplay', loadHandler, { once: true });
-        video.addEventListener('canplaythrough', loadHandler, { once: true });
-        
-        // При первом взаимодействии пользователя пробуем запустить
-        const userInteractionHandler = () => {
-          video.controls = false;
-          video.removeAttribute('controls');
-          tryPlay();
-        };
-        document.addEventListener('touchstart', userInteractionHandler, { once: true });
-        document.addEventListener('click', userInteractionHandler, { once: true });
-        
-        // Сохраняем функции очистки
-        cleanupFunctions.push(() => {
-          video.removeEventListener('loadeddata', loadHandler);
-          video.removeEventListener('canplay', loadHandler);
-          video.removeEventListener('canplaythrough', loadHandler);
-          document.removeEventListener('touchstart', userInteractionHandler);
-          document.removeEventListener('click', userInteractionHandler);
-        });
-      }
-    };
-
-    // Небольшая задержка для гарантии монтирования элементов
-    const timer = setTimeout(() => {
-      playVideo(heroVideoRef);
-      playVideo(ctaVideoRef);
-      playVideo(lastCtaVideoRef);
-    }, 200);
-
-    return () => {
-      clearTimeout(timer);
-      cleanupFunctions.forEach(cleanup => cleanup());
-    };
-  }, []);
-
-  // Обновляем ScrollTrigger после изменения DOM
-  useEffect(() => {
-    // Mobile scroll optimization
-    if (window.innerWidth <= 768) {
-      ScrollTrigger.config({
-        ignoreMobileResize: true,
-        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load"
-      });
-    }
-    
-    ScrollTrigger.refresh();
-    
-    // Debug: Check if Geologica font is loaded
-    if (typeof window !== 'undefined') {
-      const testElement = document.createElement('div');
-      testElement.style.fontFamily = 'Geologica, sans-serif';
-      testElement.textContent = 'Test';
-      document.body.appendChild(testElement);
-      const computedStyle = window.getComputedStyle(testElement);
-      console.log('Geologica font loaded:', computedStyle.fontFamily);
-      document.body.removeChild(testElement);
-    }
-  }, []);
-
-  // Устанавливаем размер заголовка "Наши ценности" для десктопа напрямую в DOM
-  useEffect(() => {
-    if (lastCtaHeadingRef.current) {
-      if (!isMobile) {
-        // На десктопе устанавливаем 3rem через CSS переменную или прямое присвоение
-        lastCtaHeadingRef.current.style.fontSize = '3rem';
-        // Дополнительно через setProperty с important
-        try {
-          lastCtaHeadingRef.current.style.setProperty('font-size', '3rem', 'important');
-        } catch (e) {
-          // Если не поддерживается, используем прямое присвоение
-          lastCtaHeadingRef.current.style.fontSize = '3rem';
-        }
-      } else {
-        // На мобильных устанавливаем 1.3rem
-        lastCtaHeadingRef.current.style.fontSize = '1.3rem';
-        try {
-          lastCtaHeadingRef.current.style.setProperty('font-size', '1.3rem', 'important');
-        } catch (e) {
-          lastCtaHeadingRef.current.style.fontSize = '1.3rem';
-        }
-      }
-    }
-  }, [isMobile]);
 
   // Анимация мобильного меню
   useEffect(() => {
     if (mobileMenuRef.current) {
       if (isMobileMenuOpen) {
-        // Показываем меню и анимируем появление справа
         gsap.set(mobileMenuRef.current, {
           display: 'flex',
           x: '100%'
@@ -652,9 +89,8 @@ function App() {
           x: '0%',
           duration: 0.4,
           ease: "power2.out"
-        });
-      } else {
-        // Анимируем закрытие вправо
+          });
+        } else {
         gsap.to(mobileMenuRef.current, {
           x: '100%',
           duration: 0.3,
@@ -669,13 +105,140 @@ function App() {
     }
   }, [isMobileMenuOpen]);
 
-  return (
-    <div style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', backgroundColor: '#F2ECE3' }}>
-      {/* Skip to main content link for accessibility */}
-      <a href="#main-content" className="skip-to-content">
-        Перейти к основному содержанию
-      </a>
+  // Блокировка скролла при открытом меню
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      // Сохраняем текущую ширину scrollbar
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       
+      // Блокируем скролл и компенсируем исчезновение scrollbar
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+            } else {
+      // Восстанавливаем
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+    }
+
+    // Cleanup при размонтировании компонента
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+    };
+  }, [isMobileMenuOpen]);
+
+  // Анимация заголовка героя
+  useEffect(() => {
+    if (heroTitleRef.current) {
+      const letters = heroTitleRef.current.querySelectorAll('.letter');
+      
+      gsap.set(letters, {
+        opacity: 0,
+        y: 20
+      });
+
+      gsap.to(letters, {
+                  opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.03,
+        delay: 1,
+        ease: "power2.out"
+      });
+    }
+  }, []);
+
+  // Анимация подписи
+  useEffect(() => {
+    if (signatureRef.current) {
+      const letters = signatureRef.current.querySelectorAll('.letter');
+      
+      gsap.set(letters, {
+        opacity: 0,
+        y: 20
+      });
+
+      gsap.to(letters, {
+                    opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.03,
+        delay: 1.5,
+        ease: "power2.out"
+      });
+    }
+  }, []);
+
+  // Анимация подписи в About секции при скролле
+  useEffect(() => {
+    if (aboutSignatureRef.current) {
+      const letters = aboutSignatureRef.current.querySelectorAll('.letter');
+      
+      gsap.set(letters, {
+        opacity: 0,
+        y: 20
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              gsap.to(letters, {
+                    opacity: 1,
+                y: 0,
+                duration: 0.5,
+                stagger: 0.03,
+                ease: "power2.out"
+              });
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      observer.observe(aboutSignatureRef.current);
+
+      return () => observer.disconnect();
+    }
+  }, []);
+
+  // Анимация карточек в grid на мобильной версии
+  useEffect(() => {
+    if (heroCardsRef.current && isMobile) {
+      const cards = heroCardsRef.current.querySelectorAll('.hero-card');
+      
+      gsap.set(cards, {
+        opacity: 0,
+        y: 30
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              gsap.to(cards, {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                stagger: 0.15,
+                ease: "power2.out"
+              });
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(heroCardsRef.current);
+
+      return () => observer.disconnect();
+    }
+  }, [isMobile]);
+
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-bg)' }}>
       <div className="main-wrapper">
         {/* Navbar */}
         <nav 
@@ -684,24 +247,18 @@ function App() {
           role="navigation"
           aria-label="Главная навигация"
           style={{
-            zIndex: 9999,
-            backgroundColor: '#ddd0',
+            zIndex: 10000,
+            backgroundColor: 'transparent',
             width: '100%',
             paddingTop: '2.5rem',
             position: 'absolute',
-            inset: '0% 0% auto'
+            top: 0,
+            left: 0,
+            right: 0
           }}
         >
-        <div className="padding-global" style={{ paddingLeft: '2.5rem', paddingRight: '2.5rem' }}>
-          <div 
-            className="container-large"
-            style={{
-              width: '100%',
-              maxWidth: '90vw',
-              marginLeft: 'auto',
-              marginRight: 'auto'
-            }}
-          >
+        <div className="padding-global">
+          <div className="container-large">
             <div 
               className="nav-wrap"
               style={{
@@ -729,11 +286,16 @@ function App() {
                 }}
               >
                 <img 
-                  src="/logo-R.svg" 
+                    src="/Logo.svg" 
                   alt="Logo" 
                   style={{
-                    width: '46px',
-                    height: '46px'
+                      width: isMobile ? '100%' : '192px',
+                      height: isMobile ? '48px' : '70px',
+                      objectFit: 'contain',
+                      filter: isMobileMenuOpen ? 'brightness(0) invert(1)' : 'none',
+                      transition: isMobileMenuOpen 
+                        ? 'filter 0.3s ease 0.3s' 
+                        : 'filter 0.3s ease 0s'
                   }}
                 />
       </div>
@@ -768,7 +330,7 @@ function App() {
           style={{
             width: '24px',
             height: '2px',
-            backgroundColor: '#F2ECE3',
+                        backgroundColor: 'var(--color-black)',
             position: 'relative',
             transition: 'all 0.3s ease',
             borderRadius: '1px'
@@ -781,7 +343,7 @@ function App() {
               left: '0',
               width: '100%',
               height: '2px',
-              backgroundColor: '#F2ECE3',
+                          backgroundColor: 'var(--color-black)',
               transition: 'all 0.3s ease',
               borderRadius: '1px'
             }}
@@ -793,7 +355,7 @@ function App() {
               left: '0',
               width: '100%',
               height: '2px',
-              backgroundColor: '#F2ECE3',
+                          backgroundColor: 'var(--color-black)',
               transition: 'all 0.3s ease',
               borderRadius: '1px'
             }}
@@ -816,20 +378,26 @@ function App() {
                       style={{
                         width: '20px',
                         height: '2px',
-                        backgroundColor: '#F2ECE3',
+                        backgroundColor: isMobileMenuOpen ? 'var(--color-bg)' : 'var(--color-black)',
                         transform: 'rotate(45deg)',
-                        position: 'relative'
+                        position: 'relative',
+                        transition: isMobileMenuOpen 
+                          ? 'background-color 0.3s ease 0.3s' 
+                          : 'background-color 0.3s ease 0s'
                       }}
                     >
                       <div
                         style={{
                           width: '20px',
                           height: '2px',
-                          backgroundColor: '#F2ECE3',
+                          backgroundColor: isMobileMenuOpen ? 'var(--color-bg)' : 'var(--color-black)',
                           transform: 'rotate(-90deg)',
                           position: 'absolute',
                           top: '0',
-                          left: '0'
+                          left: '0',
+                          transition: isMobileMenuOpen 
+                            ? 'background-color 0.3s ease 0.3s' 
+                            : 'background-color 0.3s ease 0s'
                         }}
                       ></div>
                     </div>
@@ -842,26 +410,23 @@ function App() {
                 style={{
                   gridColumnGap: '1rem',
                   gridRowGap: '1rem',
-                  justifyContent: 'space-between',
+                    justifyContent: 'flex-end',
                   alignItems: 'center',
-                  width: '100%',
                   display: 'flex'
                 }}
               >
                 <div 
                   className="nav-menu_wrap"
                   style={{
-                    justifyContent: 'space-between',
+                      justifyContent: 'flex-end',
                     alignItems: 'center',
-                    width: '100%',
                     display: 'flex'
                   }}
                 >
                   <div 
                     className="nav-left"
                     style={{
-                      gridColumnGap: '1rem',
-                      gridRowGap: '1rem',
+                      gap: '1rem',
                       justifyContent: 'flex-start',
                       alignItems: 'center',
                       display: 'flex'
@@ -872,13 +437,13 @@ function App() {
                       style={{
                         width: '1px',
                         height: '1px',
-                        color: '#F2ECE3'
+                        color: 'var(--color-bg)'
                       }}
                     ></div>
 
                     <div 
                       className="nav_link"
-                      onClick={() => smoothScrollTo('section_about')}
+                      onClick={() => smoothScrollTo('about-section')}
                       style={{
                         flexFlow: 'column',
                         justifyContent: 'flex-start',
@@ -891,31 +456,21 @@ function App() {
                       }}
                     >
                       <div 
-                        className="nav-button_text"
+                        className="nav-button_text small-text"
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '200',
-                          color: '#F2ECE3',
-                          paddingLeft: '0.5rem',
-                          paddingRight: '0.5rem',
-                          lineHeight: '1.3',
-                          position: 'relative'
+                          color: 'var(--color-black)'
                         }}
                       >
                         О нас
                       </div>
                       <div 
-                        className="nav-button_text is-absolute"
+                        className="nav-button_text is-absolute small-text"
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '200',
-                          color: '#F2ECE3',
-                          paddingLeft: '0.5rem',
-                          paddingRight: '0.5rem',
-                          lineHeight: '1.3',
-                          position: 'relative'
+                          color: 'var(--color-black)'
                         }}
                       >
                         О нас
@@ -924,7 +479,7 @@ function App() {
 
                     <div 
                       className="nav_link"
-                      onClick={() => smoothScrollTo('section_features')}
+                      onClick={() => smoothScrollTo('products')}
                       style={{
                         flexFlow: 'column',
                         justifyContent: 'flex-start',
@@ -937,23 +492,21 @@ function App() {
                       }}
                     >
                       <div 
-                        className="nav-button_text"
+                        className="nav-button_text small-text"
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '200',
-                          color: '#F2ECE3'
+                          color: 'var(--color-black)'
                         }}
                       >
                         Наш продукт
                       </div>
                       <div 
-                        className="nav-button_text is-absolute"
+                        className="nav-button_text is-absolute small-text"
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '200',
-                          color: '#F2ECE3'
+                          color: 'var(--color-black)'
                         }}
                       >
                         Наш продукт
@@ -962,7 +515,7 @@ function App() {
 
                     <div 
                       className="nav_link"
-                      onClick={() => smoothScrollTo('section_location')}
+                      onClick={() => smoothScrollTo('section-place')}
                       style={{
                         flexFlow: 'column',
                         justifyContent: 'flex-start',
@@ -975,23 +528,21 @@ function App() {
                       }}
                     >
                       <div 
-                        className="nav-button_text"
+                        className="nav-button_text small-text"
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '200',
-                          color: '#F2ECE3'
+                          color: 'var(--color-black)'
                         }}
                       >
                         Наше место
                       </div>
                       <div 
-                        className="nav-button_text is-absolute"
+                        className="nav-button_text is-absolute small-text"
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '200',
-                          color: '#F2ECE3'
+                          color: 'var(--color-black)'
                         }}
                       >
                         Наше место
@@ -1000,7 +551,7 @@ function App() {
 
                     <div 
                       className="nav_link"
-                      onClick={() => smoothScrollTo('section_partners')}
+                      onClick={() => smoothScrollTo('partners-section')}
                       style={{
                         flexFlow: 'column',
                         justifyContent: 'flex-start',
@@ -1013,89 +564,27 @@ function App() {
                       }}
                     >
                       <div 
-                        className="nav-button_text"
+                        className="nav-button_text small-text"
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '200',
-                          color: '#F2ECE3'
+                          color: 'var(--color-black)'
                         }}
                       >
                         Партнерам
                       </div>
                       <div 
-                        className="nav-button_text is-absolute"
+                        className="nav-button_text is-absolute small-text"
                         style={{
                           fontFamily: 'Geologica, sans-serif',
                           fontSize: '1rem',
-                          fontWeight: '200',
-                          color: '#F2ECE3'
+                          color: 'var(--color-black)'
                         }}
                       >
                         Партнерам
                       </div>
                     </div>
-
       </div>
-
-                  <div 
-                    className="button-nav"
-                    onClick={() => smoothScrollTo('footer')}
-                    style={{
-                      gridColumnGap: '0.7rem',
-                      gridRowGap: '0.7rem',
-                      backgroundColor: '#2D2D2D',
-                      color: '#F2ECE3',
-                      borderRadius: '0.4rem',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                      padding: '0.75rem 1.5rem',
-                      display: 'flex',
-                      maxWidth: '100%',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <div 
-                      className="button-text"
-                      style={{
-                        fontFamily: 'Geologica, sans-serif',
-                        fontSize: '1rem',
-                        fontWeight: '200',
-                        color: '#F2ECE3',
-                        paddingLeft: '0.5rem',
-                        paddingRight: '0.5rem',
-                        lineHeight: '1.3',
-                        position: 'relative',
-                        opacity: 1,
-                        transform: 'translateY(0)',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 1, 1)'
-                      }}
-                    >
-                      Связаться
-                    </div>
-                    <div 
-                      className="button-text is-absolute"
-                      style={{
-                        fontFamily: 'Geologica, sans-serif',
-                        fontSize: '1rem',
-                        fontWeight: '200',
-                        color: '#F2ECE3',
-                        paddingLeft: '0.5rem',
-                        paddingRight: '0.5rem',
-                        lineHeight: '1.3',
-                        position: 'absolute',
-                        bottom: '-1.2rem',
-                        whiteSpace: 'nowrap',
-                        opacity: 0,
-                        transform: 'translate(-50%, 100%)',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 1, 1)'
-                      }}
-                    >
-                      Связаться
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1111,57 +600,23 @@ function App() {
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '100%',
-          height: 'calc(var(--vh, 1vh) * 100)',
-          backgroundColor: 'rgba(0, 0, 0, 0.9)',
-          zIndex: 10000,
+          right: 0,
+          bottom: 0,
+          width: '100vw',
+            height: '100vh',
+          backgroundColor: 'rgba(38, 45, 38, 0.9)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          zIndex: 9999,
           display: 'none',
           flexDirection: 'column',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          paddingTop: '120px',
+          overflow: 'hidden'
         }}
         onClick={() => setIsMobileMenuOpen(false)}
       >
-        {/* Close button in top right corner */}
-        <div
-          className="mobile-close-button"
-          onClick={() => setIsMobileMenuOpen(false)}
-          style={{
-            position: 'absolute',
-            top: '2rem',
-            right: '2rem',
-            width: '40px',
-            height: '40px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 10001
-          }}
-        >
-          <div
-            style={{
-              width: '24px',
-              height: '2px',
-              backgroundColor: '#F2ECE3',
-              transform: 'rotate(45deg)',
-              position: 'relative'
-            }}
-          >
-            <div
-              style={{
-                width: '24px',
-                height: '2px',
-                backgroundColor: '#F2ECE3',
-                transform: 'rotate(-90deg)',
-                position: 'absolute',
-                top: '0',
-                left: '0'
-              }}
-            ></div>
-          </div>
-        </div>
-        
         <div 
           className="mobile-menu-content"
           style={{
@@ -1174,710 +629,752 @@ function App() {
         >
           <div 
             className="mobile-nav-link"
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              smoothScrollTo('section_about');
-            }}
+            onClick={() => smoothScrollTo('about-section')}
             style={{
               fontFamily: 'Lora, serif',
-              color: '#F2ECE3',
-              fontSize: '1.5rem',
+              color: 'var(--color-bg)',
+              fontSize: '2rem',
               fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              cursor: 'pointer'
             }}
           >
             О нас
           </div>
           <div 
             className="mobile-nav-link"
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              smoothScrollTo('section_features');
-            }}
+            onClick={() => smoothScrollTo('products')}
             style={{
               fontFamily: 'Lora, serif',
-              color: '#F2ECE3',
-              fontSize: '1.5rem',
+              color: 'var(--color-bg)',
+              fontSize: '2rem',
               fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              cursor: 'pointer'
             }}
           >
             Наш продукт
           </div>
           <div 
             className="mobile-nav-link"
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              smoothScrollTo('section_location');
-            }}
+            onClick={() => smoothScrollTo('section-place')}
             style={{
               fontFamily: 'Lora, serif',
-              color: '#F2ECE3',
-              fontSize: '1.5rem',
+              color: 'var(--color-bg)',
+              fontSize: '2rem',
               fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              cursor: 'pointer'
             }}
           >
             Наше место
           </div>
           <div 
             className="mobile-nav-link"
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              smoothScrollTo('section_partners');
-            }}
+            onClick={() => smoothScrollTo('partners-section')}
             style={{
               fontFamily: 'Lora, serif',
-              color: '#F2ECE3',
-              fontSize: '1.5rem',
+              color: 'var(--color-bg)',
+              fontSize: '2rem',
               fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              cursor: 'pointer'
             }}
           >
             Партнерам
-          </div>
-          <div 
-            className="mobile-nav-link"
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              smoothScrollTo('footer');
-            }}
-            style={{
-              fontFamily: 'Lora, serif',
-              color: '#F2ECE3',
-              fontSize: '1.5rem',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            Связаться
           </div>
         </div>
       </div>
 
       {/* Hero Section */}
       <section 
-        id="main-content"
-        ref={heroSectionRef}
-        className="section hero" 
+          className="hero"
         style={{ 
-          position: 'relative',
-          transform: 'translate3d(0px, 0px, 0px)',
-          scale: 1
-        }}
-      >
-        <div className="padding-global" style={{ paddingLeft: '2.5rem', paddingRight: '2.5rem' }}>
-          <div 
-            className="container-large"
-            style={{
-              width: '100%',
-              maxWidth: '90vw',
-              marginLeft: 'auto',
-              marginRight: 'auto'
-            }}
-          >
-            <div 
-              className="hero-component"
-              style={{
-                zIndex: 3,
-                textAlign: 'center',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: isMobile 
-                  ? 'calc(var(--vh-initial, 1vh) * 100)' 
-                  : '100svh',
-                display: 'flex',
-                position: 'relative'
-              }}
-            >
-              <div 
-                className="hero_content"
+            backgroundImage: 'url(/hero-img.png)',
+            backgroundPosition: '50% 100%',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            minHeight: '100vh'
+          }}
+        >
+          <div className="padding-global">
+            <div className="container-large">
+              {/* Hero Content - Flex Container */}
+              <div
                 style={{
                   flexFlow: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  height: isMobile ? '70vh' : '100vh',
                   display: 'flex'
                 }}
               >
                 <h1 
-                  ref={headingRef}
-                  className="heading-style-h1"
+                  ref={heroTitleRef}
+            style={{
+              fontFamily: 'Lora, serif',
+                    fontSize: isMobile ? '9vw' : '6vw',
+                    lineHeight: '100%',
+              fontWeight: '500',
+                    color: 'var(--color-black)',
+                    textAlign: 'center',
+                    marginBottom: '1rem'
+                  }}
+                >
+                  {['Ферма, которой', 'можно доверять'].map((line, lineIndex) => (
+                    <React.Fragment key={lineIndex}>
+                      {line.split('').map((char, charIndex) => (
+                        <span 
+                          key={`${lineIndex}-${charIndex}`}
+                          className="letter"
+                          style={{ display: 'inline-block' }}
+                        >
+                          {char === ' ' ? '\u00A0' : char}
+                        </span>
+                      ))}
+                      {lineIndex === 0 && <br />}
+                    </React.Fragment>
+                  ))}
+                </h1>
+                <div 
+                  ref={signatureRef}
+                  className="text-signature"
                   style={{
-                    fontSize: '8vw',
-                    lineHeight: 1,
-                    color: '#F2ECE3',
+                    marginLeft: !isMobile ? '400px' : undefined,
+                    fontSize: !isMobile ? '4vw' : undefined
+                  }}
+                >
+                  {'Мы храним традиции'.split('').map((char, index) => (
+                    <span 
+                      key={index}
+                      className="letter"
+                      style={{ display: 'inline-block' }}
+                    >
+                      {char === ' ' ? '\u00A0' : char}
+                    </span>
+                  ))}
+        </div>
+      </div>
+
+              {/* Grid Container */}
+        <div 
+            id="products"
+            className="products"
+            ref={heroCardsRef}
+        style={{ 
+                  gap: '2rem',
+                  gridTemplateRows: 'auto',
+                  gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr',
+                gridAutoColumns: '1fr',
+                  alignItems: 'stretch',
+                  paddingBottom: isMobile ? '120px' : '400px',
+                display: 'grid'
+                }}
+              >
+                {/* Grid Item 1 */}
+                <div 
+                  className="hero-card"
+            style={{
+                    minHeight: '440px',
+                    padding: '2.5rem 2rem',
+                      position: 'relative',
+                    backgroundColor: 'rgba(228, 228, 228, 0.1)',
+                    borderRadius: '1rem',
+                    backdropFilter: 'blur(16px)',
+                display: 'flex',
+                    flexDirection: 'column',
+                  alignItems: 'center',
+                    textAlign: 'center'
+                }}
+              >
+                <h3 
+              style={{
+                      fontFamily: 'Lora, serif',
+                      fontSize: isMobile ? '1.85rem' : '2rem',
+                      color: 'var(--color-black)',
+                      margin: 0
+                    }}
+                  >
+                    Абердин-Ангус
+                </h3>
+                <div
+                    className="catalog-description"
+              style={{
+                      paddingTop: '2.5rem'
+                    }}
+                  >
+                    <p 
+                      className="text-medium"
+                style={{
+                        fontFamily: 'Geologica, sans-serif',
+                        fontSize: isMobile ? '1rem' : '1.25rem',
+                        fontWeight: '300',
+                        color: 'var(--color-black)',
+                        lineHeight: '1.5',
+                        margin: 0
+                      }}
+                    >
+                      Мраморная порода, которую ценят за структуру, сочный и{'\u00A0'}нежный вкус.
+                      <br /><br />
+                      Мы{'\u00A0'}окружаем наших коров и{'\u00A0'}бычков любовью и{'\u00A0'}заботой. Они свободно пасутся на{'\u00A0'}пастбищах, получают простой и{'\u00A0'}натуральный рацион без заменителей и{'\u00A0'}искусственных стимуляторов.
+                    </p>
+          </div>
+        </div>
+
+                {/* Grid Item 2 */}
+          <div 
+                  className="hero-card"
+                style={{
+                    height: '100%',
+                    minHeight: '420px',
+                    padding: '2.5rem 2rem',
+                    position: 'relative',
+                    backgroundColor: 'rgba(210, 210, 210, 0.1)',
+                    borderRadius: '1rem',
+                    backdropFilter: 'blur(16px)',
+                display: 'flex',
+                flexDirection: 'column',
+                  alignItems: 'center',
+                textAlign: 'center'
+                }}
+              >
+                <h3 
+                  style={{
+                    fontFamily: 'Lora, serif',
+                      fontSize: isMobile ? '1.85rem' : '2rem',
+                      color: 'var(--color-black)',
                     margin: 0
                   }}
                 >
-                  РОМАНОВЫ ПРОСТОРЫ
-                </h1>
-                
+                    Овцы-Дропер
+                </h3>
                 <div 
-                  ref={subtitleRef}
-                  className="hero-subtitle-text small-text"
+                    className="catalog-description"
                   style={{
-                    maxWidth: '64ch',
-                    fontSize: '1rem',
-                    fontWeight: '200',
-                    lineHeight: 1.5,
-                    color: 'rgb(242, 236, 227)',
-                    margin: '0px',
-                    textAlign: 'center',
-                    marginLeft: 'auto',
-                    marginRight: 'auto'
-                  }}
-                >
-                  Семейная ферма, где заботятся о здоровье животных и земле.<br />
-                  Мясные продукты из экологически чистой деревни для оптовых поставок и HoReCa
-                </div>
-              </div>
-            </div>
+                      paddingTop: '2.5rem'
+                    }}
+                  >
+                    <p 
+                      className="text-medium"
+                  style={{
+                    fontFamily: 'Geologica, sans-serif',
+                        fontSize: isMobile ? '1rem' : '1.25rem',
+                        fontWeight: '300',
+                        color: 'var(--color-black)',
+                        lineHeight: '1.5',
+                    margin: 0
+                      }}
+                    >
+                      Наши овцы круглый год проводят время на{'\u00A0'}чистых лугах, питаясь свежими травами и{'\u00A0'}злаками. Зимой их{'\u00A0'}рацион дополняют качественное сено и{'\u00A0'}зерновые корма. Мы{'\u00A0'}заботимся о{'\u00A0'}здоровье стада, используем только необходимый минимум ветеринарных препаратов и{'\u00A0'}следим за{'\u00A0'}естественными условиями содержания. Благодаря такому подходу мясо и{'\u00A0'}шерсть овец получаются нежными, ароматными и{'\u00A0'}по-настоящему натуральными{'\u00A0'}—{'\u00A0'}результат уважения к{'\u00A0'}природе и{'\u00A0'}кропотливой работы.
+                  </p>
           </div>
         </div>
         
+                {/* Grid Item 3 */}
         <div 
-          className="hero-background" 
+                  className="hero-card"
           style={{
-            zIndex: 1,
-            borderRadius: '0.5rem',
-            width: '100%',
             height: '100%',
-            padding: '1rem',
-            position: 'absolute',
-            inset: '0%',
-            overflow: 'hidden'
-          }}
-        >
-          <div 
-            className="background-video"
+                    minHeight: '440px',
+                    padding: '2.5rem 2rem',
+                      position: 'relative',
+                    backgroundColor: 'rgba(210, 210, 210, 0.1)',
+                    borderRadius: '1rem',
+                    backdropFilter: 'blur(16px)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                    textAlign: 'center'
+                  }}
+                >
+                  <h3 
             style={{
-              width: '100%',
-              height: '100%',
-              zIndex: 2,
-              borderRadius: '0.5rem',
-              position: 'relative'
-            }}
-          >
-            <video
-              ref={heroVideoRef}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
+                    fontFamily: 'Lora, serif',
+                      fontSize: isMobile ? '1.85rem' : '2rem',
+                      color: 'var(--color-black)',
+                    margin: 0
+                    }}
+                  >
+                    Птица
+                  </h3>
+                  <div 
+                    className="catalog-description"
               style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                borderRadius: '0.5rem',
-                pointerEvents: 'none',
-                WebkitTouchCallout: 'none',
-                WebkitUserSelect: 'none'
-              }}
-            >
-              <source src="/Hero-video.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            
-            <div 
-              className="video-overlay"
+                      paddingTop: '2.5rem'
+                    }}
+                  >
+                    <p 
+                      className="text-medium"
               style={{
-                backgroundColor: 'rgba(0, 0, 0, 0.10)',
-                zIndex: 2,
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                inset: '0%',
-                borderRadius: '0.5rem'
-              }}
-            ></div>
+                    fontFamily: 'Geologica, sans-serif',
+                        fontSize: isMobile ? '1rem' : '1.25rem',
+                        fontWeight: '300',
+                        color: 'var(--color-black)',
+                        lineHeight: '1.5',
+                    margin: 0
+                      }}
+                    >
+                      Наша птица растёт на{'\u00A0'}свободном выгуле, дышит свежим воздухом и{'\u00A0'}получает сбалансированное натуральное питание без лишних добавок. Мы{'\u00A0'}создаём для неё условия, максимально близкие к{'\u00A0'}естественным, чтобы каждая курица чувствовала себя спокойно и{'\u00A0'}свободно. Такой уход делает мясо особенно сочным и{'\u00A0'}вкусным, а{'\u00A0'}каждое яйцо{'\u00A0'}—{'\u00A0'}питательным и{'\u00A0'}насыщенным природной пользой.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="section_about" className="section_about">
-        <div className="padding-global" style={{ paddingLeft: '2.5rem', paddingRight: '2.5rem' }}>
-          <div 
-            className="container-large"
+      <section 
+        id="about-section"
+        className="about-section"
             style={{
-              width: '100%',
-              maxWidth: '90vw',
-              marginLeft: 'auto',
-              marginRight: 'auto'
+          backgroundColor: 'var(--color-dark-green)'
             }}
           >
-            <div 
-              ref={trackRef}
-              className="track"
+        <div className="padding-global">
+          <div className="container-medium"
               style={{
-                gap: '4rem',
-                flexFlow: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                marginBottom: '5rem',
-                paddingTop: '12rem',
-                paddingBottom: '0',
-                display: 'flex',
-                position: 'relative'
+              width: isMobile ? '90vw' : '75vw',
+              marginLeft: 'auto',
+              marginRight: 'auto'
               }}
             >
               <div 
-                className="page-headings text-align-center"
+              className="about-content"
                 style={{
-                  gridColumnGap: '1rem',
-                  gridRowGap: '1rem',
+                gridColumnGap: '2rem',
+                gridRowGap: '2rem',
                   flexFlow: 'column',
-                  justifyContent: 'center',
                   alignItems: 'center',
-                  maxWidth: '100ch',
+                paddingTop: isMobile ? '100px' : '180px',
+                paddingBottom: isMobile ? '100px' : '180px',
+                paddingRight: 0,
                   display: 'flex'
                 }}
               >
-                <h3 
-                  className="text-style-allcaps"
-                  style={{
-                    fontFamily: 'Geologica, sans-serif',
-                    fontSize: '1rem',
-                    fontWeight: '200',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    color: '#1f2937',
-                    margin: 0,
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  Возрождаем традиции ради будущего
-                </h3>
-                
-                <div
-                  className="heading-style-h2"
+              <p 
+                className="large-text"
                   style={{
                     fontFamily: 'Lora, serif',
-                    fontSize: '1.5rem',
-                    fontWeight: '200',
-                    lineHeight: 1.4,
-                    color: '#1f2937',
-                    margin: 0,
-                    textAlign: 'center'
-                  }}
-                >
-                  Мы — семья, которая решила сохранить родовую землю и вдохнуть жизнь в традиции предков. В самом сердце Воронежской области, там, где жили наши бабушки и дедушки, мы создали ферму — и вместе с ней будущее для наших детей. Здесь каждое животное — часть большой истории, а каждый день наполнен трудом, любовью и вниманием к природе. Мы верим: ферма — это не просто хозяйство, а особый образ жизни и ответственность. Это место, где традиции встречаются с современными технологиями, а качество становится главным смыслом.
-                </div>
+                  fontSize: isMobile ? '1.25rem' : '1.5rem',
+                  color: 'var(--color-bg)',
+                  lineHeight: '1.5',
+                  textAlign: isMobile ? 'center' : 'left',
+                  margin: 0
+                }}
+              >
+                Мы{'\u00A0'}— семья, которая решила сохранить родовую землю и{'\u00A0'}вдохнуть жизнь в{'\u00A0'}традиции предков. В{'\u00A0'}самом сердце Воронежской области, там, где жили наши бабушки и{'\u00A0'}дедушки, мы{'\u00A0'}создали ферму{'\u00A0'}— и{'\u00A0'}вместе с{'\u00A0'}ней будущее для наших детей. Здесь каждое животное{'\u00A0'}— часть большой истории, а{'\u00A0'}каждый день наполнен трудом, любовью и{'\u00A0'}вниманием к{'\u00A0'}природе. Мы{'\u00A0'}верим: ферма{'\u00A0'}— это не{'\u00A0'}просто хозяйство, а{'\u00A0'}особый образ жизни и{'\u00A0'}ответственность. Это место, где традиции встречаются с{'\u00A0'}современными технологиями, а{'\u00A0'}качество становится главным смыслом.
+              </p>
+
+              <div 
+                ref={aboutSignatureRef}
+                className="text-signature"
+                  style={{
+                  color: 'rgb(181, 154, 127)',
+                  fontSize: isMobile ? '2rem' : '3vw',
+                  marginTop: '2rem'
+                }}
+              >
+                {'Ферма, которой можно доверять'.split('').map((char, index) => (
+                  <span 
+                    key={index}
+                    className="letter"
+                    style={{ display: 'inline-block' }}
+                  >
+                    {char === ' ' ? '\u00A0' : char}
+                  </span>
+                ))}
               </div>
               
               <div 
-                className="photos-wrap"
                 style={{
-                  width: '80vh',
-                  height: '45vh',
-                  position: 'relative'
-                }}
-              >
-                <div 
-                  className="photo-wrap_first"
-                  style={{
-                    borderRadius: '1rem',
-                    width: '100%',
-                    height: '100%',
-                    position: 'absolute',
-                    inset: '0%',
-                    overflow: 'hidden'
+                  marginTop: '-100px',
+                  marginRight: isMobile ? '-200px' : '-400px',
+                  opacity: 0.2,
+                    display: 'flex',
+                  justifyContent: 'center'
                   }}
                 >
                   <img
-                    src="/pic1.jpg"
-                    alt="Ферма фото 1"
-                    loading="lazy"
+                        src="/logo-R.svg" 
+                        alt="Logo" 
                     style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      borderRadius: '1rem'
-                    }}
-                  />
-                </div>
-                
+                    width: isMobile ? '80px' : '133px',
+                      height: 'auto',
+                    transform: 'rotate(18deg)',
+                    filter: 'brightness(0) saturate(100%) invert(96%) sepia(9%) saturate(407%) hue-rotate(327deg) brightness(98%) contrast(92%)'
+                        }}
+                      />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Values Section */}
       <section 
-        id="section_features"
-        ref={featuresRef}
-        className="section_features"
-      >
-        <div className="padding-global" style={{
-          paddingLeft: '1.5rem',
-          paddingRight: '1.5rem'
-        }}>
-          <div className="container-large" style={{
-            width: '100%',
-            maxWidth: '80rem',
-            margin: '0 auto'
-          }}>
-            <div className="features-component" style={{
-              gridColumnGap: '8rem',
-              gridRowGap: '8rem',
+        className="values-section"
+                    style={{
+                    position: 'relative',
+          backgroundImage: 'url(/value-img.png)',
+          backgroundPosition: '50% 50%',
+                    backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat'
+                  }}
+                >
+        {/* Gradient Overlay */}
+        <div 
+                    style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+            background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))',
+            pointerEvents: 'none'
+          }}
+        />
+        
+        <div className="padding-global" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="container-medium"
+                    style={{
+              width: isMobile ? '90vw' : '75vw',
+            marginLeft: 'auto',
+            marginRight: 'auto'
+                    }}
+                  >
+                    <div 
+              className="values-content"
+              style={{
+                gap: isMobile ? '2rem' : '3rem',
               flexFlow: 'column',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              marginBottom: '12rem',
+                alignItems: isMobile ? 'center' : 'flex-start',
+                justifyContent: 'space-between',
+                paddingTop: isMobile ? '100px' : '180px',
+                paddingBottom: isMobile ? '100px' : '180px',
+                paddingRight: '0px',
+                height: '100vh',
               display: 'flex'
-            }}>
-              {/* 1) Page headings */}
-              <div className="page-headings text-align-center" style={{
+              }}
+            >
+              <div
+                style={{
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center'
-              }}>
-                <h3 
-                  className="text-style-allcaps"
+                  justifyContent: 'space-between',
+                  height: '100%'
+                }}
+              >
+                <div
                   style={{
-                    fontFamily: 'Geologica, sans-serif',
-                    fontSize: '1rem',
-                    fontWeight: '200',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    color: '#1f2937',
-                    margin: 0,
-                    whiteSpace: 'nowrap'
+                    width: isMobile ? '100%' : '50vw',
+                    textAlign: isMobile ? 'center' : 'left',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: isMobile ? '2rem' : '3rem'
                   }}
                 >
-                  Наш продукт
+                  <h3 
+                  style={{
+                    fontFamily: 'Lora, serif',
+                      fontSize: isMobile ? '2rem' : '2.5rem',
+                      fontWeight: '500',
+                      color: 'var(--color-bg)',
+                      textAlign: isMobile ? 'center' : 'left',
+                    margin: 0
+                    }}
+                  >
+                    Наши ценности
                 </h3>
-                
-                <h2 
-                  className="heading-style-h2"
-                  style={{
-                    fontFamily: 'Lora, serif',
-                    fontSize: '1.5rem',
-                    fontWeight: '200',
-                    lineHeight: 1.4,
-                    color: '#1f2937',
-                    margin: 0,
-                    textAlign: 'center'
-                  }}
-                >
-                  Рацион простой и натуральный: никаких заменителей или искусственных стимуляторов. Только чистые корма и вода из собственной скважины.
-                </h2>
-              </div>
 
-              {/* 2) Features wrap */}
-              <div className="features-wrap" style={{
-                gridColumnGap: '5rem',
-                gridRowGap: '5rem',
-                gridTemplateRows: 'auto',
-                gridTemplateColumns: '1fr 1fr',
-                gridAutoColumns: '1fr',
-                alignItems: 'center',
-                display: 'grid'
-              }}>
-                {/* Features image */}
-                <div className="features_image" style={{
-                  borderRadius: '1rem',
-                  width: '40vw',
-                  maxWidth: '41rem',
-                  height: '37rem',
-                  marginLeft: 'auto',
-                  overflow: 'hidden'
-                }}>
-                  <img 
-                    src="/features_image1.jpg" 
-                    alt="Features image 1" 
-                    loading="lazy"
+                  <div
                     style={{
                       width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
+                      textAlign: isMobile ? 'center' : 'left'
                     }}
-                  />
-                </div>
-
-                {/* Features content */}
-                <div className="features_content" style={{
-                  flexFlow: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  display: 'flex'
-                }}>
-                  {/* Heading */}
-                  <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
+                  >
+                    <p 
+                      className="large-text"
+                      style={{
                     fontFamily: 'Lora, serif',
-                    fontSize: '3rem',
-                    fontWeight: '200',
-                    textTransform: 'uppercase',
-                    color: '#1f2937',
+                        fontSize: isMobile ? '1.25rem' : '1.5rem',
+                        color: 'var(--color-bg)',
+                        lineHeight: '1.5',
                     margin: 0
-                  }}>
-                    Абердин-ангус
-                  </h4>
-                  
-                  {/* Divider image */}
-                  <img 
-                    src="/divider-img.svg" 
-                    alt="Divider"
-                    loading="lazy"
-                    style={{
-                      width: 'auto',
-                      height: 'auto',
-                      margin: '1rem 0'
-                    }}
-                  />
-                  
-                  {/* Text */}
-                  <div style={{
-                    fontFamily: 'Geologica, sans-serif',
-                    fontSize: '1.125rem',
-                    fontWeight: '200',
-                    lineHeight: 1.6,
-                    color: '#1f2937',
-                    margin: 0
-                  }}>
-                    <p className="text-size-medium" style={{ margin: 0, marginBottom: '1.5rem' }}>
-                      Абердин-ангус — мраморная порода, которую ценят за структуру, сочный и нежный вкус.
-                    </p>
-                    <p className="text-size-medium" style={{ margin: 0, marginBottom: '1.5rem' }}>
-                      Мы окружаем наших коров и бычков любовью и заботой. Они свободно пасутся на пастбищах, получают простой и натуральный рацион без заменителей и искусственных стимуляторов.
-                    </p>
-                    <p className="text-size-medium" style={{ margin: 0 }}>
-                      Благодаря тому, что у нас Абердин-ангус питается травяным кормом, говядина имеет яркий вкус и нежные жировые прослойки. Она более постная и содержит больше белка, чем у животных на зерновом откорме.
-                    </p>
-                  </div>
-      </div>
-              </div>
-
-              {/* 3) Features wrap is-middle */}
-              <div className="features-wrap is-middle" style={{
-                gridColumnGap: '5rem',
-                gridRowGap: '5rem',
-                gridTemplateRows: 'auto',
-                gridTemplateColumns: '1fr 1fr',
-                gridAutoColumns: '1fr',
-                alignItems: 'center',
-                display: 'grid'
-              }}>
-                {/* Features content - слева */}
-                <div className="features_content" style={{
-                  flexFlow: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  display: 'flex'
-                }}>
-                  {/* Heading */}
-                  <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
-                    fontFamily: 'Lora, serif',
-                    fontSize: '3rem',
-                    fontWeight: '200',
-                    textTransform: 'uppercase',
-                    color: '#1f2937',
-                    margin: 0
-                  }}>
-                    Овцы-Дропер 
-                  </h4>
-                  
-                  {/* Divider image */}
-                  <img 
-                    src="/divider-img.svg" 
-                    alt="Divider"
-                    loading="lazy"
-                    style={{
-                      width: 'auto',
-                      height: 'auto',
-                      margin: '1rem 0'
-                    }}
-                  />
-                  
-                  {/* Text */}
-                  <p className="text-size-medium" style={{
-                    fontFamily: 'Geologica, sans-serif',
-                    fontSize: '1.125rem',
-                    fontWeight: '200',
-                    lineHeight: 1.6,
-                    color: '#1f2937',
-                    margin: 0
-                  }}>
-                    Наши овцы круглый год проводят время на чистых лугах, питаясь свежими травами и злаками. Зимой их рацион дополняют качественное сено и зерновые корма. Мы заботимся о здоровье стада, используем только необходимый минимум ветеринарных препаратов и следим за естественными условиями содержания. Благодаря такому подходу мясо и шерсть овец получаются нежными, ароматными и по-настоящему натуральными — результат уважения к природе и кропотливой работы.
-                  </p>
-                </div>
-
-                {/* Features image - справа */}
-                <div className="features_image" style={{
-                  borderRadius: '1rem',
-                  width: '40vw',
-                  maxWidth: '41rem',
-                  height: '37rem',
-                  marginLeft: 'auto',
-                  overflow: 'hidden'
-                }}>
-                  <img 
-                    src="/features_image2.jpg" 
-                    alt="Features image 2"
-                    loading="lazy"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* 4) Features wrap */}
-              <div className="features-wrap" style={{
-                gridColumnGap: '5rem',
-                gridRowGap: '5rem',
-                gridTemplateRows: 'auto',
-                gridTemplateColumns: '1fr 1fr',
-                gridAutoColumns: '1fr',
-                alignItems: 'center',
-                display: 'grid'
-              }}>
-                {/* Features image */}
-                <div className="features_image" style={{
-                  borderRadius: '1rem',
-                  width: '40vw',
-                  maxWidth: '41rem',
-                  height: '37rem',
-                  marginLeft: 'auto',
-                  overflow: 'hidden'
-                }}>
-                  <img 
-                    src="/features_image3.jpg" 
-                    alt="Features image 3"
-                    loading="lazy"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                </div>
-
-                {/* Features content */}
-                <div className="features_content" style={{
-                  flexFlow: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  display: 'flex'
-                }}>
-                  {/* Heading */}
-                  <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
-                    fontFamily: 'Lora, serif',
-                    fontSize: '3rem',
-                    fontWeight: '200',
-                    textTransform: 'uppercase',
-                    color: '#1f2937',
-                    margin: 0
-                  }}>
-                    Птица
-                  </h4>
-                  
-                  {/* Divider image */}
-                  <img 
-                    src="/divider-img.svg" 
-                    alt="Divider"
-                    loading="lazy"
-                    style={{
-                      width: 'auto',
-                      height: 'auto',
-                      margin: '1rem 0'
-                    }}
-                  />
-                  
-                  {/* Text */}
-                  <p className="text-size-medium" style={{
-                    fontFamily: 'Geologica, sans-serif',
-                    fontSize: '1.125rem',
-                    fontWeight: '200',
-                    lineHeight: 1.6,
-                    color: '#1f2937',
-                    margin: 0
-                  }}>
-                    Наша птица растёт на свободном выгуле, дышит свежим воздухом и получает сбалансированное натуральное питание без лишних добавок. Мы создаём для неё условия, максимально близкие к естественным, чтобы каждая курица чувствовала себя спокойно и свободно. Такой уход делает мясо особенно сочным и вкусным, а каждое яйцо — питательным и насыщенным природной пользой.
+                      }}
+                    >
+                      Мы{'\u00A0'}верим в{'\u00A0'}мир, в{'\u00A0'}котором еда дарит здоровье и{'\u00A0'}означает честное, уважительное отношение к{'\u00A0'}природе и{'\u00A0'}людям. Мир, где вы{'\u00A0'}точно знаете, что продукты выращены в{'\u00A0'}гармонии с{'\u00A0'}землёй и{'\u00A0'}вековыми традициями.
+                      <br /><br />
+                      Наша миссия{'\u00A0'}— сохранять и{'\u00A0'}развивать деревню, уважать землю, передавать опыт предков и{'\u00A0'}кормить людей продуктом, которому можно доверять.
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Sticky CTA Section */}
-      <section className="section_cta">
-        <div className="track-cta" ref={ctaRef} style={{
-          width: '100%',
-          height: isMobile ? '800px' : 'calc(var(--vh, 1vh) * 100)',
-          position: 'relative'
-        }}>
-          <div className="sticky-cta" style={{
-            height: isMobile ? '800px' : 'calc(var(--vh, 1vh) * 100)',
-            display: 'flex',
-            position: 'sticky',
-            top: '0'
-          }}>
-            <div className="cta-video_background" style={{
-              backgroundColor: '#F2ECE3',
-              borderRadius: '3rem',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div className="cta-content" style={{
-                width: '100%',
-                height: isMobile ? '800px' : '100%',
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 2,
-                ...(isMobile && {
-                  minHeight: '800px',
-                  maxHeight: '800px',
-                  transition: 'none'
-                })
-              }}>
-                <div className="cta-logo-wrap" style={{ width: '50vw', marginBottom: '2rem' }}>
-                  <img 
-                    src="/Horizontal logo__beige.svg" 
-                    alt="Romanovy Prostory Logo"
-                    loading="lazy"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      filter: 'brightness(0) saturate(100%) invert(96%) sepia(4%) saturate(1020%) hue-rotate(315deg) brightness(95%) contrast(92%)'
-                    }}
-                  />
-                </div>
                 <div 
                   className="button-nav"
                   onClick={() => smoothScrollTo('footer')}
-                  style={{
-                    gridColumnGap: '0.7rem',
-                    gridRowGap: '0.7rem',
-                    backgroundColor: '#2D2D2D',
-                    color: '#F2ECE3',
+                    style={{
+                    gap: '0.7rem',
+                    backgroundColor: 'var(--color-dark-green)',
+                    color: 'var(--color-bg)',
                     borderRadius: '0.4rem',
                     justifyContent: 'flex-start',
                     alignItems: 'center',
                     padding: '0.75rem 1.5rem',
                     display: 'flex',
-                    maxWidth: '100%',
+                      width: 'auto',
+                    alignSelf: isMobile ? 'center' : 'flex-start',
+                    position: 'relative',
+                    overflow: 'hidden',
+                      cursor: 'pointer',
+                      marginTop: isMobile ? '10px' : '1rem'
+                  }}
+                >
+                  <div 
+                    className="button-text"
+                    style={{
+                    fontFamily: 'Geologica, sans-serif',
+                      fontSize: isMobile ? '0.875rem' : '1rem',
+                      color: 'var(--color-bg)',
+                      paddingLeft: '0.5rem',
+                      paddingRight: '0.5rem',
+                      lineHeight: '1.3',
+                      position: 'relative',
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                      СВЯЗАТЬСЯ
+                  </div>
+                  <div 
+                    className="button-text is-absolute"
+                    style={{
+                      fontFamily: 'Geologica, sans-serif',
+                      fontSize: isMobile ? '0.875rem' : '1rem',
+                      color: 'var(--color-bg)',
+                      paddingLeft: '0.5rem',
+                      paddingRight: '0.5rem',
+                      lineHeight: '1.3',
+                      position: 'absolute',
+                      bottom: '-1.2rem',
+                      whiteSpace: 'nowrap',
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                      СВЯЗАТЬСЯ
+      </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partners Section */}
+      <section 
+        id="partners-section"
+        className="partners-section"
+                style={{
+          backgroundColor: 'var(--color-dark-green)'
+        }}
+      >
+        <div className="padding-global">
+          <div 
+            className="container-medium"
+              style={{
+              width: isMobile ? '90vw' : '75vw',
+            marginLeft: 'auto',
+            marginRight: 'auto'
+            }}
+          >
+            <div 
+              className="partners-content"
+              style={{
+                gap: isMobile ? '3rem' : '4rem',
+                flexFlow: isMobile ? 'column' : 'row',
+                alignItems: 'center',
+                paddingTop: isMobile ? '100px' : '180px',
+                paddingBottom: isMobile ? '100px' : '180px',
+                paddingRight: '0px',
+                  display: 'flex'
+              }}
+            >
+              {/* Left - Image and Logo Container */}
+              <div
+                    style={{
+                    display: 'flex',
+                  flexDirection: 'column',
+                  gap: '2rem',
+                  alignItems: 'center'
+                }}
+              >
+                {/* Image */}
+                <div
+                        style={{
+                    width: isMobile ? '100%' : '580px',
+                    aspectRatio: '1 / 1',
+                  borderRadius: '1rem',
+                  overflow: 'hidden'
+                  }}
+                >
+                  <img 
+                    src="/partner-img.jpg" 
+                    alt="Партнеры" 
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+              </div>
+
+                {/* Logo */}
+                <img 
+                  src="/Logo with illustration_dark green.png" 
+                  alt="Логотип" 
+                    style={{
+                    width: isMobile ? '168px' : '240px',
+                      height: 'auto',
+                    objectFit: 'contain',
+                    marginTop: isMobile ? '-100px' : '-120px',
+                    marginRight: isMobile ? '-260px' : '-400px',
+                    transform: 'rotate(8deg)'
+                    }}
+                  />
+                </div>
+
+              {/* Right - Content */}
+              <div
+                    style={{
+                      display: 'flex',
+                  flexDirection: 'column',
+                  gap: isMobile ? '2rem' : '3rem',
+                  alignItems: isMobile ? 'center' : 'flex-start'
+                }}
+              >
+                <h3 
+                      style={{
+                    fontFamily: 'Lora, serif',
+                    fontSize: isMobile ? '2rem' : '2.5rem',
+                    fontWeight: '500',
+                    color: 'var(--color-bg)',
+                    textAlign: isMobile ? 'center' : 'left',
+                    margin: 0
+                  }}
+                >
+                  Мы предлагаем
+                </h3>
+                
+                <ul
+                  className="large-text"
+                    style={{
+                    fontFamily: 'Lora, serif',
+                    fontSize: isMobile ? '1.25rem' : '1.5rem',
+                    color: 'var(--color-bg)',
+                    lineHeight: '1.5',
+                    margin: 0,
+                    paddingLeft: '1.5rem',
+                    listStyleType: 'disc',
+                    textAlign: 'left'
+                  }}
+                >
+                  <li>Гибкие условия поставки (объёмы, тестовые партии);</li>
+                  <li>Индивидуальные решения для ресторанов и магазинов;</li>
+                  <li>Гарантию качества (лично отвечаем за каждую поставленную партию, предоставляем сертификаты);</li>
+                  <li>Своевременную поставку (тщательно контролируем логистику и температурные режимы).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section 
+        className="cta-section"
+        style={{
+              position: 'relative',
+          height: '100vh',
+              overflow: 'hidden'
+        }}
+      >
+        {/* Video Background */}
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                  style={{
+                width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    pointerEvents: 'none',
+            WebkitUserSelect: 'none',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1
+                  }}
+                >
+                  <source src="/CTA-video.mp4" type="video/mp4" />
+                </video>
+                
+        {/* Video Overlay */}
+        <div 
+          className="video-overlay"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.38)',
+            zIndex: 2
+          }}
+        />
+
+        {/* Logo Content */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 3,
+                display: 'flex',
+                justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+                alignItems: 'center',
+              gap: '2rem'
+            }}
+          >
+                  <img 
+                    src="/Horizontal logo__beige.svg" 
+                    alt="Romanovy Prostory Logo"
+                    style={{
+                width: isMobile ? '80vw' : '50vw',
+                      height: 'auto',
+                maxWidth: '600px',
+                filter: 'brightness(0) saturate(100%) invert(96%) sepia(9%) saturate(407%) hue-rotate(327deg) brightness(98%) contrast(92%)'
+                    }}
+                  />
+
+            {/* Button */}
+                <div 
+                  className="button-nav"
+                  onClick={() => smoothScrollTo('footer')}
+                  style={{
+                gap: '0.7rem',
+                backgroundColor: 'var(--color-bg)',
+                color: 'var(--color-black)',
+                    borderRadius: '0.4rem',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    padding: '0.75rem 1.5rem',
+                    display: 'flex',
+                width: 'auto',
                     position: 'relative',
                     overflow: 'hidden',
                     cursor: 'pointer'
@@ -1887,188 +1384,90 @@ function App() {
                     className="button-text"
                     style={{
                       fontFamily: 'Geologica, sans-serif',
-                      fontSize: '1rem',
-                      fontWeight: '200',
-                      color: '#F2ECE3',
+                      fontSize: isMobile ? '0.875rem' : '1rem',
+                  color: 'var(--color-black)',
                       paddingLeft: '0.5rem',
                       paddingRight: '0.5rem',
                       lineHeight: '1.3',
                       position: 'relative',
-                      opacity: 1,
-                      transform: 'translateY(0)',
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 1, 1)'
+                  textTransform: 'uppercase'
                     }}
                   >
-                    Связаться
+                СВЯЗАТЬСЯ
                   </div>
                   <div 
                     className="button-text is-absolute"
                     style={{
                       fontFamily: 'Geologica, sans-serif',
-                      fontSize: '1rem',
-                      fontWeight: '200',
-                      color: '#F2ECE3',
+                      fontSize: isMobile ? '0.875rem' : '1rem',
+                  color: 'var(--color-black)',
                       paddingLeft: '0.5rem',
                       paddingRight: '0.5rem',
                       lineHeight: '1.3',
                       position: 'absolute',
                       bottom: '-1.2rem',
                       whiteSpace: 'nowrap',
-                      opacity: 0,
-                      transform: 'translate(-50%, 100%)',
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 1, 1)'
+                  textTransform: 'uppercase'
                     }}
                   >
-                    Связаться
+                СВЯЗАТЬСЯ
                   </div>
                 </div>
               </div>
-              
-              <div className="background-video absolute" style={{
-                zIndex: 1,
-                position: 'absolute',
-                inset: '0%',
-                borderRadius: '0',
-                width: '100%',
-                height: '100%'
-              }}>
-                <video
-                  ref={ctaVideoRef}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '0',
-                    pointerEvents: 'none',
-                    WebkitTouchCallout: 'none',
-                    WebkitUserSelect: 'none'
-                  }}
-                >
-                  <source src="/CTA-video.mp4" type="video/mp4" />
-                </video>
-                
-                <div className="video-overlay" style={{
-                  opacity: 0.46,
-                  backgroundImage: 'radial-gradient(circle, #17141100 32%, #000000ba)',
-                  zIndex: 2,
-                  width: '100%',
-                  height: '100%',
-                  position: 'absolute',
-                  inset: '0%',
-                  borderRadius: '0'
-                }}>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Location Section */}
-      <section id="section_location" ref={locationRef} className="section_location">
-        <div className="padding-global" style={{
-          paddingLeft: '1.5rem',
-          paddingRight: '1.5rem'
-        }}>
-          <div className="container-medium" style={{
-            width: '100%',
-            maxWidth: '90rem',
-            marginLeft: 'auto',
-            marginRight: 'auto'
-          }}>
-            <div className="location-wrap" style={{
-              gap: '4rem',
-              flexFlow: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-              marginBottom: '5rem',
-              paddingTop: '12rem',
-              paddingBottom: '0',
-              display: 'flex'
-            }}>
-              {/* 1) Page headings */}
-              <div className="page-headings text-align-center is-location" style={{
-                gap: '1rem',
-                flexFlow: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                maxWidth: '100ch',
-                display: 'flex'
-              }}>
-                {/* 1) Text style allcaps */}
-                <h3 className="text-style-allcaps" style={{
-                  fontFamily: 'Geologica, sans-serif',
-                  fontSize: '1rem',
-                  fontWeight: '200',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  color: '#1f2937',
-                  margin: 0
-                }}>
-                  МЕСТО
-                </h3>
-                
-                {/* 2) Max width medium */}
-                <div className="max-width-medium" style={{
+      {/* Articles Section */}
+      <section 
+        className="section-articles"
+                  style={{
+          backgroundColor: 'var(--color-bg)'
+        }}
+      >
+        <div className="padding-global">
+          <div className="container-large">
+            <div 
+              className="articles-content article_grid"
+              style={{
+                gap: '2rem',
+                gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+                gridTemplateRows: isMobile ? '1fr 1fr' : '1fr',
                   width: '100%',
-                  maxWidth: '72ch'
-                }}>
-                  <h2 className="heading-style-h2" style={{
-                    fontFamily: 'Lora, serif',
-                    fontSize: '1.5rem',
-                    fontWeight: '200',
-                    lineHeight: 1.4,
-                    color: '#1f2937',
-                    margin: 0,
-                    textAlign: 'center'
-                  }}>
-                    Родная земля — источник силы и вдохновения. Наша ферма находится в Воронежской области, в Лискинском районе, селе Аношкино. Это земля наших предков, которая хранит память поколений. Здесь — простор, тишина и настоящая деревенская жизнь. Мы создали ферму, где к животным относятся с уважением, а чистая среда и натуральные корма стали основой вкуса, который невозможно подменить.
-                  </h2>
-                </div>
-              </div>
-              
-              {/* Location grid */}
-              <div className="location_grid" style={{
-                gap: '1rem',
-                gridTemplateColumns: '1fr 1fr',
-                gridTemplateRows: '1fr',
-                width: '100%',
+                paddingTop: isMobile ? '100px' : '180px',
+                paddingBottom: isMobile ? '100px' : '180px',
                 display: 'grid'
-              }}>
-                {/* 1) Location card left */}
+              }}
+            >
+              {/* First Link Block */}
                 <a 
+                className="link-block"
                   href="https://incrussia.ru/share/uvelichit-vyruchku-agrokompanii/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="location_card is-left" 
                   style={{
-                    gap: '0.5rem',
-                    color: 'var(--text-color--text-secondary)',
-                    borderRadius: '0.5rem',
+                  gap: '1rem',
+                  color: 'var(--color-black)',
+                  borderRadius: '1rem',
                     flexFlow: 'column',
                     justifyContent: 'flex-end',
                     alignItems: 'flex-start',
-                    minHeight: isMobile ? '580px' : 'calc(var(--vh-initial, 1vh) * 70)',
-                    padding: '2rem 8rem 2rem 2rem',
+                  minHeight: 'calc(70vh)',
+                  padding: isMobile ? '2rem' : '2rem 8rem 2rem 2rem',
                     display: 'flex',
                     overflow: 'hidden',
                     position: 'relative',
+                  zIndex: 2,
                     backgroundImage: 'url(/location-card-left.jpg)',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                  backgroundPosition: 'center center',
                     backgroundRepeat: 'no-repeat',
                     textDecoration: 'none',
                     cursor: 'pointer'
                   }}
                 >
-                  {/* Background overlay for better text readability */}
-                  <div style={{
+                {/* Overlay */}
+                <div
+                  style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
@@ -2076,82 +1475,94 @@ function App() {
                     bottom: 0,
                     backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     zIndex: 1
-                  }}></div>
-                  
-                  {/* Content */}
-                  <div style={{ position: 'relative', zIndex: 2 }}>
-                    {/* 1) Location icon */}
-                    <div className="location_icon" style={{
-                      width: '2rem',
-                      height: '2rem',
-                      marginBottom: '1rem'
-                    }}>
-                      <img 
+                  }}
+                />
+                
+                {/* Content with z-index above overlay */}
+                <div
+                  style={{
+                    position: 'relative',
+                    zIndex: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
+                    width: '100%'
+                  }}
+                >
+                  {/* Icon */}
+                  <img 
+                    className="location_icon"
                         src="/logo-R.svg" 
-                        alt="Logo" 
+                    alt="Icon" 
                         style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'contain',
-                          filter: 'brightness(0) invert(1)'
-                        }}
-                      />
-                    </div>
-                    
-                    {/* 2) Heading style h2 */}
-                    <h2 className="heading-style-h2 text-style-allcaps font-lora" style={{
-                      fontSize: '2.5rem',
-                      fontWeight: '200',
-                      lineHeight: 1.3,
-                      textTransform: 'uppercase',
-                      margin: 0,
-                      marginBottom: '1rem'
-                    }}>
-                      Как увеличить выручку агрокомпании в 4 раза: советы от владелицы эко-фермы
-                    </h2>
-                    
-                    {/* 3) Small text */}
-                    <p className="small-text" style={{
-                      fontFamily: 'Geologica, sans-serif',
-                      fontSize: '1rem',
-                      fontWeight: '200',
-                      lineHeight: 1.5,
-                      color: '#F2ECE3',
+                      width: '3rem',
+                      height: '3rem',
+                      filter: 'brightness(0) saturate(100%) invert(96%) sepia(9%) saturate(407%) hue-rotate(327deg) brightness(98%) contrast(92%)'
+                    }}
+                  />
+                  
+                  {/* Title */}
+                  <h3 
+                    className="large-text"
+                    style={{
+                      fontFamily: 'Lora, serif',
+                      fontSize: isMobile ? '1.25rem' : '1.5rem',
+                      fontWeight: '400',
+                      color: 'var(--color-bg)',
+                      lineHeight: '1.5',
                       margin: 0
-                    }}>
-                      Сократить расходы, удвоить выручку и выйти из зависимости от посредников — не теория, а реальные цели, которых можно достичь, если действовать правильно. Разбираю пять рабочих стратегий, которые помогали мне и моим клиентам из агросектора даже в кризис. Бонус: их можно адаптировать под любой бизнес.
+                    }}
+                  >
+                      Как увеличить выручку агрокомпании в 4 раза: советы от владелицы эко-фермы
+                  </h3>
+                  
+                  {/* Description */}
+                  <p 
+                    className="text-small"
+                    style={{
+                      fontFamily: 'Geologica, sans-serif',
+                      fontSize: isMobile ? '0.875rem' : '1rem',
+                      fontWeight: '300',
+                      color: 'var(--color-bg)',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}
+                  >
+                    Сократить расходы, удвоить выручку и выйти из зависимости от посредников — не теория, а реальные цели, которых можно достичь, если действовать правильно. Разбираю пять рабочих стратегий, которые помогали мне и моим клиентам из агросектора даже в кризис.
                     </p>
                   </div>
                 </a>
                 
-                {/* 2) Location card right */}
+              {/* Second Link Block */}
                 <a 
+                className="link-block"
                   href="https://станьбрендом.рф/pr-instrumenty-dlya-ekologichnoj-fermy" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="location_card is-right" 
                   style={{
-                    gap: '0.5rem',
-                    color: 'var(--text-color--text-secondary)',
-                    borderRadius: '0.5rem',
+                  gap: '1rem',
+                  color: 'var(--color-black)',
+                  borderRadius: '1rem',
                     flexFlow: 'column',
                     justifyContent: 'flex-end',
                     alignItems: 'flex-start',
-                    minHeight: isMobile ? '580px' : 'calc(var(--vh-initial, 1vh) * 70)',
-                    padding: '2rem 8rem 2rem 2rem',
+                  minHeight: 'calc(70vh)',
+                  padding: isMobile ? '2rem' : '2rem 8rem 2rem 2rem',
                     display: 'flex',
                     overflow: 'hidden',
                     position: 'relative',
+                  zIndex: 2,
                     backgroundImage: 'url(/location-card-right.jpg)',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                  backgroundPosition: 'center center',
                     backgroundRepeat: 'no-repeat',
                     textDecoration: 'none',
                     cursor: 'pointer'
                   }}
                 >
-                  {/* Background overlay for better text readability */}
-                  <div style={{
+                {/* Overlay */}
+                <div
+                  style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
@@ -2159,143 +1570,147 @@ function App() {
                     bottom: 0,
                     backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     zIndex: 1
-                  }}></div>
-                  
-                  {/* Content */}
-                  <div style={{ position: 'relative', zIndex: 2 }}>
-                    {/* 1) Location icon */}
-                    <div className="location_icon" style={{
-                      width: '2rem',
-                      height: '2rem',
-                      marginBottom: '1rem'
-                    }}>
-                      <img 
+                  }}
+                />
+                
+                {/* Content with z-index above overlay */}
+                <div
+                    style={{
+                      position: 'relative',
+                    zIndex: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
+                    width: '100%'
+                  }}
+                >
+                  {/* Icon */}
+                  <img 
+                    className="location_icon"
                         src="/logo-R.svg" 
-                        alt="Logo" 
+                    alt="Icon" 
                         style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'contain',
-                          filter: 'brightness(0) invert(1)'
-                        }}
-                      />
-      </div>
-                    
-                    {/* 2) Heading style h2 */}
-                    <h2 className="heading-style-h2 text-style-allcaps font-lora" style={{
-                      fontSize: '2.5rem',
-                      fontWeight: '200',
-                      lineHeight: 1.3,
-                      textTransform: 'uppercase',
-                      margin: 0,
-                      marginBottom: '1rem'
-                    }}>
-                      PR-инструменты для экологичной фермы: как привлечь внимание без агрессивной рекламы
-                    </h2>
-                    
-                    {/* 3) Small text */}
-                    <p className="small-text" style={{
-                      fontFamily: 'Geologica, sans-serif',
-                      fontSize: '1rem',
-                      fontWeight: '200',
-                      lineHeight: 1.5,
-                      color: '#F2ECE3',
+                      width: '3rem',
+                      height: '3rem',
+                      filter: 'brightness(0) saturate(100%) invert(96%) sepia(9%) saturate(407%) hue-rotate(327deg) brightness(98%) contrast(92%)'
+                    }}
+                  />
+                  
+                  {/* Title */}
+                  <h3 
+                    className="large-text"
+              style={{
+                      fontFamily: 'Lora, serif',
+                      fontSize: isMobile ? '1.25rem' : '1.5rem',
+                      fontWeight: '400',
+                      color: 'var(--color-bg)',
+                      lineHeight: '1.5',
                       margin: 0
-                    }}>
-                      Как рассказать о ферме, если не хочется кричать «Купи!» и тратить сотни тысяч на рекламу? Этот вопрос встает перед каждым, кто делает ставку на экологичный продукт.
+                    }}
+                  >
+                      PR-инструменты для экологичной фермы: как привлечь внимание без агрессивной рекламы
+                  </h3>
+                  
+                  {/* Description */}
+                  <p 
+                    className="text-small"
+                    style={{
+                      fontFamily: 'Geologica, sans-serif',
+                      fontSize: isMobile ? '0.875rem' : '1rem',
+                      fontWeight: '300',
+                      color: 'var(--color-bg)',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}
+                  >
+                    Как рассказать о ферме, если не хочется кричать «Купи!» и тратить сотни тысяч на рекламу? Этот вопрос встает перед каждым, кто делает ставку на экологичный продукт. Ответ: в инструментах PR, которые работают через доверие.
         </p>
       </div>
         </a>
-      </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="section_partners" ref={partnerRef} className="section_partners">
-        <div className="padding-global" style={{
-          paddingLeft: '1.5rem',
-          paddingRight: '1.5rem'
-        }}>
-          <div className="container-medium" style={{
-            width: '100%',
-            maxWidth: '90rem',
+      {/* Place Section */}
+      <section 
+        id="section-place"
+        className="section-place"
+                    style={{
+          backgroundColor: 'var(--color-bg)'
+        }}
+      >
+        <div className="padding-global">
+          <div 
+            className="container-medium"
+                    style={{
+              width: isMobile ? '90vw' : '75vw',
             marginLeft: 'auto',
             marginRight: 'auto'
-          }}>
-            <div className="partner-wrap" style={{
-              gap: '4rem',
-              flexFlow: 'column',
-              justifyContent: 'center',
+            }}
+          >
+            <div 
+              className="place-content"
+              style={{
+                gap: isMobile ? '3rem' : '4rem',
+                flexFlow: isMobile ? 'column' : 'row',
               alignItems: 'center',
-              width: '100%',
-              marginBottom: '5rem',
-              paddingTop: '12rem',
-              paddingBottom: '6rem',
+                paddingTop: isMobile ? '100px' : '180px',
+                paddingBottom: isMobile ? '32px' : '180px',
+                paddingRight: '0px',
               display: 'flex'
-            }}>
-              <div className="page-headings text-align-center is-location" style={{
-                gap: '1rem',
-                flexFlow: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                maxWidth: '100ch',
-                display: 'flex'
-              }}>
-                <h3 className="text-style-allcaps" style={{
-                  fontFamily: 'Geologica, sans-serif',
-                  fontSize: '1rem',
-                  fontWeight: 200,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  color: '#1f2937',
+              }}
+            >
+              {/* Left - Content */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: isMobile ? '2rem' : '3rem',
+                  alignItems: isMobile ? 'center' : 'flex-start'
+                }}
+              >
+                <h3 
+                  style={{
+                    fontFamily: 'Lora, serif',
+                    fontSize: isMobile ? '2rem' : '2.5rem',
+                    fontWeight: '500',
+                    color: 'var(--color-black)',
+                    textAlign: isMobile ? 'center' : 'left',
                   margin: 0
-                }}>
-                  ПАРТНЕРАМ
+                  }}
+                >
+                  Наше место
                 </h3>
 
-                <div className="max-width-medium" style={{
-                  width: '100%',
-                  maxWidth: '72ch'
-                }}>
-                  <h2 className="heading-style-h2" style={{
+                <p 
+                  className="large-text"
+                  style={{
                     fontFamily: 'Lora, serif',
-                    fontSize: '1.5rem',
-                    fontWeight: 200,
-                    lineHeight: 1.4,
-                    color: '#1f2937',
-                    margin: 0,
-                    textAlign: 'center'
-                  }}>
-                    Наши ценности — честность, качество, доверие. Мы открыты к партнёрству с теми, кто разделяет наш подход: ценит прозрачность происхождения продукта и его качество; поддерживает локальных производителей и семейные фермы. С нами ваши гости и покупатели будут точно знать, откуда пришёл продукт и в каких условиях он создан. Мы проверяем и одобряем каждую партию товара.
-                    
-                  </h2>
-                </div>
+                    fontSize: isMobile ? '1.25rem' : '1.5rem',
+                    color: 'var(--color-black)',
+                    lineHeight: '1.5',
+                    textAlign: isMobile ? 'center' : 'left',
+                    margin: 0
+                  }}
+                >
+                  Родная земля{'\u00A0'}— источник силы и{'\u00A0'}вдохновения. Наша ферма находится в{'\u00A0'}Воронежской области, в{'\u00A0'}Лискинском районе, селе Аношкино. Это земля наших предков, которая хранит память поколений. Здесь{'\u00A0'}— простор, тишина и{'\u00A0'}настоящая деревенская жизнь. Мы{'\u00A0'}создали ферму, где к{'\u00A0'}животным относятся с{'\u00A0'}уважением, а{'\u00A0'}чистая среда и{'\u00A0'}натуральные корма стали основой вкуса, который невозможно подменить.
+                </p>
               </div>
 
-              {/* Partners features wrap */}
-              <div className="features-wrap" style={{
-                gridColumnGap: '5rem',
-                gridRowGap: '5rem',
-                gridTemplateRows: 'auto',
-                gridTemplateColumns: '1fr 1fr',
-                gridAutoColumns: '1fr',
-                alignItems: 'center',
-                display: 'grid'
-              }}>
-                {/* Features image */}
-                <div className="features_image" style={{
+              {/* Right - Map Image */}
+              <div
+                style={{
+                  width: isMobile ? '100%' : '580px',
+                  height: isMobile ? 'auto' : '420px',
                   borderRadius: '1rem',
-                  width: '40vw',
-                  maxWidth: '41rem',
-                  height: '37rem',
-                  marginLeft: 'auto',
-                  overflow: 'hidden'
-                }}>
-                  <img 
-                    src="/partner-img.jpg" 
-                    alt="Partner image"
-                    loading="lazy"
+                  overflow: 'hidden',
+                  flexShrink: 0
+                }}
+              >
+                <img 
+                  src="/map.png" 
+                  alt="Карта расположения фермы" 
                     style={{
                       width: '100%',
                       height: '100%',
@@ -2303,279 +1718,222 @@ function App() {
                     }}
                   />
                 </div>
-
-                {/* Features content */}
-                <div className="features_content" style={{
-                  gap: '1.3rem',
-                  flexFlow: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  display: 'flex'
-                }}>
-                  {/* Heading */}
-                  <h4 className="text-weight-normal text-style-allcaps heading-style-h4" style={{
-                    fontFamily: 'Lora, serif',
-                    fontSize: '3rem',
-                    fontWeight: '200',
-                    textTransform: 'uppercase',
-                    color: '#1f2937',
-                    margin: 0
-                  }}>
-                    Мы предлагаем
-                  </h4>
-                  
-                  {/* Divider image */}
-                  <img 
-                    src="/divider-img.svg" 
-                    alt="Divider"
-                    loading="lazy"
-                    style={{
-                      width: 'auto',
-                      height: 'auto',
-                      margin: '1rem 0'
-                    }}
-                  />
-                  
-                  {/* Text */}
-                  <p className="text-size-medium" style={{
-                    fontFamily: 'Geologica, sans-serif',
-                    fontSize: '1.125rem',
-                    fontWeight: '200',
-                    lineHeight: 1.6,
-                    color: '#1f2937',
-                    margin: 0
-                  }}>
-                    - Гибкие условия поставки (объёмы, тестовые партии);<br />
-                    - Индивидуальные решения для ресторанов и магазинов;<br />
-                    - Гарантию качества (лично отвечаем за каждую поставленную партию, предоставляем сертификаты);<br />
-                    - Своевременную поставку (тщательно контролируем логистику и температурные режимы).
-                  </p>
-
-                  {/* Button */}
-                  <div 
-                    className="button-nav"
-                    onClick={() => smoothScrollTo('footer')}
-                    style={{
-                      gridColumnGap: '0.7rem',
-                      gridRowGap: '0.7rem',
-                      backgroundColor: '#2D2D2D',
-                      color: '#F2ECE3',
-                      borderRadius: '0.4rem',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                      padding: '0.75rem 1.5rem',
-                      display: 'flex',
-                      maxWidth: '100%',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      cursor: 'pointer',
-                      marginTop: '1rem'
-                    }}
-                  >
-                    <div 
-                      className="button-text"
-                      style={{
-                        fontFamily: 'Geologica, sans-serif',
-                        fontSize: '1rem',
-                        fontWeight: '200',
-                        color: '#F2ECE3',
-                        paddingLeft: '0.5rem',
-                        paddingRight: '0.5rem',
-                        lineHeight: '1.3',
-                        position: 'relative',
-                        opacity: 1,
-                        transform: 'translateY(0)',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 1, 1)'
-                      }}
-                    >
-                      Связаться
-      </div>
-                    <div 
-                      className="button-text is-absolute"
-                      style={{
-                        fontFamily: 'Geologica, sans-serif',
-                        fontSize: '1rem',
-                        fontWeight: '200',
-                        color: '#F2ECE3',
-                        paddingLeft: '0.5rem',
-                        paddingRight: '0.5rem',
-                        lineHeight: '1.3',
-                        position: 'absolute',
-                        bottom: '-1.2rem',
-                        whiteSpace: 'nowrap',
-                        opacity: 0,
-                        transform: 'translate(-50%, 100%)',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 1, 1)'
-                      }}
-                    >
-                      Связаться
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
+                    </div>
+                    </div>
       </section>
 
-      {/* Last CTA Section */}
-      <section className="section_last-cta">
-        <div className="cta_background" style={{
-          backgroundColor: 'var(--background-color--background-secondary)',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: isMobile ? '800px' : 'calc(var(--vh, 1vh) * 100)',
-          height: isMobile ? '800px' : 'auto',
-          maxHeight: isMobile ? '800px' : 'none',
-          display: 'flex',
-          position: 'relative'
-        }}>
-          {/* CTA Content */}
-          <div className="cta_content" style={{
-            zIndex: 4,
-            gridColumnGap: '1rem',
-            gridRowGap: '1rem',
-            textAlign: 'center',
-            flexFlow: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            display: 'flex',
-            position: 'relative'
-          }}>
-            {/* 1) Logo */}
-            <div style={{
-              width: '4rem',
-              height: '4rem',
-              marginBottom: '2rem'
-            }}>
-              <img 
-                src="/logo-R.svg" 
-                alt="Logo" 
+      {/* Footer */}
+      <footer 
+        id="footer"
+        className="footer"
+        style={{
+          backgroundColor: 'var(--color-bg)'
+        }}
+      >
+        <div className="padding-global">
+          <div 
+            className="container-medium"
+            style={{
+              width: isMobile ? '90vw' : '75vw',
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}
+          >
+            {/* Footer Content */}
+            <div 
+              className="footer_content"
+              style={{
+                gap: isMobile ? '2rem' : '4rem',
+                display: 'grid',
+                gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr',
+                gridTemplateRows: isMobile ? 'auto auto auto' : 'auto',
+                paddingTop: '40px',
+                paddingBottom: isMobile ? '24px' : '40px'
+              }}
+            >
+              {/* Footer Left */}
+              <div 
+                className="footer_left"
                 style={{
-                  width: '100%',
+                  gap: '2rem',
+                  flexFlow: 'column',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  maxWidth: '74ch',
+                  display: 'flex',
+                  order: isMobile ? 3 : 1
+                }}
+              >
+                {/* Large Text */}
+                 <p 
+                  className="large-text"
+                  style={{
+                    fontFamily: 'Lora, serif',
+                    fontSize: isMobile ? '1.25rem' : '1.5rem',
+                    color: 'var(--color-black)',
+                    lineHeight: '1.5',
+                    margin: 0
+                  }}
+                >
+                  Развиваем этичное фермерство, основанное на{'\u00A0'}прозрачности и{'\u00A0'}экологичности. Качество, рожденное природой, а{'\u00A0'}не{'\u00A0'}технологиями.
+                </p>
+
+                {/* Credits */}
+                <div 
+                  className="credits"
+                    style={{
+                    gap: '1rem',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                    display: 'flex'
+                  }}
+                >
+                  <p 
+                    className="text-small"
+                      style={{
+                        fontFamily: 'Geologica, sans-serif',
+                        fontSize: isMobile ? '0.875rem' : '1rem',
+                      fontWeight: '300',
+                      color: 'var(--color-black)',
+                      margin: 0
+                    }}
+                  >
+                    Romanovy Prostory ©
+                  </p>
+                  <p 
+                      style={{
+                        fontFamily: 'Geologica, sans-serif',
+                        fontSize: isMobile ? '0.875rem' : '1rem',
+                      fontWeight: '300',
+                      color: 'var(--color-black)',
+                      margin: 0
+                    }}
+                  >
+                    2025
+                  </p>
+                    </div>
+                  </div>
+
+              {/* Footer Mid */}
+              <div 
+                className="footer_mid"
+                style={{
+          display: 'flex',
+            justifyContent: 'center',
+                  alignItems: 'flex-end',
+                  order: isMobile ? 1 : 2
+                }}
+              >
+                <img 
+                  src="/Frame 2.png" 
+                  alt="QR Code" 
+                style={{
+                    width: '360px',
                   height: '100%',
                   objectFit: 'contain',
-                  filter: 'brightness(0) invert(1)'
+                    marginBottom: isMobile ? '0' : '-42px'
                 }}
               />
             </div>
 
-            {/* 2) Heading */}
-            <h2 
-              ref={lastCtaHeadingRef}
-              className="heading-style-h2 text-style-allcaps font-lora last-cta-heading" 
+              {/* Footer Right */}
+              <div 
+                className="footer_right"
               style={{
-                fontWeight: '200',
-                lineHeight: 1.3,
-                textTransform: 'uppercase',
-                color: '#F2ECE3',
-                margin: 0,
-                marginBottom: '2rem'
-              }}
-            >
-              Наши ценности
-            </h2>
-
-            {/* 3) Small text */}
-            <p className="small-text" style={{
+                  gap: '2.5rem',
+                  flexFlow: 'column',
+                  justifyContent: 'space-between',
+                  alignItems: isMobile ? 'flex-start' : 'flex-end',
+                  display: 'flex',
+                  order: isMobile ? 2 : 3
+                }}
+              >
+                {/* Footer Right Wrap 1 - Address */}
+                <div 
+                  className="footer_right-wrap"
+              style={{
+                    gap: '1rem',
+                    flexFlow: 'column',
+                    justifyContent: 'flex-start',
+                    alignItems: isMobile ? 'flex-start' : 'flex-end',
+                    display: 'flex'
+                  }}
+                >
+                  <p 
+                    className="text-small"
+                    style={{
               fontFamily: 'Geologica, sans-serif',
-              fontSize: '1rem',
-              fontWeight: '200',
-              lineHeight: 1.5,
-              color: 'rgb(242, 236, 227)',
+              fontSize: isMobile ? '0.875rem' : '1rem',
+                      fontWeight: '300',
+                      color: 'var(--color-black)',
+                textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                margin: 0,
+                      textAlign: 'left'
+                    }}
+                  >
+                    Адрес
+                  </p>
+                  <p 
+                    className="text-medium"
+              style={{
+              fontFamily: 'Geologica, sans-serif',
+                      fontSize: isMobile ? '1rem' : '1.25rem',
+                      fontWeight: '300',
+                      color: 'var(--color-black)',
+                      lineHeight: '1.5',
               margin: 0,
-              maxWidth: '60ch'
-            }}>
-              Мы верим в мир, в котором еда дарит здоровье и означает честное, уважительное отношение к природе и людям. Мир, где вы точно знаете, что продукты выращены в гармонии с землёй и вековыми традициями.<br /><br />
-              Наша миссия — сохранять и развивать деревню, уважать землю, передавать опыт предков и кормить людей продуктом, которому можно доверять.
+                      textAlign: isMobile ? 'left' : 'right'
+                    }}
+                  >
+                    Воронежская область,<br />
+                    Лискинский район,<br />
+                    село Аношкино, Россия
             </p>
           </div>
 
-          {/* Video Overlay */}
-          <div className="video-overlay" style={{
-            zIndex: 2,
-            backgroundImage: 'radial-gradient(circle, #17141100 20%, #000000ba)',
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            inset: '0%'
-          }}></div>
-
-          {/* Background Video */}
-          <div className="background-video-last" style={{
-            zIndex: 1,
-            position: 'absolute',
-            inset: '0%'
-          }}>
-            <video
-              ref={lastCtaVideoRef}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                borderRadius: '0.5rem',
-                pointerEvents: 'none',
-                WebkitTouchCallout: 'none',
-                WebkitUserSelect: 'none'
-              }}
-            >
-              <source src="/last-cta-video.mp4" type="video/mp4" />
-            </video>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer id="footer" className="footer">
+                {/* Footer Right Wrap 2 - Contacts */}
         <div 
-          className="padding-global" 
+                  className="footer_right-wrap"
+              style={{
+                    gap: '1rem',
+                    flexFlow: 'column',
+                    justifyContent: 'flex-start',
+                    alignItems: isMobile ? 'flex-start' : 'flex-end',
+                    display: 'flex'
+                  }}
+                >
+                  <p 
+                    className="text-small"
           style={{
-            paddingLeft: '2.5rem',
-            paddingRight: '2.5rem'
-          }}
-        >
-          <div className="footer-wrap">
-            <div className="container-large">
-              <div className="footer_component">
-                <div className="footer_left">
-                  <h3 className="heading-style-h3 is-small">
-                    Развиваем этичное фермерство, основанное на прозрачности и экологичности.<br />
-                    Качество, рожденное природой, а не технологиями.
-                  </h3>
-                  <div className="credits">
-                    <div className="text-size-regular">
-                      Romanovy Prostory ©
-                    </div>
-                    <div className="text-size-regular">
-                      2025
-                    </div>
-                  </div>
-                </div>
-                <div className="footer_right">
-                  <div className="footer_right-wrap">
-                    <div className="text-style-allcaps text-size-small">
-                      АДРЕС
-                    </div>
-                    <div className="text-size-large">
-                      Воронежская область,<br />
-                      Лискинский район,<br />
-                      село Аношкино, Россия
-                    </div>
-                  </div>
-                  <div className="footer_right-wrap">
-                    <div className="text-style-allcaps text-size-small">
-                      КОНТАКТЫ
-                    </div>
-                    <div className="text-size-large">
+                      fontFamily: 'Geologica, sans-serif',
+                      fontSize: isMobile ? '0.875rem' : '1rem',
+                      fontWeight: '300',
+                      color: 'var(--color-black)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      margin: 0,
+                      textAlign: 'left'
+                    }}
+                  >
+                    Контакты
+                  </p>
+                  <p 
+                    className="text-medium"
+                    style={{
+                      fontFamily: 'Geologica, sans-serif',
+                      fontSize: isMobile ? '1rem' : '1.25rem',
+                      fontWeight: '300',
+                      color: 'var(--color-black)',
+                      lineHeight: '1.5',
+                      margin: 0,
+                      textAlign: isMobile ? 'left' : 'right'
+                    }}
+                  >
                       +79611877007<br />
                       +79011939905
-                    </div>
-                  </div>
+                  </p>
                 </div>
               </div>
             </div>

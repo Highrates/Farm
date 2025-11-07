@@ -1,198 +1,83 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geologica:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-/* Optimized font loading with display=swap */
-
-/* CRITICAL: Force Lora with font-weight 200 for h1 */
-html body div h1.heading-style-h1 {
-  font-family: 'Lora, serif' !important;
-  font-weight: 200 !important;
+/* Custom font Denistina */
+@font-face {
+  font-family: 'Denistina';
+  src: url('/fonts/ofont.ru_Denistina.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
-/* CRITICAL: Force Lora for all heading-style-h2 elements */
-h2.heading-style-h2,
-h2[class*="heading-style-h2"],
-.heading-style-h2 {
-  font-family: 'Lora, serif' !important;
-  font-size: 1.5rem !important;
+/* CSS Variables - Colors */
+:root {
+  --color-black: #000000;
+  --color-bg: rgb(240, 237, 229);
+  --color-dark-green: rgb(38, 45, 38);
 }
 
-/* Exception: Last CTA heading - размер как у text-weight-normal text-style-allcaps heading-style-h4 */
-.section_last-cta h2.heading-style-h2.text-style-allcaps.font-lora {
-  font-size: 1.3rem !important;
-}
-
-/* CRITICAL: Force Lora with font-weight 200 for all Lora headings */
-h1.heading-style-h1,
-.heading-style-h1,
-h4.heading-style-h4,
-.heading-style-h4,
-h1[class*="heading-style-h1"],
-h4[class*="heading-style-h4"] {
-  font-family: 'Lora, serif' !important;
-  font-weight: 200 !important;
-}
-
-/* Margin для heading-style-h1 */
-.heading-style-h1,
-h1.heading-style-h1,
-h1[class*="heading-style-h1"] {
-  margin-bottom: 24px !important;
-}
-
-/* Force Lora for mobile menu */
-.mobile-nav-link {
-  font-family: 'Lora, serif' !important;
-}
-
-/* Smooth scrolling for anchor links */
-html {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Mobile scroll optimization */
-@media (max-width: 768px) {
-  html {
-    scroll-behavior: auto;
-  }
-  
-  /* Prevent scroll jumping on mobile */
-  * {
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Fix for sticky elements on mobile */
-  .sticky,
-  .sticky-cta {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-}
-
-/* Offset for fixed navbar when scrolling to sections */
-section[id] {
-  scroll-margin-top: 80px;
-}
-
+/* Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
 
 body {
   font-family: 'Geologica', sans-serif;
-  background-color: #F2ECE3;
-  color: #1f2937;
-  line-height: 1.6;
-}
-
-/* Hide scrollbar */
-::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for Firefox */
-html {
-  scrollbar-width: none;
-}
-
-/* Nav button text hover animation */
-.nav_link {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg);
+  overflow-x: hidden;
+  max-width: 100vw;
   position: relative;
 }
 
-.nav_link .nav-button_text:first-child {
-  opacity: 1;
-  transform: translateY(0);
-  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1);
+/* Layout Utilities */
+.padding-global {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-.nav_link .nav-button_text:last-child {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, 100%);
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1);
-}
-
-.nav_link:hover .nav-button_text:first-child {
-  opacity: 0;
-  transform: translateY(-100%);
-}
-
-.nav_link:hover .nav-button_text:last-child {
-  opacity: 1;
-  transform: translate(-50%, -0.6rem);
-}
-
-/* Nav button text additional styles */
-.nav-button_text {
-  padding-left: 0.5rem !important;
-  padding-right: 0.5rem !important;
-  line-height: 1.3 !important;
-  position: relative !important;
-  font-weight: 200 !important;
-}
-
-/* Nav button text absolute positioning */
-.nav-button_text.is-absolute {
-  position: absolute !important;
-  bottom: -1.2rem !important;
-  white-space: nowrap !important;
-  font-weight: 200 !important;
-}
-
-/* Ensure GSAP animations work properly */
-.section.hero {
-  will-change: transform;
-  /* Fallback для старых браузеров */
-  min-height: 100vh;
-  /* Фиксированная высота на начальном значении (не меняется при скролле) */
-  min-height: calc(var(--vh-initial, 1vh) * 100);
-}
-
-/* Dynamic Viewport Height для мобильных устройств (Chrome, Safari) */
-@supports (min-height: 100dvh) {
-  .section.hero {
-    /* Используем dvh если поддерживается, иначе --vh-initial */
-    min-height: 100dvh;
-  }
-  
-  /* На мобильных фиксируем высоту на начальном значении */
-  @media (max-width: 768px) {
-    .section.hero {
-      min-height: calc(var(--vh-initial, 1vh) * 100) !important;
-    }
+@media screen and (min-width: 769px) {
+  .padding-global {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
   }
 }
 
-/* Mobile menu styles */
-.mobile-menu {
-  backdrop-filter: blur(10px);
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: calc(var(--vh, 1vh) * 100) !important;
-  z-index: 10000 !important;
+.container-large {
+  width: 100%;
+  max-width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.mobile-nav-link:hover {
-  transform: scale(1.1);
-  color: #ffffff !important;
+/* Text Signature */
+.text-signature {
+  color: var(--color-black);
+  margin-left: 160px;
+  font-size: 2rem;
+  line-height: 110%;
+  transform: rotate(-5deg);
+  font-family: 'Denistina', serif;
 }
 
-/* Burger icon animation */
-.burger-icon span {
-  transform-origin: center;
+@media screen and (max-width: 768px) {
+  .text-signature {
+    margin-left: 80px;
+    font-size: 2rem;
+  }
 }
 
-/* Hide desktop menu on mobile */
-@media (max-width: 768px) {
+/* Navbar media queries */
+@media screen and (max-width: 768px) {
   .nav-menu {
     display: none !important;
   }
@@ -200,15 +85,9 @@ html {
   .nav_button {
     display: block !important;
   }
-  
-  /* Increase hero title size on mobile */
-  .heading-style-h1 {
-    font-size: 12vw !important;
-  }
 }
 
-/* Show desktop menu on desktop */
-@media (min-width: 769px) {
+@media screen and (min-width: 769px) {
   .nav-menu {
     display: flex !important;
   }
@@ -220,887 +99,116 @@ html {
 
 /* Logo hover effect */
 .nav_brand:hover {
-  opacity: 0.4 !important;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
 }
 
-/* Button nav hover effect */
-.button-nav {
-  position: relative !important;
-}
-
-.button-nav .button-text:first-child {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1) !important;
-}
-
-.button-nav .button-text:last-child {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, 100%) !important;
-  opacity: 0 !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1) !important;
-}
-
-.button-nav:hover .button-text:first-child {
-  opacity: 0 !important;
-  transform: translateY(-100%) !important;
-}
-
-.button-nav:hover .button-text:last-child {
-  opacity: 1 !important;
-  transform: translate(-50%, -0.6rem) !important;
-}
-
-/* Hero subtitle text animation styles */
-.subtitle-text-wrapper {
-  display: block !important;
-  max-width: 64ch !important;
-  text-align: center !important;
-  margin: 0 auto !important;
-}
-
-.hero-subtitle-text .word {
-  display: inline !important;
-  font-weight: 300 !important;
-}
-
-.subtitle-line {
-  display: block !important;
-  margin-bottom: 0.25rem !important;
-  font-weight: 200 !important;
-  font-size: 1rem !important;
-  line-height: 1.2 !important;
-}
-
-/* Mobile subtitle styles */
-@media (max-width: 768px) {
-  .subtitle-line {
-    line-height: 1.4 !important;
-  }
-}
-
-/* CTA content styles */
-.cta-content {
-  z-index: 4;
+/* Nav link hover effects */
+.nav_link {
   position: relative;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Text section overlay styles */
-.text-section-overlay {
-  position: absolute !important;
-  top: 0 !important;
-  right: 0 !important;
-  width: 30% !important;
-  min-height: calc(var(--vh, 1vh) * 100) !important;
-  height: calc(var(--vh, 1vh) * 100) !important;
-  background-color: rgba(38, 45, 38, 0.9) !important;
-  z-index: 3 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  padding: 2rem !important;
-  color: #F2ECE3 !important;
-  border-radius: 0 3rem 3rem 0 !important;
-}
-
-/* Ensure parent containers have proper height */
-.section_cta {
-  height: auto !important;
-}
-
-.track-cta {
-  height: 300vh !important;
-}
-
-.sticky-cta {
-  height: calc(var(--vh, 1vh) * 100) !important;
-}
-
-.cta-video_background {
-  height: 100% !important;
-}
-
-/* CTA Logo wrap styles */
-.cta-logo-wrap {
-  width: 400px;
-  height: auto;
-}
-
-.cta-logo-wrap img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.cta-content > div:first-child {
-  width: 40vw !important;
-  height: auto !important;
-  margin-bottom: 1rem !important;
-}
-
-.cta-content > div:first-child img {
-  width: 100% !important;
-  height: auto !important;
-  display: block !important;
-  filter: brightness(0) saturate(100%) invert(95%) sepia(8%) saturate(180%) hue-rotate(315deg) brightness(98%) contrast(94%) !important;
-}
-
-/* Desktop styles for page-headings */
-.page-headings.text-align-center {
-  gap: 1rem;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  max-width: 100ch;
-  display: flex;
-}
-
-/* Mobile styles for About section */
-@media (max-width: 768px) {
-  .text-style-allcaps {
-    font-size: 0.75rem !important;
-  }
-  
-  h2.heading-style-h2 {
-    font-size: 1.25rem !important;
-    line-height: 1.3 !important;
-    word-spacing: normal !important;
-    white-space: normal !important;
-    font-family: 'Lora, serif' !important;
-  }
-  
-/* Desktop styles for Features section */
-.features_content {
-  gap: 1.3rem;
-}
-
-.heading-style-h2 {
-  font-family: 'Lora, serif' !important;
-  font-size: 1.5rem !important;
-  font-weight: 200 !important;
-  line-height: 1.4 !important;
-  color: rgb(31, 41, 55) !important;
-}
-
-/* Force Lora for all heading-style-h2 elements, even with font-lora class */
-.heading-style-h2.font-lora,
-.font-lora.heading-style-h2,
-h2.heading-style-h2.font-lora,
-h2.font-lora.heading-style-h2 {
-  font-family: 'Lora, serif' !important;
-}
-
-/* Override any inline styles for heading-style-h2 */
-[style*="fontFamily"][class*="heading-style-h2"] {
-  font-family: 'Lora, serif' !important;
-}
-
-/* Force Lora for all heading-style-h2 with maximum specificity */
-h2[class*="heading-style-h2"] {
-  font-family: 'Lora, serif' !important;
-}
-
-/* Override any possible inheritance */
-h2.heading-style-h2 * {
-  font-family: 'Lora, serif' !important;
-}
-
-/* Section-specific overrides */
-.location_card h2.heading-style-h2.text-style-allcaps.font-lora {
-  color: #F2ECE3 !important;
-}
-
-p.text-size-medium {
-  font-weight: 200 !important;
-}
-
-  /* Mobile styles for Features section */
-  .page-headings.text-align-center {
-    gap: 1rem !important;
-    flex-flow: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    max-width: 100ch !important;
-    display: flex !important;
-  }
-  
-  .features-wrap {
-    grid-template-rows: auto !important;
-    grid-template-columns: 1fr 1fr !important;
-    grid-auto-columns: 1fr !important;
-    flex-flow: column !important;
-    justify-content: flex-start !important;
-    align-items: flex-start !important;
-    width: 100% !important;
-    display: flex !important;
-    grid-column-gap: 1.5rem !important;
-    grid-row-gap: 1.5rem !important;
-  }
-  
-  .features_image {
-    height: 30vh !important;
-    width: 100% !important;
-  }
-  
-  .features-wrap.is-middle {
-    flex-direction: column !important;
-    display: flex !important;
-  }
-  
-  .features-wrap.is-middle .features_content {
-    order: 2 !important;
-  }
-  
-  .features-wrap.is-middle .features_image {
-    order: 1 !important;
-  }
-  
-  .features_content {
-    gap: 1rem !important;
-  }
-  
-  .text-weight-normal.text-style-allcaps.heading-style-h4 {
-    font-size: 1.3rem !important;
-  }
-  
-  .features-component {
-    grid-column-gap: 4rem !important;
-    grid-row-gap: 4rem !important;
-  }
-  
-  
-  .location-wrap {
-    margin-bottom: 0rem !important;
-  }
-  
-  .location_grid {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .location_card {
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
-    /* Фиксируем высоту карточек на мобильных для предотвращения прыжков */
-    min-height: 580px !important;
-    height: 580px !important;
-    max-height: 580px !important;
-  }
-  
-  .location_card h2.heading-style-h2.text-style-allcaps.font-lora {
-    color: #F2ECE3 !important;
-  }
-  
-  /* Уменьшаем размер фотографий на мобильных */
-  .photos-wrap {
-    width: 80vw !important;
-    height: 45vw !important;
-    max-width: 400px !important;
-    max-height: 225px !important;
-    margin: 0 auto !important;
-    padding: 1rem !important;
-  }
-  
-  /* CTA логотип на мобильных */
-  .cta-logo {
-    width: 15vw !important;
-    min-width: 120px !important;
-    max-width: 200px !important;
-  }
-  
-  /* CTA видео фон на мобильных */
-  .cta-video_background {
-    border-radius: 1rem !important;
-  }
-  
-  /* CTA логотип на мобильных */
-  .cta-content > div:first-child {
-    width: 70vw !important;
-  }
-  
-  /* Last CTA на мобильных */
-  .section_last-cta .cta_background {
-    min-height: 800px !important;
-    height: 800px !important;
-    max-height: 800px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-  }
-  
-  .section_last-cta .cta_content {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    display: flex !important;
-    flex-flow: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-  }
-  
-  .section_last-cta .heading-style-h2.text-style-allcaps.font-lora {
-    color: rgb(242, 236, 227) !important;
-    font-size: 1.5rem !important;
-  }
-}
-
-/* Force override for location card headings - highest specificity */
-.location_card h2.heading-style-h2.text-style-allcaps.font-lora {
-  color: #F2ECE3 !important;
-}
-
-/* Typography - Prevent orphaned prepositions */
-.heading-style-h1,
-.heading-style-h2,
-.heading-style-h3,
-.heading-style-h4,
-.text-size-medium,
-.text-size-large,
-.text-size-regular,
-.small-text,
-p {
-  text-wrap: pretty;
-}
-
-/* FINAL OVERRIDE - Maximum specificity for heading-style-h2 */
-html body div h2.heading-style-h2 {
-  font-family: 'Lora, serif' !important;
-  font-size: 1.5rem !important;
-}
-
-/* Force Lora for all h2 elements with heading-style-h2 class */
-h2[class*="heading-style-h2"] {
-  font-family: 'Lora, serif' !important;
-  font-size: 1.5rem !important;
-}
-
-/* FINAL OVERRIDE - Maximum specificity for Lora headings */
-html body div h1.heading-style-h1,
-html body div h4.heading-style-h4,
-html body div#main-content h1.heading-style-h1 {
-  font-family: 'Lora, serif' !important;
-  font-weight: 200 !important;
-}
-
-/* FINAL OVERRIDE - Force font-weight 300 for Lora headings */
-h1.heading-style-h1,
-h1[class*="heading-style-h1"],
-h4.heading-style-h4,
-h4[class*="heading-style-h4"] {
-  font-weight: 300 !important;
-}
-
-/* Utility Classes */
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.absolute-full {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.object-cover {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-
-/* Accessibility - Focus styles */
-a:focus-visible,
-button:focus-visible,
-div[role="button"]:focus-visible,
-div[onclick]:focus-visible {
-  outline: 2px solid #F2ECE3;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* Skip to content link for keyboard navigation */
-.skip-to-content {
-  position: absolute;
-  left: -9999px;
-  z-index: 999;
-  padding: 1em;
-  background-color: #000;
-  color: #F2ECE3;
-  text-decoration: none;
-}
-
-.skip-to-content:focus {
-  left: 50%;
-  transform: translateX(-50%);
-  top: 1em;
-}
-
-/* Video Styles */
-video {
-  object-fit: cover;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-/* CTA Video Performance Optimization */
-.cta-video_background video {
-  will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* Additional mobile optimizations for CTA video */
-@media (max-width: 768px) {
-  .cta-video_background,
-  .cta-video_background video {
-    will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    -webkit-transform: translateZ(0);
-    /* Дополнительные оптимизации для максимальной плавности */
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
-    perspective: 1000px;
-    -webkit-perspective: 1000px;
-    /* Сглаживание анимации */
-    transition: transform 0.1s ease-out;
-  }
-  
-  /* Reduce animation complexity on mobile */
-  .sticky-cta {
-    position: relative !important;
-    /* Фиксируем высоту 800px для предотвращения прыжков */
-    height: 800px !important;
-    min-height: 800px !important;
-    max-height: 800px !important;
-    /* Отключаем переходы высоты */
-    transition: none !important;
-    will-change: transform;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
-    /* Предотвращаем ресайз */
-    contain: layout style size !important;
-    -webkit-contain: layout style size !important;
-  }
-  
-  /* Дополнительная оптимизация для всего CTA контейнера */
-  .section_cta {
-    contain: layout style paint;
-    -webkit-contain: layout style paint;
-  }
-}
-
-/* Hide all video controls */
-video::-webkit-media-controls {
-  display: none !important;
-}
-
-video::-webkit-media-controls-enclosure {
-  display: none !important;
-}
-
-video::-webkit-media-controls-panel {
-  display: none !important;
-}
-
-video::-webkit-media-controls-play-button {
-  display: none !important;
-}
-
-video::-webkit-media-controls-start-playback-button {
-  display: none !important;
-}
-
-video::-webkit-media-controls-overlay-play-button {
-  display: none !important;
-}
-
-video::-webkit-media-controls-timeline {
-  display: none !important;
-}
-
-video::-webkit-media-controls-current-time-display {
-  display: none !important;
-}
-
-video::-webkit-media-controls-time-remaining-display {
-  display: none !important;
-}
-
-video::-webkit-media-controls-mute-button {
-  display: none !important;
-}
-
-video::-webkit-media-controls-volume-slider {
-  display: none !important;
-}
-
-video::-webkit-media-controls-fullscreen-button {
-  display: none !important;
-}
-
-/* Additional mobile-specific rules */
-video::-webkit-media-controls-overlay-enclosure {
-  display: none !important;
-}
-
-video::-webkit-media-controls-loading-panel {
-  display: none !important;
-}
-
-video::-webkit-media-controls-return-to-realtime-button {
-  display: none !important;
-}
-
-/* Дополнительные правила для полного скрытия controls на мобильных */
-/* Специфичные правила для background-video */
-.background-video video,
-.background-video-last video,
-.background-video.absolute video {
-  pointer-events: none !important;
-}
-
-.background-video video::-webkit-media-controls,
-.background-video-last video::-webkit-media-controls,
-.background-video.absolute video::-webkit-media-controls,
-.background-video video::-webkit-media-controls-enclosure,
-.background-video-last video::-webkit-media-controls-enclosure,
-.background-video.absolute video::-webkit-media-controls-enclosure,
-.background-video video::-webkit-media-controls-panel,
-.background-video-last video::-webkit-media-controls-panel,
-.background-video.absolute video::-webkit-media-controls-panel,
-.background-video video::-webkit-media-controls-start-playback-button,
-.background-video-last video::-webkit-media-controls-start-playback-button,
-.background-video.absolute video::-webkit-media-controls-start-playback-button,
-.background-video video::-webkit-media-controls-overlay-play-button,
-.background-video-last video::-webkit-media-controls-overlay-play-button,
-.background-video.absolute video::-webkit-media-controls-overlay-play-button {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  width: 0 !important;
-  height: 0 !important;
-  pointer-events: none !important;
-}
-
-/* Для всех video элементов управления также скрыты */
-video::-webkit-media-controls,
-video::-webkit-media-controls-enclosure,
-video::-webkit-media-controls-panel,
-video::-webkit-media-controls-start-playback-button {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  width: 0 !important;
-  height: 0 !important;
-}
-
-/* Footer Styles */
-.footer {
   overflow: hidden;
 }
 
-.footer-wrap {
-  gap: 27vh;
-  flex-flow: column;
-  justify-content: flex-end;
-  align-items: flex-start;
-  padding-top: 4rem;
-  padding-bottom: 2rem;
-  display: flex;
-}
-
-.container-large {
-  width: 100%;
-  max-width: 90vw;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.footer_component {
-  gap: 4rem;
-  justify-content: space-between;
-  display: flex;
-}
-
-.footer_left {
-  gap: 2rem;
-  flex-flow: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  max-width: 74ch;
-  display: flex;
-}
-
-.footer_right {
-  gap: 2.5rem;
-  flex-flow: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  display: flex;
-}
-
-.heading-style-h3.is-small {
-  font-family: Lora, serif;
-  font-size: 2rem;
-  font-weight: 400;
-  line-height: 1.3;
-  color: #2D2D2D;
-}
-
-.credits {
-  gap: 1rem;
-  justify-content: flex-start;
-  align-items: center;
-  display: flex;
-}
-
-.text-size-regular {
-  font-size: 1rem;
-  font-family: Geologica, sans-serif;
-  font-weight: 200;
-  color: #2D2D2D;
-}
-
-.footer_right-wrap {
-  gap: 1rem;
-  flex-flow: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  display: flex;
-}
-
-.text-size-large {
-  font-size: 1.5rem;
-  font-family: Geologica, sans-serif;
-  font-weight: 100;
-  line-height: 1.3;
-  color: #2D2D2D;
-}
-
-.text-size-small {
-  font-weight: 200;
-  color: #2D2D2D;
-}
-
-/* Desktop styles for wrap classes */
-.partner-wrap,
-.location-wrap,
-.track,
-.features-component {
-  padding-top: 8rem !important;
-  padding-bottom: 8rem !important;
-  margin-bottom: 0 !important;
-}
-
-/* Убираем padding-bottom у location-wrap для уменьшения разрыва перед partners */
-.location-wrap {
-  padding-bottom: 0 !important;
-}
-
-/* Убираем padding-bottom у track для уменьшения разрыва перед features */
-.track {
-  padding-bottom: 0 !important;
-}
-
-/* Mobile Footer Styles */
-@media screen and (max-width: 767px) {
-  /* Padding-global for all sections on mobile */
-  .padding-global {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  
-  .footer .padding-global {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  
-  /* Heading-style-h2 on mobile */
-  .heading-style-h2,
-  h2.heading-style-h2 {
-    font-size: 1.5rem !important;
-    font-family: 'Lora, serif' !important;
-  }
-  
-  /* Partner-wrap on mobile */
-  .partner-wrap {
-    padding-top: 6rem !important;
-    padding-bottom: 6rem !important;
-    margin-bottom: 0 !important;
-  }
-  
-  /* Location-wrap on mobile */
-  .location-wrap {
-    padding-top: 6rem !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-  }
-  
-  /* Section-features on mobile */
-  .section_features {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-  }
-  
-  /* Track on mobile */
-  .track {
-    padding-top: 6rem !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-  }
-  
-  /* Features-component on mobile */
-  .features-component {
-    padding-top: 6rem !important;
-    padding-bottom: 6rem !important;
-    margin-bottom: 0 !important;
-    margin: 0 !important;
-  }
-  
-  .footer-wrap {
-    gap: 2rem !important;
-    padding-bottom: 1rem !important;
-  }
-  
-  .footer_component {
-    flex-direction: column !important;
-    gap: 2rem !important;
-  }
-  
-  .footer_left {
-    order: 2;
-  }
-  
-  .footer_right {
-    order: 1;
-  }
-  
-  .heading-style-h3.is-small {
-    font-size: 1.6rem !important;
-  }
-  
-  .text-size-large {
-    font-size: 1.25rem !important;
+/* Nav button text base styles */
+.nav-button_text {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
     line-height: 1.3 !important;
-  }
-  
-  .text-size-small {
-    font-size: 0.875rem !important;
-  }
-  
-  /* Mobile font size for heading-style-h4 */
-  .text-weight-normal.text-style-allcaps.heading-style-h4 {
-    font-size: 1.5rem !important;
-  }
-  
-  /* Simplify CTA animation on mobile - remove scaling and border radius */
-  .cta-video_background,
-  .background-video.absolute {
-    border-radius: 0 !important;
-    transform: scale(1) !important;
-  }
-  
-  /* Remove padding from CTA content on mobile */
-  .cta-content {
-    padding: 0 !important;
-    /* Фиксированная высота 800px на мобильных - не меняется при скролле */
-    height: 800px !important;
-    min-height: 800px !important;
-    max-height: 800px !important;
-    /* Центрирование контента */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    /* Отключаем переходы высоты для стабильности */
-    transition: none !important;
-    /* Предотвращаем ресайз контента */
-    contain: layout style size !important;
-    -webkit-contain: layout style size !important;
-    /* Фиксируем высоту чтобы она не менялась */
-    box-sizing: border-box !important;
-  }
-  
-  /* Reduce CTA track height on mobile - фиксируем 800px */
-  .track-cta {
-    height: 800px !important;
-  }
-  
-  /* Hero background padding on mobile */
-  .hero-background {
-    padding: 0.875rem !important;
-    /* Фиксируем высоту hero-background на мобильных, чтобы избежать изменения размера при скролле */
-    height: calc(var(--vh-initial, 1vh) * 100) !important;
-    min-height: calc(var(--vh-initial, 1vh) * 100) !important;
-    max-height: calc(var(--vh-initial, 1vh) * 100) !important;
-    /* Отключаем переходы высоты */
-    transition: none !important;
-    /* Предотвращаем ресайз */
-    contain: layout style size !important;
-    -webkit-contain: layout style size !important;
-  }
-  
-  /* Также фиксируем hero-component на мобильных */
-  .hero-component {
-    min-height: calc(var(--vh-initial, 1vh) * 100) !important;
-    height: calc(var(--vh-initial, 1vh) * 100) !important;
-    transition: none !important;
-    contain: layout style size !important;
-    -webkit-contain: layout style size !important;
-  }
-  
-  /* CTA logo wrap width on mobile */
-  .cta-logo-wrap {
-    width: 80vw !important;
-  }
-  
-  /* Increase CTA logo size by 25% on mobile */
-  .cta-logo-wrap img {
-    transform: scale(1.25) !important;
-  }
+  position: relative !important;
+  font-weight: 300 !important;
 }
 
-/* Reduce color saturation for Hero video */
-.hero-background video {
-  filter: saturate(0.8);
-}
-
-/* Force font-weight for nav button text */
-.nav_link .nav-button_text.is-absolute {
-  font-weight: 200 !important;
-}
-
-/* Force font-weight for all nav button text */
-.nav_link .nav-button_text {
-  font-weight: 200 !important;
-}
-
-/* Force font-weight for button text */
+/* Common font-weight for nav button text */
+.nav_link .nav-button_text.is-absolute,
+.nav_link .nav-button_text,
 .button-text {
-  font-weight: 200 !important;
+  font-weight: 300 !important;
 }
 
-/* Максимальная специфичность для Last CTA heading на десктопе - перекрывает все другие правила */
-html body section.section_last-cta h2.heading-style-h2.text-style-allcaps.font-lora,
-body section.section_last-cta h2.heading-style-h2.text-style-allcaps.font-lora,
-section.section_last-cta h2.heading-style-h2.text-style-allcaps.font-lora {
-  font-size: 1.3rem !important;
+/* First child (visible state) */
+.nav_link .nav-button_text:first-child {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Last child / is-absolute (hidden state) */
+.nav_link .nav-button_text:last-child {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.nav-button_text.is-absolute {
+  position: absolute !important;
+  bottom: -1.2rem !important;
+  white-space: nowrap !important;
+  font-weight: 300 !important;
+}
+
+/* Hover states */
+.nav_link:hover .nav-button_text:first-child {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.nav_link:hover .nav-button_text:last-child {
+  opacity: 1;
+  transform: translate(-50%, -28%);
+}
+
+/* Button hover effects */
+.button-nav {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-nav .button-text:first-child {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.button-nav .button-text.is-absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.button-nav:hover .button-text:first-child {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.button-nav:hover .button-text.is-absolute {
+  opacity: 1;
+  transform: translate(-50%, -28%);
+}
+
+/* Link block hover effect - только для desktop */
+@media screen and (min-width: 769px) {
+  .link-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transition: transform 0.6s ease;
+    z-index: 0;
+  }
+  
+  .link-block:hover::before {
+    transform: scale(1.05);
+  }
 }
