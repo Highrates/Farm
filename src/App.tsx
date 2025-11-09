@@ -965,7 +965,8 @@ function App() {
                   style={{
                   color: 'rgb(181, 154, 127)',
                   fontSize: isMobile ? '2rem' : '3vw',
-                  marginTop: '2rem'
+                  marginTop: '2rem',
+                  marginLeft: isMobile ? '-1rem' : '0'
                 }}
               >
                 {'Ферма, которой можно доверять'.split('').map((char, index) => (
