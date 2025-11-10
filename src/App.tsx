@@ -839,7 +839,7 @@ function App() {
                     margin: 0
                   }}
                 >
-                    Гиссарские Овцы
+                    Овцы Гиссарской Породы
                 </h3>
                 <div 
                     className="catalog-description"
