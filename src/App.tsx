@@ -291,6 +291,9 @@ function App() {
                   style={{
                       width: isMobile ? '100%' : '192px',
                       height: isMobile ? '48px' : '70px',
+                      minWidth: isMobile ? 'auto' : '192px',
+                      minHeight: isMobile ? '48px' : '70px',
+                      flexShrink: 0,
                       objectFit: 'contain',
                       filter: isMobileMenuOpen ? 'brightness(0) invert(1)' : 'none',
                       transition: isMobileMenuOpen 
